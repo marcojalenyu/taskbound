@@ -1,6 +1,11 @@
 package com.mobdeve.s17.taskbound;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +13,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 public class Register extends AppCompatActivity {
+
+    TextInputEditText newEmail, newUsername, newPassword;
+    Button buttonBackToLogin, buttonCreateAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +30,49 @@ public class Register extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Initialize the TextInputEditText fields
+        newEmail = findViewById(R.id.newEmail);
+        newUsername = findViewById(R.id.newUsername);
+        newPassword = findViewById(R.id.newPassword);
+    }
+
+    public void btnClickedBackToLogin(View v){
+        Intent backToLogin = new Intent(Register.this, Login.class);
+        backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(backToLogin);
+        finish();
+    }
+
+
+
+    public void btnClickedCreateAccount(View v){
+        String email, username, password;
+        email = String.valueOf(newEmail.getText()); //not doing newEmail.getText().toString() to prevent null pointer exceptions
+        username = String.valueOf(newUsername.getText());
+        password = String.valueOf(newPassword.getText());
+
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(username)) {
+            Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Firebase stuff
+
+        //Temporary code pre-firebase
+        Intent backToLogin = new Intent(Register.this, Login.class);
+        backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(backToLogin);
+        finish();
     }
 }
