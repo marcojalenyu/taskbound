@@ -10,7 +10,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class HomeActivity extends AppCompatActivity {
+
+    FloatingActionButton collectiblesBtn;
+    FloatingActionButton shopBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +27,26 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        this.collectiblesBtn = findViewById(R.id.collectiblesBtn);
+        this.shopBtn = findViewById(R.id.shopBtn);
+
+        this.collectiblesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, CollectiblesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        this.shopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ShopActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     public void btnClickedLogout(View v) {
