@@ -15,7 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-public class Register extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     TextInputEditText newEmail, newUsername, newPassword;
     Button buttonBackToLogin, buttonCreateAccount;
@@ -38,7 +38,7 @@ public class Register extends AppCompatActivity {
     }
 
     public void btnClickedBackToLogin(View v){
-        Intent backToLogin = new Intent(Register.this, Login.class);
+        Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
         backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(backToLogin);
         finish();
@@ -53,24 +53,24 @@ public class Register extends AppCompatActivity {
         password = String.valueOf(newPassword.getText());
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (TextUtils.isEmpty(username)) {
-            Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
             return;
         }
 
         //Firebase stuff
 
         //Temporary code pre-firebase
-        Intent backToLogin = new Intent(Register.this, Login.class);
+        Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
         backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(backToLogin);
         finish();

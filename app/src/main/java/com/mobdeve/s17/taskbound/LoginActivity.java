@@ -15,7 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonLogin, buttonRegister;
@@ -43,25 +43,25 @@ public class Login extends AppCompatActivity {
         password = String.valueOf(editTextPassword.getText());
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(Login.this, "Enter email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(Login.this, "Enter password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
             return;
         }
 
         //Firebase stuff
 
         //Temporary code pre-firebase
-        Intent home = new Intent(Login.this, Home.class);
+        Intent home = new Intent(LoginActivity.this, HomeActivity.class);
         startActivity(home);
     }
 
 
     public void btnClickedRegister(View v){
-        Intent register = new Intent(Login.this, Register.class);
+        Intent register = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(register);
     }
 }
