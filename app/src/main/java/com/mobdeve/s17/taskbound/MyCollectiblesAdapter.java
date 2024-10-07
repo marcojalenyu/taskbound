@@ -16,10 +16,23 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
 
     MyCollectiblesData[] myCollectiblesData;
     Context context;
+    TextView collectiblesCount;
+    int collectedCount = 0;
 
-    public MyCollectiblesAdapter(MyCollectiblesData[] myMovieData,CollectiblesActivity activity) {
+    public MyCollectiblesAdapter(MyCollectiblesData[] myMovieData,CollectiblesActivity activity, TextView collectiblesCount) {
         this.myCollectiblesData = myMovieData;
         this.context = activity;
+        this.collectiblesCount = collectiblesCount;
+        updateCollectiblesCount();
+    }
+
+    private void updateCollectiblesCount() {
+        for (MyCollectiblesData collectible : myCollectiblesData) {
+            if (collectible.isObtained()) {
+                collectedCount++;
+            }
+        }
+        collectiblesCount.setText(collectedCount + " / " + myCollectiblesData.length);
     }
 
     @NonNull
@@ -34,9 +47,20 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final MyCollectiblesData myMovieDataList = myCollectiblesData[position];
-        holder.collectibleName.setText(myMovieDataList.getCollectibleName());
-        holder.collectibleImg.setImageResource(myMovieDataList.getCollectibleImage());
-
+        // Set text color depending on rarity
+        if (myCollectiblesData[position].getCollectiblesRarity() == Rarity.SR) {
+            holder.collectibleName.setTextColor(context.getResources().getColor(R.color.sr));
+        } else if (myCollectiblesData[position].getCollectiblesRarity() == Rarity.SSR) {
+            holder.collectibleName.setTextColor(context.getResources().getColor(R.color.ssr));
+        }
+        // If collectible is not obtained, make it a shade of gray
+        if (!myCollectiblesData[position].isObtained()) {
+            holder.collectibleName.setText("???");
+            holder.collectibleImg.setImageResource(R.drawable.collectible_unknown);
+        } else {
+            holder.collectibleName.setText(myMovieDataList.getCollectibleName());
+            holder.collectibleImg.setImageResource(myMovieDataList.getCollectibleImage());
+        }
 //        holder.itemView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

@@ -1,6 +1,7 @@
 package com.mobdeve.s17.taskbound;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CollectiblesActivity extends AppCompatActivity {
 
     RecyclerView collectiblesView;
+    TextView collectiblesCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,35 +28,40 @@ public class CollectiblesActivity extends AppCompatActivity {
         });
 
         collectiblesView = findViewById(R.id.collectiblesView);
-        collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
-        MyCollectiblesData[] myCollectiblesData = new MyCollectiblesData[]{
-                new MyCollectiblesData("1", "Coin", "R", R.drawable.coin),
-                new MyCollectiblesData("2", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("3", "Bunny", "R", R.drawable.bunny),
-                new MyCollectiblesData("4", "Chest", "SR", R.drawable.chest),
-                new MyCollectiblesData("5", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("6", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("7", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("8", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("9", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("10", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("11", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("12", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("13", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("14", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("15", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("16", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("17", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("18", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("19", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("20", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("21", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("22", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("23", "Lily", "SSR", R.drawable.lily),
-                new MyCollectiblesData("24", "Lily", "SSR", R.drawable.lily),
-        };
+        collectiblesCount = findViewById(R.id.collectiblesCount);
 
-        MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this);
+        collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
+
+        MyCollectiblesData[] myCollectiblesData = initializeCollectibles();
+        // Mark some collectibles as obtained
+        myCollectiblesData[0].setObtained(true);
+        myCollectiblesData[5].setObtained(true);
+        myCollectiblesData[6].setObtained(true);
+        myCollectiblesData[9].setObtained(true);
+
+        MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this, collectiblesCount);
         collectiblesView.setAdapter(myCollectiblesAdapter);
+    }
+
+    /**
+     * Initializes collectibles (for testing purposes)
+     * @return array of collectibles
+     */
+    public MyCollectiblesData[] initializeCollectibles() {
+        // Initialize collectibles here
+        return new MyCollectiblesData[]{
+                new MyCollectiblesData(1, "Chicken", "R", R.drawable.collectible_chicken),
+                new MyCollectiblesData(2, "Capybara", "R", R.drawable.collectible_capybara),
+                new MyCollectiblesData(3, "Cat", "R", R.drawable.collectible_cat),
+                new MyCollectiblesData(4, "Coin", "R", R.drawable.collectible_coin),
+                new MyCollectiblesData(5, "Clover", "R", R.drawable.collectible_clover),
+
+                new MyCollectiblesData(101, "Katana", "SR", R.drawable.collectible_katana),
+                new MyCollectiblesData(102, "Diamond", "SR", R.drawable.collectible_diamond),
+                new MyCollectiblesData(103, "Key", "SR", R.drawable.collectible_key),
+                new MyCollectiblesData(4, "Flower", "SR", R.drawable.collectible_flower),
+
+                new MyCollectiblesData(201, "Lily", "SSR", R.drawable.collectible_lily),
+        };
     }
 }

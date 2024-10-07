@@ -25,8 +25,10 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="@drawable/rounded_box"
+                android:backgroundTint="#D8E9D8"
+                android:backgroundTintMode="multiply"
                 android:padding="16dp"
-                android:src="@drawable/coin" />
+                android:src="@drawable/ic_coin" />
 
             <TextView
                 android:id="@+id/collectibleName"
@@ -36,7 +38,8 @@
                 android:fontFamily="@font/retropix"
                 android:maxLines="1"
                 android:text="Collectible"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

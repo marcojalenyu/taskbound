@@ -1,13 +1,13 @@
 package com.mobdeve.s17.taskbound;
 
 public class MyCollectiblesData {
-    private final String collectibleID;
+    private final int collectibleID;
     private final String collectibleName;
     private Rarity collectiblesRarity;
     private boolean isObtained;
     private final Integer collectibleImage;
 
-    public MyCollectiblesData(String collectibleID, String collectibleName, String rarity, Integer collectibleImage) {
+    public MyCollectiblesData(int collectibleID, String collectibleName, String rarity, Integer collectibleImage) {
         this.collectibleID = collectibleID;
         this.collectibleName = collectibleName;
         this.collectiblesRarity = Rarity.valueOf(rarity);
@@ -35,7 +35,7 @@ public class MyCollectiblesData {
         return collectiblesRarity;
     }
 
-    public String getCollectibleID() {
+    public int getCollectibleID() {
         return collectibleID;
     }
 }

@@ -38,7 +38,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/coin" />
+            app:srcCompat="@drawable/ic_coin" />
 
         <TextView
             android:id="@+id/textView2"
@@ -55,7 +55,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/collectiblesCount"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="120dp"
@@ -81,6 +81,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="36dp"
         android:layout_marginBottom="86dp"
+        android:overScrollMode="never"
         android:scrollbarThumbHorizontal="@android:color/transparent"
         android:scrollbarThumbVertical="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
