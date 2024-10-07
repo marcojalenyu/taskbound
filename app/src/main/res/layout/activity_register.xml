@@ -39,12 +39,13 @@
     <!--@drawable/rounded_edit_text.xml contains the color of the text box + border radius-->
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id = "@+id/newUsernameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskbound"
-        app:layout_constraintBottom_toTopOf="@+id/backToLogin">
+        app:layout_constraintTop_toBottomOf="@+id/taskbound">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newUsername"
             android:hint="Enter Username"
@@ -54,11 +55,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id = "@+id/newEmailLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/taskbound">
+        app:layout_constraintTop_toBottomOf="@+id/newUsernameLayout">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newEmail"
             android:hint="Enter Email"
@@ -68,11 +72,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id = "@+id/newPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/backToLogin">
+        app:layout_constraintTop_toBottomOf="@+id/newEmailLayout">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newPassword"
             android:hint="Enter Password"
@@ -88,6 +95,7 @@
         android:text="Back"
         android:onClick="btnClickedBackToLogin"
         android:textColor="#ffffff"
+        app:layout_constraintTop_toBottomOf="@+id/newPasswordLayout"
         app:layout_constraintBottom_toTopOf="@+id/mountain"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/create_account"/>
@@ -99,6 +107,7 @@
         android:text="Create Account"
         android:onClick="btnClickedCreateAccount"
         android:textColor="#ffffff"
+        app:layout_constraintTop_toBottomOf="@+id/newPasswordLayout"
         app:layout_constraintBottom_toTopOf="@+id/mountain"
         app:layout_constraintStart_toEndOf="@id/backToLogin"
         app:layout_constraintEnd_toEndOf="parent"/>
