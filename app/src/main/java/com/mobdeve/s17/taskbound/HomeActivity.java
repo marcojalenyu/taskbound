@@ -12,10 +12,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class HomeActivity extends AppCompatActivity {
 
     FloatingActionButton collectiblesBtn;
     FloatingActionButton shopBtn;
+    ArrayList<MyCollectiblesData> collectiblesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,8 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
+        this.collectiblesList = CollectiblesManager.getInstance().getCollectibles();
+
         this.collectiblesBtn = findViewById(R.id.collectiblesBtn);
         this.shopBtn = findViewById(R.id.shopBtn);
 
@@ -35,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, CollectiblesActivity.class);
+                intent.putParcelableArrayListExtra("collectibles", collectiblesList);
                 startActivity(intent);
             }
         });
@@ -43,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ShopActivity.class);
+                intent.putParcelableArrayListExtra("collectibles", collectiblesList);
                 startActivity(intent);
             }
         });

@@ -11,6 +11,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class CollectiblesActivity extends AppCompatActivity {
 
     RecyclerView collectiblesView;
@@ -32,36 +34,16 @@ public class CollectiblesActivity extends AppCompatActivity {
 
         collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
 
-        MyCollectiblesData[] myCollectiblesData = initializeCollectibles();
-        // Mark some collectibles as obtained
-        myCollectiblesData[0].setObtained(true);
-        myCollectiblesData[5].setObtained(true);
-        myCollectiblesData[6].setObtained(true);
-        myCollectiblesData[9].setObtained(true);
+        ArrayList<MyCollectiblesData> collectiblesList = getIntent().getParcelableArrayListExtra("collectibles");
+        if (collectiblesList != null && !collectiblesList.isEmpty()) {
+            // Convert ArrayList to Array
+            MyCollectiblesData[] myCollectiblesData = collectiblesList.toArray(new MyCollectiblesData[0]);
 
-        MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this, collectiblesCount);
-        collectiblesView.setAdapter(myCollectiblesAdapter);
-    }
-
-    /**
-     * Initializes collectibles (for testing purposes)
-     * @return array of collectibles
-     */
-    public MyCollectiblesData[] initializeCollectibles() {
-        // Initialize collectibles here
-        return new MyCollectiblesData[]{
-                new MyCollectiblesData(1, "Chicken", "R", R.drawable.collectible_chicken),
-                new MyCollectiblesData(2, "Capybara", "R", R.drawable.collectible_capybara),
-                new MyCollectiblesData(3, "Cat", "R", R.drawable.collectible_cat),
-                new MyCollectiblesData(4, "Coin", "R", R.drawable.collectible_coin),
-                new MyCollectiblesData(5, "Clover", "R", R.drawable.collectible_clover),
-
-                new MyCollectiblesData(101, "Katana", "SR", R.drawable.collectible_katana),
-                new MyCollectiblesData(102, "Diamond", "SR", R.drawable.collectible_diamond),
-                new MyCollectiblesData(103, "Key", "SR", R.drawable.collectible_key),
-                new MyCollectiblesData(4, "Flower", "SR", R.drawable.collectible_flower),
-
-                new MyCollectiblesData(201, "Lily", "SSR", R.drawable.collectible_lily),
-        };
+            // Set the adapter
+            MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this, collectiblesCount);
+            collectiblesView.setAdapter(myCollectiblesAdapter);
+        } else {
+            collectiblesCount.setText("Skill issue.");
+        }
     }
 }
