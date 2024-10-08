@@ -2,6 +2,7 @@
 .gradle/
 build/
 local.properties
+gradle/
 
 # Android Studio project files
 .idea/
