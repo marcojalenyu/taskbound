@@ -71,7 +71,7 @@ public class CollectibleDialogFragment extends DialogFragment {
     private void playMusic() {
         if (this.mediaPlayer == null) {
             this.mediaPlayer = MediaPlayer.create(getContext(), R.raw.usagi_flap);
-            this.mediaPlayer.setLooping(false);
+            this.mediaPlayer.setLooping(true);
             this.mediaPlayer.seekTo(playbackPosition + 2);
             this.mediaPlayer.start();
         }
