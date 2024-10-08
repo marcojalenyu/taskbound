@@ -14,7 +14,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -24,7 +23,6 @@ public class ShopActivity extends AppCompatActivity {
     Button buttonBack;
     ArrayList<MyCollectiblesData> collectiblesList;
     int[] collectibleIndices;
-    private ImageView collectibleImageView;
     private int cumWeight;
     private int[] nums;
 
@@ -70,7 +68,6 @@ public class ShopActivity extends AppCompatActivity {
 
         this.buttonRoll = findViewById(R.id.roll_button);
         this.buttonBack = findViewById(R.id.back_button);
-        this.collectibleImageView = findViewById(R.id.gachapon);
     }
 
     public void btnClickedRoll(View v){
@@ -81,7 +78,8 @@ public class ShopActivity extends AppCompatActivity {
 
         if (collectible != null) {
             collectible.setObtained(true);
-            this.collectibleImageView.setImageResource(collectible.getCollectibleImage());
+            CollectibleDialogFragment dialog = new CollectibleDialogFragment(collectible);
+            dialog.show(getSupportFragmentManager(), "CollectibleDialog");
         } else {
             Toast.makeText(v.getContext(), "Error: Collectible not found.", Toast.LENGTH_SHORT).show();
         }
