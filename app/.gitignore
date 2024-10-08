@@ -1,1 +1,16 @@
-/build
+# Ignore Android-specific files
+.gradle/
+build/
+local.properties
+
+# Android Studio project files
+.idea/
+*.iml
+
+# Gradle
+*.jar
+*.war
+*.ear
+
+# Ignore signing key files
+signing.properties
