@@ -23,6 +23,7 @@ public class CollectibleDialogFragment extends DialogFragment {
 
     private final MyCollectiblesData collectible;
     private MediaPlayer mediaPlayer;
+    private static int playbackPosition = 0;
 
     public CollectibleDialogFragment(MyCollectiblesData collectible) {
         this.collectible = collectible;
@@ -71,12 +72,14 @@ public class CollectibleDialogFragment extends DialogFragment {
         if (this.mediaPlayer == null) {
             this.mediaPlayer = MediaPlayer.create(getContext(), R.raw.usagi_flap);
             this.mediaPlayer.setLooping(false);
+            this.mediaPlayer.seekTo(playbackPosition + 2);
             this.mediaPlayer.start();
         }
     }
 
     private void stopMusic() {
         if (this.mediaPlayer != null) {
+            this.playbackPosition = mediaPlayer.getCurrentPosition();
             this.mediaPlayer.stop();
             this.mediaPlayer.release();
             this.mediaPlayer = null;
