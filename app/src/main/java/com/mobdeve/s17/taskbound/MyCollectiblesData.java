@@ -59,7 +59,10 @@ public class MyCollectiblesData implements Parcelable {
     }
 
     public Rarity getCollectiblesRarity() {
-        return collectiblesRarity;
+        if (this.collectiblesRarity != null) {
+            return collectiblesRarity;
+        }
+        return Rarity.R;
     }
 
     public int getCollectibleID() {
