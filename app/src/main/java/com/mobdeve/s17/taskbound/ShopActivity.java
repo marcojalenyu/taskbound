@@ -50,10 +50,10 @@ public class ShopActivity extends AppCompatActivity {
 
         this.moneyCount.setText(String.valueOf(coins));
         
-        this.cumWeight = this.user.getCollectiblesManager().getCumWeight();
+        this.cumWeight = this.userSession.getCollectiblesManager().getCumWeight();
         this.collectibleIndices = new int[cumWeight];
 
-        this.nums = this.user.getCollectiblesManager().getNums();
+        this.nums = this.userSession.getCollectiblesManager().getNums();
         int num;
         int index = 0;
 

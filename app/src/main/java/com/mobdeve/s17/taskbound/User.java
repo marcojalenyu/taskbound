@@ -3,22 +3,25 @@ package com.mobdeve.s17.taskbound;
 import java.util.ArrayList;
 
 public class User {
+    private final int userID;
     private final String email;
     private String userName;
     private String password;
     private int coins;
-    private final CollectiblesManager collectiblesManager;
     private final ArrayList<MyCollectiblesData> collectiblesList;
 
-    public User(String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
+    public User(int userID, String email, String userName, String password, ArrayList<MyCollectiblesData> collectiblesList) {
+        this.userID = userID;
         this.email = email;
         this.userName = userName;
         this.password = password;
-        this.coins = coins;
-        this.collectiblesManager = new CollectiblesManager();
+        this.coins = 1000;
         this.collectiblesList = collectiblesList;
     }
 
+    public int getUserID() {
+        return this.userID;
+    }
     public String getEmail() {
         return this.email;
     }
@@ -33,10 +36,6 @@ public class User {
     }
     public ArrayList<MyCollectiblesData> getCollectiblesList() {
         return this.collectiblesList;
-    }
-
-    public CollectiblesManager getCollectiblesManager() {
-        return this.collectiblesManager;
     }
 
     public void setUserName(String userName) {
