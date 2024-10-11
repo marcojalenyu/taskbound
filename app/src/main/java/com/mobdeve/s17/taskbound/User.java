@@ -10,13 +10,15 @@ public class User {
     private int coins;
     private final ArrayList<MyCollectiblesData> collectiblesList;
 
-    public User(int userID, String email, String userName, String password, ArrayList<MyCollectiblesData> collectiblesList) {
+    public User(int userID, String email, String userName, String password) {
         this.userID = userID;
         this.email = email;
         this.userName = userName;
         this.password = password;
         this.coins = 1000;
-        this.collectiblesList = collectiblesList;
+
+        CollectiblesManager collectiblesManager = new CollectiblesManager();
+        this.collectiblesList = collectiblesManager.getCollectibles();
     }
 
     public int getUserID() {
@@ -51,7 +53,7 @@ public class User {
     public void obtainCollectible(int collectibleID, boolean isObtained) {
         for (MyCollectiblesData collectible : collectiblesList) {
             if (collectible.getCollectibleID() == collectibleID) {
-                collectible.setObtained(true);
+                collectible.setObtained(isObtained);
                 break;
             }
         }

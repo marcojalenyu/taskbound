@@ -43,7 +43,7 @@ public class UserSession {
                 return false;
             }
         }
-        User user = new User (lastUserID, email, userName, password, collectiblesManager.getCollectibles());
+        User user = new User (lastUserID, email, userName, password);
         this.lastUserID++;
         this.userList.add(user);
         return true;

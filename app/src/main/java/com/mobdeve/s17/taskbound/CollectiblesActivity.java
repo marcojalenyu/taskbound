@@ -47,12 +47,9 @@ public class CollectiblesActivity extends AppCompatActivity {
         collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
         moneyCount.setText(String.valueOf(this.user.getCoins()));
 
-        ArrayList<MyCollectiblesData> collectiblesList = getIntent().getParcelableArrayListExtra("collectibles");
         if (collectiblesList != null && !collectiblesList.isEmpty()) {
-            // Convert ArrayList to Array
             MyCollectiblesData[] myCollectiblesData = collectiblesList.toArray(new MyCollectiblesData[0]);
 
-            // Set the adapter
             MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this, collectiblesCount);
             collectiblesView.setAdapter(myCollectiblesAdapter);
         } else {

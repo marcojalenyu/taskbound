@@ -49,7 +49,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, CollectiblesActivity.class);
-                intent.putParcelableArrayListExtra("collectibles", collectiblesList);
                 startActivity(intent);
             }
         });
