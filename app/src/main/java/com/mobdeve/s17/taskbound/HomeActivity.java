@@ -28,6 +28,9 @@ public class HomeActivity extends AppCompatActivity {
     ArrayList<MyCollectiblesData> collectiblesList;
     private UserSession userSession;
 
+    private ArrayList<MyCollectiblesData> defaultCollectibles;
+    private CollectiblesManager collectiblesManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +42,10 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        User currUser = new User("lily@lily.com", "Lily", "Lily");
+        this.collectiblesManager = new CollectiblesManager();
+        this.collectiblesList = collectiblesManager.getCollectibles();
+
+        User currUser = new User("lily@lily.com", "Lily", "Lily", 1000, collectiblesList);
         this.userSession = UserSession.getInstance();
         this.userSession.setCurrentUser(currUser);
         this.collectiblesList = userSession.getCurrentUser().getCollectiblesList();

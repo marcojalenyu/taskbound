@@ -10,13 +10,13 @@ public class User {
     private final CollectiblesManager collectiblesManager;
     private final ArrayList<MyCollectiblesData> collectiblesList;
 
-    public User(String email, String userName, String password) {
+    public User(String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
         this.email = email;
         this.userName = userName;
         this.password = password;
-        this.coins = 1000;
+        this.coins = coins;
         this.collectiblesManager = new CollectiblesManager();
-        this.collectiblesList = collectiblesManager.getCollectibles();
+        this.collectiblesList = collectiblesList;
     }
 
     public String getEmail() {
