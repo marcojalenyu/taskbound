@@ -1,5 +1,6 @@
 package com.mobdeve.s17.taskbound;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class ShopActivity extends AppCompatActivity {
     int[] collectibleIndices;
     private int cumWeight;
     private int[] nums;
+    private int coins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,5 +85,11 @@ public class ShopActivity extends AppCompatActivity {
         } else {
             Toast.makeText(v.getContext(), "Error: Collectible not found.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void btnClickedBack(View v) {
+        Intent returnIntent = new Intent();
+        setResult(RESULT_OK, returnIntent);
+        finish();
     }
 }
