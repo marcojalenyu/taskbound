@@ -39,8 +39,12 @@ public class ShopActivity extends AppCompatActivity {
             return insets;
         });
 
+        this.moneyCount = findViewById(R.id.money_count);
         this.collectiblesList = CollectiblesManager.getInstance().getCollectibles();
+        this.coins = getIntent().getIntExtra("coins", -1);
 
+        this.moneyCount.setText(String.valueOf(coins));
+        
         this.cumWeight = CollectiblesManager.getInstance().getCumWeight();
         this.collectibleIndices = new int[cumWeight];
 
@@ -73,6 +77,10 @@ public class ShopActivity extends AppCompatActivity {
     }
 
     public void btnClickedRoll(View v){
+        if (this.coins < 100) {
+            Toast.makeText(v.getContext(), "Not enough coins.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Random random = new Random();
         int randomNumber = random.nextInt(this.cumWeight);
 
@@ -80,6 +88,8 @@ public class ShopActivity extends AppCompatActivity {
 
         if (collectible != null) {
             collectible.setObtained(true);
+            this.coins -= 100;
+            this.moneyCount.setText(String.valueOf(coins));
             CollectibleDialogFragment dialog = new CollectibleDialogFragment(collectible);
             dialog.show(getSupportFragmentManager(), "CollectibleDialog");
         } else {
@@ -89,6 +99,7 @@ public class ShopActivity extends AppCompatActivity {
 
     public void btnClickedBack(View v) {
         Intent returnIntent = new Intent();
+        returnIntent.putExtra("coins", this.coins);
         setResult(RESULT_OK, returnIntent);
         finish();
     }
