@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +27,9 @@ public class ShopActivity extends AppCompatActivity {
     private int[] nums;
     private int coins;
 
+    private UserSession userSession;
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,16 +41,19 @@ public class ShopActivity extends AppCompatActivity {
             return insets;
         });
 
+        this.userSession = UserSession.getInstance();
+        this.user = userSession.getCurrentUser();
+
         this.moneyCount = findViewById(R.id.money_count);
-        this.collectiblesList = CollectiblesManager.getInstance().getCollectibles();
-        this.coins = getIntent().getIntExtra("coins", -1);
+        this.collectiblesList = this.user.getCollectiblesList();
+        this.coins = this.user.getCoins();
 
         this.moneyCount.setText(String.valueOf(coins));
         
-        this.cumWeight = CollectiblesManager.getInstance().getCumWeight();
+        this.cumWeight = this.user.getCollectiblesManager().getCumWeight();
         this.collectibleIndices = new int[cumWeight];
 
-        this.nums = CollectiblesManager.getInstance().getNums();
+        this.nums = this.user.getCollectiblesManager().getNums();
         int num;
         int index = 0;
 
@@ -87,9 +92,11 @@ public class ShopActivity extends AppCompatActivity {
         MyCollectiblesData collectible = this.collectiblesList.get(this.collectibleIndices[randomNumber]);
 
         if (collectible != null) {
-            collectible.setObtained(true);
+            int collectibleID = collectible.getCollectibleID();
+            this.user.obtainCollectible(collectible.getCollectibleID(), true);
             this.coins -= 100;
-            this.moneyCount.setText(String.valueOf(coins));
+            this.user.setCoins(this.coins);
+            this.moneyCount.setText(String.valueOf(this.user.getCoins()));
             CollectibleDialogFragment dialog = new CollectibleDialogFragment(collectible);
             dialog.show(getSupportFragmentManager(), "CollectibleDialog");
         } else {

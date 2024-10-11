@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
     FloatingActionButton collectiblesBtn;
     FloatingActionButton shopBtn;
     ArrayList<MyCollectiblesData> collectiblesList;
-    private int coins;
+    private UserSession userSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +39,13 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        this.collectiblesList = CollectiblesManager.getInstance().getCollectibles();
+        User currUser = new User("lily@lily.com", "Lily", "Lily");
+        this.userSession = UserSession.getInstance();
+        this.userSession.setCurrentUser(currUser);
+        this.collectiblesList = userSession.getCurrentUser().getCollectiblesList();
 
         this.collectiblesBtn = findViewById(R.id.collectiblesBtn);
         this.shopBtn = findViewById(R.id.shopBtn);
-
-        this.coins = 1000;
 
         this.collectiblesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,8 +60,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ShopActivity.class);
-                intent.putExtra("coins", coins);
-                shopResult.launch(intent);
+                startActivity(intent);
             }
         });
 
@@ -72,22 +72,4 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-    private void setCoins(int coins) {
-        this.coins = coins;
-    }
-
-    private final ActivityResultLauncher<Intent> shopResult = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>()
-            {
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            setCoins(data.getIntExtra("coins", -1));
-                        }
-                    }
-                }
-            }
-    );
 }

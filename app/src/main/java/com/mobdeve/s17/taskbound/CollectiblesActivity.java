@@ -17,6 +17,12 @@ public class CollectiblesActivity extends AppCompatActivity {
 
     RecyclerView collectiblesView;
     TextView collectiblesCount;
+    TextView moneyCount;
+
+    UserSession userSession;
+    User user;
+    int coins;
+    ArrayList<MyCollectiblesData> collectiblesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +35,17 @@ public class CollectiblesActivity extends AppCompatActivity {
             return insets;
         });
 
+        userSession = UserSession.getInstance();
+        user = userSession.getCurrentUser();
+        coins = user.getCoins();
+        collectiblesList = user.getCollectiblesList();
+
         collectiblesView = findViewById(R.id.collectiblesView);
         collectiblesCount = findViewById(R.id.collectiblesCount);
+        moneyCount = findViewById(R.id.textView2);
 
         collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
+        moneyCount.setText(String.valueOf(this.user.getCoins()));
 
         ArrayList<MyCollectiblesData> collectiblesList = getIntent().getParcelableArrayListExtra("collectibles");
         if (collectiblesList != null && !collectiblesList.isEmpty()) {

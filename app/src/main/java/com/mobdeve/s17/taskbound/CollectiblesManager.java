@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CollectiblesManager {
-    private static CollectiblesManager instance;
     private final ArrayList<MyCollectiblesData> collectibles;
     private int cumWeight;
     private int rNum, srNum, ssrNum;
 
-    private CollectiblesManager() {
+    public CollectiblesManager() {
         this.collectibles = initializeCollectibles();
-        
+
         this.cumWeight = 1000;
 
         int rCount = 0;
@@ -37,13 +36,6 @@ public class CollectiblesManager {
         this.ssrNum = calculateWeight(cumWeight, ssrCount, 0.04);
 
         this.cumWeight = (rCount * rNum) + (srCount * srNum) + (ssrCount * ssrNum);
-    }
-
-    public static CollectiblesManager getInstance() {
-        if (instance == null) {
-            instance = new CollectiblesManager();
-        }
-        return instance;
     }
 
     public ArrayList<MyCollectiblesData> getCollectibles() {
@@ -79,8 +71,8 @@ public class CollectiblesManager {
                 new MyCollectiblesData(9, "Flower", Rarity.SR, R.drawable.collectible_flower),
 
                 new MyCollectiblesData(10, "Lilydayo", Rarity.SSR, R.drawable.collectible_lilydayo),
-                new MyCollectiblesData(205, "Hat Lily", Rarity.SSR, R.drawable.collectible_lilyhat),
-                new MyCollectiblesData(206, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry)
+                new MyCollectiblesData(11, "Hat Lily", Rarity.SSR, R.drawable.collectible_lilyhat),
+                new MyCollectiblesData(12, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry)
         ));
     }
 }
