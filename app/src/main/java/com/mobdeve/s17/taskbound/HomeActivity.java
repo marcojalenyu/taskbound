@@ -40,7 +40,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         this.userSession = UserSession.getInstance();
-        this.userSession.setCurrentUser(0);
         this.collectiblesList = userSession.getCurrentUser().getCollectiblesList();
 
         this.collectiblesBtn = findViewById(R.id.collectiblesBtn);

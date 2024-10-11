@@ -27,19 +27,26 @@ public class UserSession {
         return currentUser;
     }
 
-    public void setCurrentUser(int userID) {
+    public boolean setCurrentUser(String email, String password) {
         for (User user : userList) {
-            if (user.getUserID() == userID) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
                 currentUser = user;
-                break;
+                return true;
             }
         }
+        return false;
     }
 
-    public void addUser (String email, String userName, String password) {
+    public boolean addUser (String email, String userName, String password) {
+        for (User user : userList) {
+            if (user.getEmail().equals(email)) {
+                return false;
+            }
+        }
         User user = new User (lastUserID, email, userName, password, collectiblesManager.getCollectibles());
         this.lastUserID++;
         this.userList.add(user);
+        return true;
     }
 
     public void clearUserData() {

@@ -19,6 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     TextInputEditText newEmail, newUsername, newPassword;
     Button buttonBackToLogin, buttonCreateAccount;
+    private UserSession userSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
             return insets;
         });
 
+        this.userSession = UserSession.getInstance();
         // Initialize the TextInputEditText fields
         newEmail = findViewById(R.id.newEmail);
         newUsername = findViewById(R.id.newUsername);
@@ -68,11 +70,13 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         //Firebase stuff
-
-        //Temporary code pre-firebase
-        Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-        backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(backToLogin);
-        finish();
+        if (userSession.addUser(email, username, password)) {
+            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
+            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(backToLogin);
+            finish();
+        }
+        Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
     }
 }

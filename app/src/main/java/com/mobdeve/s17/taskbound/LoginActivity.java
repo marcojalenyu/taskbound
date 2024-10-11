@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonLogin, buttonRegister;
+    UserSession userSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        this.userSession = UserSession.getInstance();
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.login_button);
@@ -53,10 +55,12 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Firebase stuff
-
-        //Temporary code pre-firebase
-        Intent home = new Intent(LoginActivity.this, HomeActivity.class);
-        startActivity(home);
+        if (this.userSession.setCurrentUser(email, password)) {
+            Toast.makeText(LoginActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
+            Intent home = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(home);
+        }
+        Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
     }
 
 
