@@ -76,7 +76,8 @@ public class RegisterActivity extends AppCompatActivity {
             backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(backToLogin);
             finish();
+        } else {
+            Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
     }
 }

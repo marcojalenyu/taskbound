@@ -59,8 +59,9 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
             Intent home = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(home);
+        } else {
+            Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
     }
 
 
