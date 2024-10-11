@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +25,7 @@ public class CollectibleDialogFragment extends DialogFragment {
 
     private final MyCollectiblesData collectible;
     private MediaPlayer mediaPlayer;
+    private VideoView videoView;
     private static int playbackPosition = 0;
 
     public CollectibleDialogFragment(MyCollectiblesData collectible) {
@@ -34,6 +37,8 @@ public class CollectibleDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_collectible, container, false);
 
+        this.videoView = view.findViewById(R.id.dialog_video_view);
+        TextView collectibleMessage = view.findViewById(R.id.dialog_message);
         ImageView collectibleImageView = view.findViewById(R.id.dialog_collectible_image);
         TextView collectibleNameTextView = view.findViewById(R.id.dialog_collectible_name);
         Button closeButton = view.findViewById(R.id.dialog_close_button);
@@ -41,7 +46,19 @@ public class CollectibleDialogFragment extends DialogFragment {
         collectibleImageView.setImageResource(collectible.getCollectibleImage());
         collectibleNameTextView.setText(collectible.getCollectibleName());
 
-        closeButton.setOnClickListener(v -> dismiss());
+        Uri videoUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.sechi_arisu);
+        videoView.setVideoURI(videoUri);
+        videoView.start();
+
+        videoView.setOnCompletionListener(mp -> {
+            videoView.setVisibility(View.GONE);
+            collectibleMessage.setVisibility(View.VISIBLE);
+            collectibleImageView.setVisibility(View.VISIBLE);
+            collectibleNameTextView.setVisibility(View.VISIBLE);
+            closeButton.setVisibility(View.VISIBLE);
+            collectibleImageView.setImageResource(collectible.getCollectibleImage());
+            closeButton.setOnClickListener(v -> dismiss());
+        });
 
         return view;
     }
@@ -79,7 +96,7 @@ public class CollectibleDialogFragment extends DialogFragment {
 
     private void stopMusic() {
         if (this.mediaPlayer != null) {
-            this.playbackPosition = mediaPlayer.getCurrentPosition();
+            playbackPosition = mediaPlayer.getCurrentPosition();
             this.mediaPlayer.stop();
             this.mediaPlayer.release();
             this.mediaPlayer = null;

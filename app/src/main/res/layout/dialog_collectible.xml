@@ -30,6 +30,20 @@
         app:layout_constraintTop_toTopOf="@id/background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        android:visibility="gone"/>
+
+    <VideoView
+        android:id="@+id/dialog_video_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:layout_marginHorizontal="100dp"
+        android:layout_marginTop="150dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="@id/background"
+        app:layout_constraintStart_toStartOf="@id/background"
+        app:layout_constraintEnd_toEndOf="@id/background"
         app:layout_constraintVertical_bias="1.0"/>
 
     <ImageView
@@ -45,7 +59,8 @@
         app:layout_constraintTop_toBottomOf="@id/dialog_message"
         app:layout_constraintStart_toStartOf="@id/background"
         app:layout_constraintEnd_toEndOf="@id/background"
-        app:layout_constraintVertical_bias="1.0"/>
+        app:layout_constraintVertical_bias="1.0"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/dialog_collectible_name"
@@ -61,7 +76,8 @@
         app:layout_constraintTop_toBottomOf="@id/dialog_collectible_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0"/>
+        app:layout_constraintVertical_bias="1.0"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/dialog_close_button"
@@ -74,5 +90,6 @@
         app:layout_constraintTop_toBottomOf="@id/dialog_collectible_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0"/>
+        app:layout_constraintVertical_bias="1.0"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
