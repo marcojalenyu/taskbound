@@ -14,6 +14,9 @@ public class UserSession {
         this.userList = new ArrayList<>();
         this.collectiblesManager = new CollectiblesManager();
         this.lastUserID = 0;
+
+        // Adding some default users for testing first
+        this.addUser("shaunlim@gmail.com", "shaunlim", "123456");
     }
 
     public static UserSession getInstance() {

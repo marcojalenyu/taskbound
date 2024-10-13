@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
@@ -25,7 +26,10 @@ public class HomeActivity extends AppCompatActivity {
 
     FloatingActionButton collectiblesBtn;
     FloatingActionButton shopBtn;
+    FloatingActionButton addTaskButton;
     ArrayList<MyCollectiblesData> collectiblesList;
+    TextView username;
+    TextView coinAmount;
     private UserSession userSession;
 
     @Override
@@ -42,8 +46,25 @@ public class HomeActivity extends AppCompatActivity {
         this.userSession = UserSession.getInstance();
         this.collectiblesList = userSession.getCurrentUser().getCollectiblesList();
 
+        this.username = findViewById(R.id.username);
+        this.coinAmount = findViewById(R.id.coinAmount);
+
+        this.username.setText(userSession.getCurrentUser().getUserName());
+        //this is just set on start, but it will be updated onResume
+        this.coinAmount.setText(String.valueOf(userSession.getCurrentUser().getCoins()));
+
+
         this.collectiblesBtn = findViewById(R.id.collectiblesBtn);
         this.shopBtn = findViewById(R.id.shopBtn);
+        this.addTaskButton = findViewById(R.id.addBtn);
+
+        this.addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, AddTaskActivity.class);
+                startActivity(intent);
+            }
+        });
 
         this.collectiblesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +82,13 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update the collectibles list and coin amount when the activity resumes
+        this.coinAmount.setText(String.valueOf(userSession.getCurrentUser().getCoins()));
     }
 
     public void btnClickedLogout(View v) {

@@ -20,6 +20,97 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <!-- OG Size: 97 by 103 dp-->
+    <ImageView
+        android:id="@+id/profile"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:text="Username"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:fontFamily="@font/retropix"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile" />
+
+
+    <ImageView
+        android:id="@+id/coin"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_coin"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/username"/>
+
+    <TextView
+        android:id="@+id/coinAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:text="0"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:fontFamily="@font/retropix"
+        app:layout_constraintStart_toEndOf="@+id/coin"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+
+    <ImageView
+        android:id="@+id/searchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/searchbar"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile" />
+        />
+
+    <EditText
+        android:id="@+id/searchBarText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Search"
+        android:textColorHint="@color/gray"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:fontFamily="@font/retropix"
+        android:paddingStart="20dp"
+        app:layout_constraintStart_toStartOf="@id/searchBar"
+        app:layout_constraintEnd_toEndOf="@id/searchBar"
+        app:layout_constraintTop_toTopOf="@id/searchBar"
+        app:layout_constraintBottom_toBottomOf="@id/searchBar"/>
+
+    <ImageView
+        android:id="@+id/magnifyingGlass"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/magnifying_glass"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="@id/searchBar"
+        app:layout_constraintTop_toTopOf="@id/searchBar"
+        app:layout_constraintBottom_toBottomOf="@id/searchBar"/>
+
+    <!--RecyclerView For Tasks-->
+
+
+
+
     <Button
         android:id="@+id/logout_button"
         android:layout_width="wrap_content"
@@ -27,30 +118,32 @@
         android:onClick="btnClickedLogout"
         android:text="Logout"
         android:textColor="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.949"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.046" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="97dp"
-        android:layout_height="103dp"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="56dp"
-        tools:src="@tools:sample/avatars" />
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/button_container_transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/background" />
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
         android:layout_marginBottom="60dp"
-        android:text="+"
+        android:src="@drawable/baseline_add_24"
+        app:tint = "@color/white"
+        android:backgroundTint="@color/purple"
         app:layout_constraintBottom_toBottomOf="@+id/background"
-        app:layout_constraintStart_toEndOf="@+id/collectiblesBtn" />
+        app:layout_constraintStart_toEndOf="@+id/collectiblesBtn"
+        app:layout_constraintEnd_toStartOf="@+id/shopBtn"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/collectiblesBtn"

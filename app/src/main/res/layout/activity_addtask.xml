@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddTaskActivity">
+
+    <ImageView
+        android:id="@+id/taskOperationBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/task_operation_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/question_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:src="@drawable/question_mark"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/addTaskTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/addTaskTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Task"
+        android:textColor="#000000"
+        android:fontFamily="@font/retropix"
+        android:textSize="60sp"
+        app:layout_constraintStart_toEndOf="@+id/question_mark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/question_mark"
+        app:layout_constraintBottom_toBottomOf="@+id/question_mark"/>
+
+    <ImageView
+        android:id="@+id/line_separator"
+        android:layout_width="0dp"
+        android:layout_height="7dp"
+        android:background="@drawable/line_separator"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/question_mark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:id="@+id/taskName"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:hint="Enter Task Title"
+        android:background="@drawable/short_text_box"
+        android:paddingStart="10dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@+id/line_separator"
+        app:layout_constraintEnd_toEndOf="@+id/line_separator"
+        app:layout_constraintTop_toBottomOf="@+id/line_separator"/>
+
+    <EditText
+        android:id="@+id/taskContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter Task Content"
+        android:background="@drawable/content_text_box"
+        android:paddingStart="10dp"
+        android:paddingBottom="250dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@+id/line_separator"
+        app:layout_constraintEnd_toEndOf="@+id/line_separator"
+        app:layout_constraintTop_toBottomOf="@+id/taskName"/>
+
+    <EditText
+        android:id="@+id/taskDeadline"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:hint="Enter Task Deadline"
+        android:background="@drawable/short_text_box"
+        android:paddingStart="10dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@+id/line_separator"
+        app:layout_constraintEnd_toEndOf="@+id/line_separator"
+        app:layout_constraintTop_toBottomOf="@+id/taskContent"/>
+
+    <Button
+        android:id="@+id/cancelAddTaskButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textColor="#ffffff"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/gray"
+        android:onClick="cancelAddTask"
+        app:layout_constraintStart_toStartOf="@+id/line_separator"
+        app:layout_constraintEnd_toStartOf="@+id/applyAddTaskButton"
+        app:layout_constraintTop_toBottomOf="@+id/taskDeadline"/>
+
+    <Button
+        android:id="@+id/applyAddTaskButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:textColor="#ffffff"
+        android:layout_marginTop="40dp"
+        android:onClick="addTask"
+        app:layout_constraintStart_toEndOf="@+id/cancelAddTaskButton"
+        app:layout_constraintEnd_toEndOf="@+id/line_separator"
+        app:layout_constraintTop_toBottomOf="@+id/taskDeadline"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
