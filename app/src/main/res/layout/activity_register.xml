@@ -46,12 +46,14 @@
         android:paddingRight="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taskbound">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newUsername"
-            android:hint="Enter Username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edit_text"/>
+            android:background="@drawable/rounded_edit_text"
+            android:hint="Enter Username"
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -63,12 +65,15 @@
         android:paddingTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newUsernameLayout">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newEmail"
-            android:hint="Enter Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edit_text"/>
+            android:background="@drawable/rounded_edit_text"
+            android:hint="Enter Email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -80,12 +85,15 @@
         android:paddingTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newEmailLayout">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/newPassword"
-            android:hint="Enter Password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edit_text"/>
+            android:background="@drawable/rounded_edit_text"
+            android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
