@@ -1,6 +1,8 @@
 package com.mobdeve.s17.taskbound;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +20,7 @@ public class CollectiblesActivity extends AppCompatActivity {
     RecyclerView collectiblesView;
     TextView collectiblesCount;
     TextView moneyCount;
+    ImageButton btnBack;
 
     UserSession userSession;
     User user;
@@ -43,6 +46,7 @@ public class CollectiblesActivity extends AppCompatActivity {
         collectiblesView = findViewById(R.id.collectiblesView);
         collectiblesCount = findViewById(R.id.collectiblesCount);
         moneyCount = findViewById(R.id.textView2);
+        btnBack = findViewById(R.id.btnBack);
 
         collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
         moneyCount.setText(String.valueOf(this.user.getCoins()));
@@ -55,5 +59,9 @@ public class CollectiblesActivity extends AppCompatActivity {
         } else {
             collectiblesCount.setText("Skill issue.");
         }
+
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
     }
 }
