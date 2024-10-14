@@ -10,12 +10,18 @@ public class Task {
     private final String content;
     private final Date deadline;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final int health;
+    private final int coins;
+    private final String monster;
 
-    public Task(int id, String name, String content, String deadline) throws ParseException {
+    public Task(int id, String name, String content, String deadline, int health, int coins, String monster) throws ParseException {
         this.id = id;
         this.name = name;
         this.content = content;
         this.deadline = dateFormat.parse(deadline);
+        this.health = health;
+        this.coins = coins;
+        this.monster = monster;
     }
 
     public int getId() {
@@ -36,5 +42,17 @@ public class Task {
 
     public String getDeadlineAsString() {
         return dateFormat.format(deadline);
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public String getMonster() {
+        return monster;
     }
 }

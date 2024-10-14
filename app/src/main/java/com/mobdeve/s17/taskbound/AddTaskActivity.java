@@ -13,9 +13,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.text.ParseException;
+import java.util.Random;
 
 public class AddTaskActivity extends AppCompatActivity {
     private TaskDBHelper db;
+    private TaskManager taskManager;
     private Button btnAddTask;
     private Button btnCancelAddTask;
     private EditText taskName, taskContent, taskDeadline;
@@ -32,6 +34,11 @@ public class AddTaskActivity extends AppCompatActivity {
         });
 
         db = new TaskDBHelper(this);
+        try {
+            taskManager = new TaskManager();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         taskName = findViewById(R.id.taskName);
         taskContent = findViewById(R.id.taskContent);
         taskDeadline = findViewById(R.id.taskDeadline);
@@ -44,8 +51,15 @@ public class AddTaskActivity extends AppCompatActivity {
                 String name = taskName.getText().toString();
                 String content = taskContent.getText().toString();
                 String deadline = taskDeadline.getText().toString();
+
+                // Generate a random index to select a random task from TaskManager
+                Random random = new Random();
+                int randomIndex = random.nextInt(taskManager.getTasks().size());
+                Task taskData = taskManager.getTasks().get(randomIndex);
+
+
                 try {
-                    Task task = new Task(0, name, content, deadline);
+                    Task task = new Task(0, name, content, deadline, taskData.getHealth(), taskData.getCoins(), taskData.getMonster());
                     db.insertTask(task);
                     finish();
                     Toast.makeText(AddTaskActivity.this, "Task added", Toast.LENGTH_SHORT).show();
