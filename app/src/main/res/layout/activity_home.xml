@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="76dp"
+            android:layout_marginTop="68dp"
             android:layout_marginEnd="24dp"
             app:cardBackgroundColor="@android:color/transparent"
             app:cardElevation="0dp">
@@ -138,14 +138,18 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tasksView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbarThumbHorizontal="@android:color/transparent"
+        android:scrollbarThumbVertical="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/llBottomHub"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llHomeLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/llHomeLayout"
+        app:layout_constraintVertical_bias="0" />
 
     <LinearLayout
         android:id="@+id/llBottomHub"

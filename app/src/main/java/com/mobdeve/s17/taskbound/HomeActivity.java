@@ -10,13 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
+    RecyclerView tasksView;
     FloatingActionButton collectiblesBtn;
     FloatingActionButton shopBtn;
     FloatingActionButton addTaskButton;
@@ -39,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
         this.userSession = UserSession.getInstance();
         this.collectiblesList = userSession.getCurrentUser().getCollectiblesList();
 
+        this.tasksView = findViewById(R.id.tasksView);
         this.tvUsername = findViewById(R.id.tvUsername);
         this.tvCoinAmount = findViewById(R.id.tvCoinAmount);
 
@@ -50,6 +55,24 @@ public class HomeActivity extends AppCompatActivity {
         this.collectiblesBtn = findViewById(R.id.collectiblesBtn);
         this.shopBtn = findViewById(R.id.shopBtn);
         this.addTaskButton = findViewById(R.id.addBtn);
+
+        // Temporary data for the tasks list
+        Task[] tasks = null;
+        try {
+            tasks = new Task[]{
+                    new Task(1, "Study OPESY", "Deal with operating systems, schedulers, etc.", "2024-08-01", 0, 0, "default"),
+                    // new Task(2, "Study MOBDEVE", "", "2024-08-01", 0, 0, "default"),
+                    // new Task(3, "CSARCH2", "talk to me", "2024-08-01", 0, 0, "default"),
+                    // new Task(4, "CSALGCM", "", "2024-08-01", 0, 0, "default"),
+            };
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
+        this.tasksView.setAdapter(myTasksAdapter);
+
+        tasksView.setLayoutManager(new LinearLayoutManager(this));
 
         this.addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
