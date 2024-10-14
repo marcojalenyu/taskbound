@@ -20,8 +20,7 @@ import java.util.Random;
 
 public class ShopActivity extends AppCompatActivity {
     TextView moneyCount;
-    ImageButton buttonRoll;
-    Button buttonBack;
+    ImageButton buttonRoll, buttonBack;
     ArrayList<MyCollectiblesData> collectiblesList;
     int[] collectibleIndices;
     private int cumWeight;
