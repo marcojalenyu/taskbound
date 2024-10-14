@@ -5,172 +5,194 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/scroll"
+    android:orientation="vertical"
     tools:context=".HomeActivity">
 
-    <ImageView
-        android:id="@+id/background"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/scroll"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
     <!-- OG Size: 97 by 103 dp-->
-    <ImageView
-        android:id="@+id/profile"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="30dp"
+
+
+    <LinearLayout
+        android:id="@+id/llHomeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="76dp"
+            android:layout_marginEnd="24dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:id="@+id/llProfileContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgProfile"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+                    app:srcCompat="@drawable/ic_sample_pfp" />
+
+                <LinearLayout
+                    android:id="@+id/llUserInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:id="@+id/tvUsername"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/retropix"
+                        android:text="Username"
+                        android:textColor="#000000"
+                        android:textSize="24sp" />
+
+                    <LinearLayout
+                        android:id="@+id/llCoinContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imgCoin"
+                            android:layout_width="30dp"
+                            android:layout_height="match_parent"
+                            android:foregroundGravity="left"
+                            android:src="@drawable/ic_coin" />
+
+                        <TextView
+                            android:id="@+id/tvCoinAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/retropix"
+                            android:gravity="bottom|center"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnLogout"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:onClick="btnClickedLogout"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_logout" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/llSearchContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="18dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilSearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:hintEnabled="false"
+                app:startIconTint="@null">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
+                    android:drawableStart="@drawable/magnifying_glass"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/retropix"
+                    android:hint="Search..."
+                    android:inputType="text"
+                    android:padding="8dp"
+                    android:textSize="24sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tasksView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
-        android:text="Username"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:fontFamily="@font/retropix"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profile" />
-
-
-    <ImageView
-        android:id="@+id/coin"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_coin"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="@+id/username"
-        app:layout_constraintTop_toBottomOf="@+id/username"/>
-
-    <TextView
-        android:id="@+id/coinAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="10dp"
-        android:text="0"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:fontFamily="@font/retropix"
-        app:layout_constraintStart_toEndOf="@+id/coin"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
-
-    <ImageView
-        android:id="@+id/searchBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/searchbar"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/llBottomHub"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile" />
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llHomeLayout" />
 
-    <EditText
-        android:id="@+id/searchBarText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Search"
-        android:textColorHint="@color/gray"
-        android:inputType="text"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:fontFamily="@font/retropix"
-        android:paddingStart="20dp"
-        app:layout_constraintStart_toStartOf="@id/searchBar"
-        app:layout_constraintEnd_toEndOf="@id/searchBar"
-        app:layout_constraintTop_toTopOf="@id/searchBar"
-        app:layout_constraintBottom_toBottomOf="@id/searchBar"/>
-
-    <ImageView
-        android:id="@+id/magnifyingGlass"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/magnifying_glass"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintEnd_toEndOf="@id/searchBar"
-        app:layout_constraintTop_toTopOf="@id/searchBar"
-        app:layout_constraintBottom_toBottomOf="@id/searchBar"/>
-
-    <!--RecyclerView For Tasks-->
-
-
-
-
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="btnClickedLogout"
-        android:text="Logout"
-        android:textColor="#ffffff"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="30dp"
+    <LinearLayout
+        android:id="@+id/llBottomHub"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_margin="24dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginEnd="56dp"
+        android:background="@drawable/template_rounded_edit_text"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/collectiblesBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:foreground="@drawable/ic_collectibles"
+            app:backgroundTint="@android:color/transparent"
+            app:elevation="0dp"
+            app:rippleColor="@android:color/transparent" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|center_horizontal"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="28dp"
+            android:foreground="@drawable/ic_add_task"
+            app:backgroundTint="@android:color/transparent"
+            app:elevation="0dp"
+            app:rippleColor="@android:color/transparent" />
 
-    <ImageView
-        android:id="@+id/buttonContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:src="@drawable/button_container_transparent"
-        app:layout_constraintBottom_toBottomOf="@+id/background" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        android:src="@drawable/baseline_add_24"
-        app:tint = "@color/white"
-        android:backgroundTint="@color/purple"
-        app:layout_constraintBottom_toBottomOf="@+id/background"
-        app:layout_constraintStart_toEndOf="@+id/collectiblesBtn"
-        app:layout_constraintEnd_toStartOf="@+id/shopBtn"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/collectiblesBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
-        android:layout_marginBottom="60dp"
-        android:clickable="true"
-        android:foreground="@drawable/ic_collectibles"
-        app:backgroundTint="@android:color/transparent"
-        app:elevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:rippleColor="@android:color/transparent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/shopBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
-        android:layout_marginBottom="60dp"
-        android:clickable="true"
-        android:foreground="@drawable/ic_chest"
-        app:backgroundTint="@android:color/transparent"
-        app:elevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:rippleColor="@android:color/transparent" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/shopBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:foreground="@drawable/ic_chest"
+            app:backgroundTint="@android:color/transparent"
+            app:elevation="0dp"
+            app:rippleColor="@android:color/transparent" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
