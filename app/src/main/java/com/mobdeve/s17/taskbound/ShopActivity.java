@@ -2,7 +2,6 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,14 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class ShopActivity extends AppCompatActivity {
     TextView moneyCount;
-    ImageButton buttonRoll, buttonBack;
+    Button btnRoll;
+    ImageButton buttonBack;
     ArrayList<MyCollectiblesData> collectiblesList;
     int[] collectibleIndices;
     private int cumWeight;
@@ -37,11 +37,11 @@ public class ShopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_shop);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(getWindow().getDecorView());
+        if (windowInsetsController != null) {
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        }
 
         this.db = new TaskBoundDBHelper(this);
 
@@ -81,7 +81,7 @@ public class ShopActivity extends AppCompatActivity {
             }
         }
 
-        this.buttonRoll = findViewById(R.id.roll_button);
+        this.btnRoll = findViewById(R.id.btnRoll);
         this.buttonBack = findViewById(R.id.back_button);
     }
 
