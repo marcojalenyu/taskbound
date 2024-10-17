@@ -41,7 +41,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
-                    app:srcCompat="@drawable/ic_sample_pfp" />
+                    app:srcCompat="@drawable/ic_default_pfp" />
 
                 <LinearLayout
                     android:id="@+id/llUserInfo"
