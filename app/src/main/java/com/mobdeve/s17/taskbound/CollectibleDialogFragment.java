@@ -46,9 +46,10 @@ public class CollectibleDialogFragment extends DialogFragment {
         collectibleImageView.setImageResource(collectible.getCollectibleImage());
         collectibleNameTextView.setText(collectible.getCollectibleName());
 
-        Uri videoUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.sechi_arisu);
+        Uri videoUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.vid_roll_animation);
         videoView.setVideoURI(videoUri);
-        videoView.start();
+
+        videoView.setOnPreparedListener(mp -> videoView.start());
 
         videoView.setOnCompletionListener(mp -> {
             videoView.setVisibility(View.GONE);
