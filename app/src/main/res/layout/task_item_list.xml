@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llTaskContainer"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardOutline"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:cardBackgroundColor="#000000"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
@@ -20,7 +20,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:cardBackgroundColor="#F6EAD0"
             app:cardCornerRadius="8dp">
 
@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:orientation="horizontal"
-                android:padding="6dp">
+                android:padding="12dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -45,9 +45,9 @@
 
                         <ImageView
                             android:id="@+id/imgTaskEnemy"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            app:srcCompat="@drawable/enemy_sample" />
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            app:srcCompat="@drawable/enemy_slime" />
 
                         <TextView
                             android:id="@+id/tvTaskName"
@@ -61,43 +61,81 @@
                             android:paddingTop="6dp"
                             android:text="Task Name"
                             android:textColor="#000000"
-                            android:textSize="26dp" />
+                            android:textSize="20sp" />
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvTaskDesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="6dp"
                         android:ellipsize="end"
                         android:fontFamily="@font/retropix"
                         android:maxLines="1"
                         android:text="Description"
                         android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvTaskDeadline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
                         android:fontFamily="@font/retropix"
                         android:text="Deadline"
                         android:textColor="#524D4D"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imgHealth"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            app:srcCompat="@drawable/ic_health" />
+
+                        <TextView
+                            android:id="@+id/tvHealth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:fontFamily="@font/retropix"
+                            android:text="1"
+                            android:textColor="#000000" />
+
+                        <ImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            app:srcCompat="@drawable/ic_coin" />
+
+                        <TextView
+                            android:id="@+id/tvCoins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="@font/retropix"
+                            android:text="1"
+                            android:textColor="#000000" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llTaskOptions"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/btnAttack"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="end"
                         android:clickable="true"
                         android:foreground="@drawable/ic_finish_task"
@@ -108,7 +146,7 @@
                     <LinearLayout
                         android:id="@+id/llTaskEdit"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:gravity="bottom"
                         android:orientation="horizontal">
