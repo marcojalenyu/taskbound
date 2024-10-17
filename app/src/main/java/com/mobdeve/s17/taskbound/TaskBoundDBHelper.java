@@ -278,4 +278,27 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         db.close();
         return taskList;
     }
+
+    public void updateTaskHealth(int taskId, int health) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TASK_COLUMN_HEALTH, health);
+        // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
+        int userID = UserSession.getInstance().getCurrentUser().getUserID();
+        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        db.close();
+    }
+
+    public void defeatTask(int taskId, int coins) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // DELETE FROM tasks WHERE id = ? && userid = ?
+        int userID = UserSession.getInstance().getCurrentUser().getUserID();
+        db.delete(TASK_TABLE_NAME, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        // UPDATE users SET coins = coins + ? WHERE id = ?
+        ContentValues values = new ContentValues();
+        int currentCoins = UserSession.getInstance().getCurrentUser().getCoins();
+        values.put(USER_COLUMN_COINS, currentCoins + coins);
+        db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + " = ?", new String[] {String.valueOf(userID)});
+        db.close();
+    }
 }

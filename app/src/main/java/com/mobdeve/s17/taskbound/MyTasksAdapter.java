@@ -16,6 +16,7 @@ import java.util.List;
 
 public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHolder> {
 
+    private TaskBoundDBHelper db;
     private List<Task> myTaskData; //used what I made in TaskDBHelper instead of Task[] myTaskData
     Context context;
 
@@ -37,9 +38,41 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Task myTaskDataList = myTaskData.get(position);
         holder.tvTaskName.setText(myTaskDataList.getName());
-        holder.tvTaskDesc.setText(myTaskDataList.getContent());
+        if (myTaskDataList.getContent().isEmpty()) {
+            holder.tvTaskDesc.setVisibility(View.GONE);
+        } else {
+            holder.tvTaskDesc.setText(myTaskDataList.getContent());
+        }
         holder.tvTaskDeadline.setText(myTaskDataList.getDeadlineAsString());
-        holder.imgTaskEnemy.setImageResource(R.drawable.enemy_sample);
+        holder.tvHealth.setText(String.valueOf(myTaskDataList.getHealth()));
+        holder.tvCoins.setText(String.valueOf(myTaskDataList.getCoins()));
+
+        // Get the image of the enemy based on the monster name
+        // Format of the image is "enemy_" + monster name
+        String monsterName = myTaskDataList.getMonster().toLowerCase();
+        int imageID = context.getResources().getIdentifier("enemy_" + monsterName, "drawable", context.getPackageName());
+        holder.imgTaskEnemy.setImageResource(imageID);
+
+        // TODO: Make it press hold to attack
+        holder.btnAttack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Health of the task decreases by 1
+                // Update the health of the task in the database
+                // If health is 0, delete the task
+                db = new TaskBoundDBHelper(context);
+                if (myTaskDataList.getHealth() > 1) {
+                    myTaskDataList.damaged();
+                    db.updateTaskHealth(myTaskDataList.getId(), myTaskDataList.getHealth());
+                } else {
+                    db.defeatTask(myTaskDataList.getId(), myTaskDataList.getCoins());
+                    myTaskData.remove(position);
+                }
+
+                // Refresh the recycler view
+                ((HomeActivity) context).onResume();
+            }
+        });
     }
 
     @Override
@@ -50,7 +83,7 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imgTaskEnemy;
-        TextView tvTaskName, tvTaskDesc, tvTaskDeadline;
+        TextView tvTaskName, tvTaskDesc, tvTaskDeadline, tvHealth, tvCoins;
         FloatingActionButton btnAttack, btnEdit, btnDelete;
 
         public ViewHolder(@NonNull View itemView) {
@@ -59,6 +92,8 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
             tvTaskName = itemView.findViewById(R.id.tvTaskName);
             tvTaskDesc = itemView.findViewById(R.id.tvTaskDesc);
             tvTaskDeadline = itemView.findViewById(R.id.tvTaskDeadline);
+            tvHealth = itemView.findViewById(R.id.tvHealth);
+            tvCoins = itemView.findViewById(R.id.tvCoins);
             btnAttack = itemView.findViewById(R.id.btnAttack);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);

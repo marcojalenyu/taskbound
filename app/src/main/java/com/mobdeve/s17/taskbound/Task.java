@@ -11,7 +11,7 @@ public class Task {
     private final String content;
     private final Date deadline;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private final int health;
+    private int health;
     private final int coins;
     private final String monster;
 
@@ -60,5 +60,9 @@ public class Task {
 
     public String getMonster() {
         return monster;
+    }
+
+    public void damaged() {
+        this.health--;
     }
 }
