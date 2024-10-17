@@ -15,11 +15,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
 public class RegisterActivity extends AppCompatActivity {
 
     TextInputEditText newEmail, newUsername, newPassword;
     Button buttonBackToLogin, buttonCreateAccount;
     private UserSession userSession;
+    private TaskBoundDBHelper userDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         this.userSession = UserSession.getInstance();
+        this.userDBHelper = new TaskBoundDBHelper(this);
         // Initialize the TextInputEditText fields
         newEmail = findViewById(R.id.newEmail);
         newUsername = findViewById(R.id.newUsername);
@@ -69,7 +73,25 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        //Firebase stuff
+
+        int coins = 1000; // Default value for coins
+        ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
+
+        User newUser = new User(0, email, username, password, coins, collectiblesList); // ID is auto-incremented, see UserDBHelper
+
+        // Use UserDBHelper to add a new user
+        if (userDBHelper.insertUser(newUser)) {
+            //userSession.addUser(email, username, password);
+            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
+            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(backToLogin);
+            finish();
+        } else {
+            Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
+        }
+
+        /*
         if (userSession.addUser(email, username, password)) {
             Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
             Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
@@ -79,5 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
         }
+        */
+
     }
 }

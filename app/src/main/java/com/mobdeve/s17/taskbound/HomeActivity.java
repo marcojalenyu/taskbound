@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -28,6 +31,9 @@ public class HomeActivity extends AppCompatActivity {
     TextView tvUsername;
     TextView tvCoinAmount;
     private UserSession userSession;
+    private TaskBoundDBHelper taskDBHelper;
+
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +47,46 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         this.userSession = UserSession.getInstance();
-        this.collectiblesList = userSession.getCurrentUser().getCollectiblesList();
+        this.currentUser = userSession.getCurrentUser();
 
         this.tasksView = findViewById(R.id.tasksView);
         this.tvUsername = findViewById(R.id.tvUsername);
         this.tvCoinAmount = findViewById(R.id.tvCoinAmount);
-
-        this.tvUsername.setText(userSession.getCurrentUser().getUserName());
-        //this is just set on start, but it will be updated onResume
-        this.tvCoinAmount.setText(String.valueOf(userSession.getCurrentUser().getCoins()));
-
-
         this.collectiblesBtn = findViewById(R.id.collectiblesBtn);
         this.shopBtn = findViewById(R.id.shopBtn);
         this.addTaskButton = findViewById(R.id.addBtn);
 
+        if (currentUser != null) {
+            this.collectiblesList = currentUser.getCollectiblesList();
+            this.tvCoinAmount.setText(String.valueOf(currentUser.getCoins()));
+            this.tvUsername.setText(currentUser.getUserName());
+            //toast current user data
+            Toast toast = Toast.makeText(HomeActivity.this, currentUser.toString(), Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            // Handles the case where currentUser is null and redirects to login
+            Toast toastSession = Toast.makeText(HomeActivity.this, "currentUser is null", Toast.LENGTH_SHORT);
+            toastSession.show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+
+        //this.tvUsername.setText(userSession.getCurrentUser().getUserName());
+        //this is just set on start, but it will be updated onResume
+        //this.tvCoinAmount.setText(String.valueOf(userSession.getCurrentUser().getCoins()));
+
+
+        // Initialize TaskBoundDBHelper and get all tasks
+        this.taskDBHelper = new TaskBoundDBHelper(this);
+        //List<Task> tasks = taskDBHelper.getAllTask(this.userSession.getCurrentUser().getUserID());
+        List<Task> tasks = taskDBHelper.getAllTask(this.currentUser.getUserID());
+
         // Temporary data for the tasks list
+        /*
         Task[] tasks = null;
         try {
             tasks = new Task[]{
@@ -68,6 +98,8 @@ public class HomeActivity extends AppCompatActivity {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+        */
+
 
         MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
         this.tasksView.setAdapter(myTasksAdapter);
@@ -103,8 +135,35 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Update the collectibles list and coin amount when the activity resumes
-        this.tvCoinAmount.setText(String.valueOf(userSession.getCurrentUser().getCoins()));
+        TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
+        User currentUser = dbHelper.getUser(UserSession.getInstance().getCurrentUser().getEmail(), null);
+
+        Toast toastUserID = Toast.makeText(HomeActivity.this, currentUser.toString(), Toast.LENGTH_SHORT);
+        toastUserID.show();
+
+        if (currentUser != null) {
+            // Update the coin amount when the activity resumes
+            this.tvCoinAmount.setText(String.valueOf(currentUser.getCoins()));
+            this.tvUsername.setText(currentUser.getUserName());
+            this.userSession.getCurrentUser().setCoins(currentUser.getCoins());
+            this.userSession.getCurrentUser().setUserID(currentUser.getUserID());
+
+
+
+            // Fetch the latest tasks and update the adapter
+            List<Task> tasks = dbHelper.getAllTask(currentUser.getUserID());
+            MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
+            this.tasksView.setAdapter(myTasksAdapter);
+
+        } else {
+            // Handle the case where currentUser is null
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Toast.makeText(HomeActivity.this, "User data is missing. Please log in again.", Toast.LENGTH_SHORT).show();
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     public void btnClickedLogout(View v) {

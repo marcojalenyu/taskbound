@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
     Button buttonLogin, buttonRegister;
     UserSession userSession;
+    TaskBoundDBHelper userDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,8 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        this.userSession = UserSession.getInstance();
+        this.userSession = UserSession.getInstance(); // Initialize UserSession
+        this.userDBHelper = new TaskBoundDBHelper(this); // Initialize TaskBoundDBHelper
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.login_button);
@@ -55,13 +57,28 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Firebase stuff
-        if (this.userSession.setCurrentUser(email, password)) {
-            Toast.makeText(LoginActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
-            Intent home = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(home);
+
+        // Use UserDBHelper to authenticate the user
+        User user = userDBHelper.getUser(email, password);
+        if (user != null) {
+            Toast toastDB = Toast.makeText(LoginActivity.this, user.toString(), Toast.LENGTH_SHORT);
+            toastDB.show();
+            //pass user data via session to intent
+            this.userSession.addUser(user.getEmail(), user.getUserName(), user.getPassword(), user.getCoins(), user.getCollectiblesList());
+            UserSession.getInstance().setCurrentUser(email, password);
+
+            if (this.userSession.setCurrentUser(email, password)) {
+                Toast.makeText(LoginActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
+                Intent home = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(home);
+            } else {
+                Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
+            }
+
         } else {
             Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
         }
+
     }
 
 

@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class Task {
     private final int id;
+    private final int userid;
     private final String name;
     private final String content;
     private final Date deadline;
@@ -14,8 +15,9 @@ public class Task {
     private final int coins;
     private final String monster;
 
-    public Task(int id, String name, String content, String deadline, int health, int coins, String monster) throws ParseException {
+    public Task(int id, int userid, String name, String content, String deadline, int health, int coins, String monster) throws ParseException {
         this.id = id;
+        this.userid = userid;
         this.name = name;
         this.content = content;
         this.deadline = dateFormat.parse(deadline);
@@ -26,6 +28,10 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    public int getUserID() {
+        return userid;
     }
 
     public String getName() {

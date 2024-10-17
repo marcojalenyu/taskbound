@@ -16,7 +16,7 @@ public class UserSession {
         this.lastUserID = 0;
 
         // Adding some default users for testing first
-        this.addUser("shaunlim@gmail.com", "shaunlim", "123456");
+        //this.addUser("shaunlim@gmail.com", "shaunlim", "123456");
     }
 
     public static UserSession getInstance() {
@@ -40,13 +40,13 @@ public class UserSession {
         return false;
     }
 
-    public boolean addUser (String email, String userName, String password) {
+    public boolean addUser(String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
         for (User user : userList) {
             if (user.getEmail().equals(email)) {
                 return false;
             }
         }
-        User user = new User (lastUserID, email, userName, password);
+        User user = new User (lastUserID, email, userName, password, coins, collectiblesList);
         this.lastUserID++;
         this.userList.add(user);
         return true;

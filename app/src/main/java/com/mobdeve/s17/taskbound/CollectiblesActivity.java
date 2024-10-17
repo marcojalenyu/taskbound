@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,8 @@ public class CollectiblesActivity extends AppCompatActivity {
     User user;
     int coins;
     ArrayList<MyCollectiblesData> collectiblesList;
+
+    private TaskBoundDBHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +54,24 @@ public class CollectiblesActivity extends AppCompatActivity {
         collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
         moneyCount.setText(String.valueOf(this.user.getCoins()));
 
-        if (collectiblesList != null && !collectiblesList.isEmpty()) {
-            MyCollectiblesData[] myCollectiblesData = collectiblesList.toArray(new MyCollectiblesData[0]);
+        // Initialize TaskBoundDBHelper and fetch the latest collectibles data
+        try {
+            // Initialize TaskBoundDBHelper and fetch the latest collectibles data
+            TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
+            collectiblesList = dbHelper.getUserCollectibles(user.getEmail());
 
-            MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this, collectiblesCount);
-            collectiblesView.setAdapter(myCollectiblesAdapter);
-        } else {
-            collectiblesCount.setText("Skill issue.");
+            if (collectiblesList != null && !collectiblesList.isEmpty()) {
+                MyCollectiblesData[] myCollectiblesData = collectiblesList.toArray(new MyCollectiblesData[0]);
+
+                MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this, collectiblesCount);
+                collectiblesView.setAdapter(myCollectiblesAdapter);
+            } else {
+                collectiblesCount.setText("Skill issue.");
+            }
+        } catch (Exception e) {
+            // Handle the exception, e.g., show a toast or log the error
+            Toast.makeText(this, "Error fetching collectibles: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         }
 
         btnBack.setOnClickListener(v -> {

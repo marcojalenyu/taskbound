@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
+
 public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHolder> {
 
-    Task[] myTaskData;
+    private List<Task> myTaskData; //used what I made in TaskDBHelper instead of Task[] myTaskData
     Context context;
 
-    public MyTasksAdapter(Task[] myTaskData, HomeActivity activity) {
+    public MyTasksAdapter(List<Task> myTaskData, HomeActivity activity) {
         this.myTaskData = myTaskData;
         this.context = activity;
     }
@@ -33,7 +35,7 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Task myTaskDataList = myTaskData[position];
+        final Task myTaskDataList = myTaskData.get(position);
         holder.tvTaskName.setText(myTaskDataList.getName());
         holder.tvTaskDesc.setText(myTaskDataList.getContent());
         holder.tvTaskDeadline.setText(myTaskDataList.getDeadlineAsString());
@@ -42,7 +44,7 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return myTaskData.length;
+        return myTaskData.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
