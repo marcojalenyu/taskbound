@@ -172,4 +172,10 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void updateCoins(int coins) {
+        int newCoins = this.currentUser.getCoins() + coins;
+        this.tvCoinAmount.setText(String.valueOf(newCoins));
+        this.currentUser.setCoins(newCoins);
+    }
 }

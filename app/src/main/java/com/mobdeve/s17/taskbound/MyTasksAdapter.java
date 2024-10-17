@@ -66,11 +66,13 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
                     db.updateTaskHealth(myTaskDataList.getId(), myTaskDataList.getHealth());
                 } else {
                     db.defeatTask(myTaskDataList.getId(), myTaskDataList.getCoins());
+                    // Update the coins of the user
+                    ((HomeActivity) context).updateCoins(myTaskDataList.getCoins());
+                    // Remove the task from the list
                     myTaskData.remove(position);
                 }
-
                 // Refresh the recycler view
-                ((HomeActivity) context).onResume();
+                notifyDataSetChanged();
             }
         });
     }
