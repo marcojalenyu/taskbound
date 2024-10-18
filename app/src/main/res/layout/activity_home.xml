@@ -127,6 +127,8 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
+                    android:drawableStart="@drawable/magnifying_glass"
+                    android:fontFamily="@font/retropix"
                     android:iconifiedByDefault="true"/>
             </com.google.android.material.textfield.TextInputLayout>
 

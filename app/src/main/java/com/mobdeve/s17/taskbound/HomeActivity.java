@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,7 @@ public class HomeActivity extends AppCompatActivity {
         this.addTaskButton = findViewById(R.id.addBtn);
         this.svSearchBar = findViewById(R.id.searchView);
 
+        // Authenticate user
         if (currentUser != null) {
             this.collectiblesList = currentUser.getCollectiblesList();
             this.tvCoinAmount.setText(String.valueOf(currentUser.getCoins()));
@@ -121,6 +124,8 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        svSearchBar.setIconifiedByDefault(false);
     }
 
     @Override
@@ -136,13 +141,10 @@ public class HomeActivity extends AppCompatActivity {
             this.userSession.getCurrentUser().setCoins(currentUser.getCoins());
             this.userSession.getCurrentUser().setUserID(currentUser.getUserID());
 
-
-
             // Fetch the latest tasks and update the adapter
             List<Task> tasks = dbHelper.getAllTask(currentUser.getUserID());
             MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
             this.tasksView.setAdapter(myTasksAdapter);
-
         } else {
             // Handle the case where currentUser is null
             Intent intent = new Intent(this, LoginActivity.class);
