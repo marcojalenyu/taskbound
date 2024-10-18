@@ -75,6 +75,14 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
                 notifyDataSetChanged();
             }
         });
+
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment(myTaskDataList);
+                deleteDialogFragment.show(((HomeActivity) context).getSupportFragmentManager(), "Delete Task");
+            }
+        });
     }
 
     @Override
@@ -90,10 +98,10 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgTaskEnemy = itemView.findViewById(R.id.imgTaskEnemy);
+            imgTaskEnemy = itemView.findViewById(R.id.imgTvIcon);
             tvTaskName = itemView.findViewById(R.id.tvTaskName);
             tvTaskDesc = itemView.findViewById(R.id.tvTaskDesc);
-            tvTaskDeadline = itemView.findViewById(R.id.tvTaskDeadline);
+            tvTaskDeadline = itemView.findViewById(R.id.tvDesc);
             tvHealth = itemView.findViewById(R.id.tvHealth);
             tvCoins = itemView.findViewById(R.id.tvCoins);
             btnAttack = itemView.findViewById(R.id.btnAttack);

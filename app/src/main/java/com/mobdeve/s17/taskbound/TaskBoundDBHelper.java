@@ -301,4 +301,12 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + " = ?", new String[] {String.valueOf(userID)});
         db.close();
     }
+
+    public void deleteTask(int taskId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int userID = UserSession.getInstance().getCurrentUser().getUserID();
+        // DELETE FROM tasks WHERE id = ? && userid = ?
+        db.delete(TASK_TABLE_NAME, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        db.close();
+    }
 }

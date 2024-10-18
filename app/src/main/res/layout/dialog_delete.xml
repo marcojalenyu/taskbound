@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".DeleteDialogFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardOutline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="#000000"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:contentPadding="2dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            app:cardBackgroundColor="#F6EAD0"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:id="@+id/llTaskHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imgTvIcon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/ic_warning" />
+
+                    <TextView
+                        android:id="@+id/tvTaskName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/retropix"
+                        android:gravity="center_vertical"
+                        android:maxLength="25"
+                        android:maxLines="1"
+                        android:paddingTop="4dp"
+                        android:text="Delete Task Name"
+                        android:textColor="#000000"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/tvQuestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/retropix"
+                        android:text="?"
+                        android:textColor="#000000"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/retropix"
+                    android:text="You won't receive any coins for this."
+                    android:textColor="#524D4D"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/llDecisions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnCancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_marginRight="16dp"
+                        android:backgroundTint="@color/gray"
+                        android:fontFamily="@font/retropix"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        android:text="No"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btnDeleteTask"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:backgroundTint="@color/purple"
+                        android:fontFamily="@font/retropix"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"
+                        android:text="Yes"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
