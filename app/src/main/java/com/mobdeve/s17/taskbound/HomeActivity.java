@@ -2,12 +2,14 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
     ArrayList<MyCollectiblesData> collectiblesList;
     TextView tvUsername;
     TextView tvCoinAmount;
+    SearchView svSearchBar;
     private UserSession userSession;
     private TaskBoundDBHelper taskDBHelper;
 
@@ -54,6 +57,7 @@ public class HomeActivity extends AppCompatActivity {
         this.collectiblesBtn = findViewById(R.id.collectiblesBtn);
         this.shopBtn = findViewById(R.id.shopBtn);
         this.addTaskButton = findViewById(R.id.addBtn);
+        this.svSearchBar = findViewById(R.id.searchView);
 
         if (currentUser != null) {
             this.collectiblesList = currentUser.getCollectiblesList();
@@ -70,10 +74,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Initialize TaskBoundDBHelper and get all tasks
         this.taskDBHelper = new TaskBoundDBHelper(this);
-        List<Task> tasks = taskDBHelper.getAllTask(this.currentUser.getUserID());
-
-        MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
-        this.tasksView.setAdapter(myTasksAdapter);
+        filterTasks("");
 
         tasksView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -101,6 +102,25 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        svSearchBar.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                svSearchBar.setIconified(false);
+            }
+        });
+
+        // Handle query text change
+        svSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String q) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String q) {
+                filterTasks(q);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -145,5 +165,17 @@ public class HomeActivity extends AppCompatActivity {
         int newCoins = this.currentUser.getCoins() + coins;
         this.tvCoinAmount.setText(String.valueOf(newCoins));
         this.currentUser.setCoins(newCoins);
+    }
+
+    private void filterTasks(String query) {
+        List<Task> filteredTasks = new ArrayList<>();
+        for (Task task : taskDBHelper.getAllTask(this.currentUser.getUserID())) {
+            if (task.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredTasks.add(task);
+            }
+        }
+
+        MyTasksAdapter myTasksAdapter = new MyTasksAdapter(filteredTasks, this);
+        this.tasksView.setAdapter(myTasksAdapter);
     }
 }
