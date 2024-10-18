@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -83,6 +85,14 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
                 deleteDialogFragment.show(((HomeActivity) context).getSupportFragmentManager(), "Delete Task");
             }
         });
+
+        holder.llTaskDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TaskDialogFragment taskDialogFragment = new TaskDialogFragment(myTaskDataList);
+                taskDialogFragment.show(((HomeActivity) context).getSupportFragmentManager(), "Task Details");
+            }
+        });
     }
 
     @Override
@@ -92,20 +102,21 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout llTaskDetails;
         ImageView imgTaskEnemy;
         TextView tvTaskName, tvTaskDesc, tvTaskDeadline, tvHealth, tvCoins;
-        FloatingActionButton btnAttack, btnEdit, btnDelete;
+        FloatingActionButton btnAttack, btnDelete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            llTaskDetails = itemView.findViewById(R.id.llTaskDetails);
             imgTaskEnemy = itemView.findViewById(R.id.imgTvIcon);
             tvTaskName = itemView.findViewById(R.id.tvTaskName);
             tvTaskDesc = itemView.findViewById(R.id.tvTaskDesc);
-            tvTaskDeadline = itemView.findViewById(R.id.tvDesc);
+            tvTaskDeadline = itemView.findViewById(R.id.tvDeadline);
             tvHealth = itemView.findViewById(R.id.tvHealth);
             tvCoins = itemView.findViewById(R.id.tvCoins);
             btnAttack = itemView.findViewById(R.id.btnAttack);
-            btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }

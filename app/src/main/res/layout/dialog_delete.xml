@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
     android:orientation="vertical"
     tools:context=".DeleteDialogFragment">
 
@@ -11,6 +12,7 @@
         android:id="@+id/cardOutline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         app:cardBackgroundColor="#000000"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
@@ -20,6 +22,7 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/transparent"
             android:padding="16dp"
             app:cardBackgroundColor="#F6EAD0"
             app:cardCornerRadius="8dp">
@@ -27,7 +30,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:background="@android:color/transparent"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -70,7 +73,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvDesc"
+                    android:id="@+id/tvDeadline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
