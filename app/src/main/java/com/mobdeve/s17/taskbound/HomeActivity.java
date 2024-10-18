@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -36,6 +38,8 @@ public class HomeActivity extends AppCompatActivity {
     private TaskBoundDBHelper taskDBHelper;
 
     private User currentUser;
+    private SortType sortType;
+    private Button btnSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +62,11 @@ public class HomeActivity extends AppCompatActivity {
         this.shopBtn = findViewById(R.id.shopBtn);
         this.addTaskButton = findViewById(R.id.addBtn);
         this.svSearchBar = findViewById(R.id.searchView);
+        this.btnSort = findViewById(R.id.btnSort);
 
+        this.sortType = SortType.DUE_DATE_DESCENDING;
+
+        // Authenticate user
         if (currentUser != null) {
             this.collectiblesList = currentUser.getCollectiblesList();
             this.tvCoinAmount.setText(String.valueOf(currentUser.getCoins()));
@@ -74,7 +82,6 @@ public class HomeActivity extends AppCompatActivity {
 
         // Initialize TaskBoundDBHelper and get all tasks
         this.taskDBHelper = new TaskBoundDBHelper(this);
-        filterTasks("");
 
         tasksView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -121,6 +128,8 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        svSearchBar.setIconifiedByDefault(false);
     }
 
     @Override
@@ -136,13 +145,10 @@ public class HomeActivity extends AppCompatActivity {
             this.userSession.getCurrentUser().setCoins(currentUser.getCoins());
             this.userSession.getCurrentUser().setUserID(currentUser.getUserID());
 
-
-
             // Fetch the latest tasks and update the adapter
             List<Task> tasks = dbHelper.getAllTask(currentUser.getUserID());
             MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
             this.tasksView.setAdapter(myTasksAdapter);
-
         } else {
             // Handle the case where currentUser is null
             Intent intent = new Intent(this, LoginActivity.class);
@@ -161,6 +167,27 @@ public class HomeActivity extends AppCompatActivity {
         finish();
     }
 
+    public void btnClickedSort(View v) {
+        String txtSort = "=";
+        String currQuery = this.svSearchBar.getQuery().toString();
+        switch (sortType) {
+            case DUE_DATE_ASCENDING:
+                this.sortType = SortType.DEFAULT;
+                break;
+            case DUE_DATE_DESCENDING:
+                this.sortType = SortType.DUE_DATE_ASCENDING;
+                txtSort = "^";
+                break;
+            case DEFAULT:
+                this.sortType = SortType.DUE_DATE_DESCENDING;
+                txtSort = "v";
+                break;
+        }
+
+        btnSort.setText(txtSort);
+        filterTasks(currQuery);
+    }
+
     public void updateCoins(int coins) {
         int newCoins = this.currentUser.getCoins() + coins;
         this.tvCoinAmount.setText(String.valueOf(newCoins));
@@ -168,11 +195,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void filterTasks(String query) {
-        List<Task> filteredTasks = new ArrayList<>();
-        for (Task task : taskDBHelper.getAllTask(this.currentUser.getUserID())) {
-            if (task.getName().toLowerCase().contains(query.toLowerCase())) {
-                filteredTasks.add(task);
-            }
+        List<Task> filteredTasks = taskDBHelper.getAllTask(this.currentUser.getUserID())
+                .stream()
+                .filter(task -> task.getName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+
+        switch (this.sortType) {
+            case DUE_DATE_ASCENDING:
+                filteredTasks.sort(Comparator.comparing(Task::getDeadline));
+                break;
+            case DUE_DATE_DESCENDING:
+                filteredTasks.sort(Comparator.comparing(Task::getDeadline).reversed());
+                break;
         }
 
         MyTasksAdapter myTasksAdapter = new MyTasksAdapter(filteredTasks, this);

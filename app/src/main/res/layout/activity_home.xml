@@ -6,11 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_scroll"
-    android:orientation="vertical"
     tools:context=".HomeActivity">
-
-    <!-- OG Size: 97 by 103 dp-->
-
 
     <LinearLayout
         android:id="@+id/llHomeLayout"
@@ -113,8 +109,9 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilSearchBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 app:hintEnabled="false"
                 app:startIconTint="@null">
 
@@ -127,9 +124,20 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
+                    android:drawableStart="@drawable/magnifying_glass"
+                    android:fontFamily="@font/retropix"
                     android:iconifiedByDefault="true"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Button
+                android:id="@+id/btnSort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="="
+                android:onClick="btnClickedSort"
+                android:layout_marginStart="15dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="17dp"/>
         </LinearLayout>
 
     </LinearLayout>
