@@ -2,7 +2,9 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private User currentUser;
     private SortType sortType;
+    private Button btnSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,8 @@ public class HomeActivity extends AppCompatActivity {
         this.shopBtn = findViewById(R.id.shopBtn);
         this.addTaskButton = findViewById(R.id.addBtn);
         this.svSearchBar = findViewById(R.id.searchView);
+        this.btnSort = findViewById(R.id.btnSort);
+
         this.sortType = SortType.DUE_DATE_DESCENDING;
 
         // Authenticate user
@@ -119,7 +124,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String q) {
-                filterTasks(q, sortType);
+                filterTasks(q);
                 return false;
             }
         });
@@ -162,19 +167,40 @@ public class HomeActivity extends AppCompatActivity {
         finish();
     }
 
+    public void btnClickedSort(View v) {
+        String txtSort = "=";
+        String currQuery = this.svSearchBar.getQuery().toString();
+        switch (sortType) {
+            case DUE_DATE_ASCENDING:
+                this.sortType = SortType.DEFAULT;
+                break;
+            case DUE_DATE_DESCENDING:
+                this.sortType = SortType.DUE_DATE_ASCENDING;
+                txtSort = "^";
+                break;
+            case DEFAULT:
+                this.sortType = SortType.DUE_DATE_DESCENDING;
+                txtSort = "v";
+                break;
+        }
+
+        btnSort.setText(txtSort);
+        filterTasks(currQuery);
+    }
+
     public void updateCoins(int coins) {
         int newCoins = this.currentUser.getCoins() + coins;
         this.tvCoinAmount.setText(String.valueOf(newCoins));
         this.currentUser.setCoins(newCoins);
     }
 
-    private void filterTasks(String query, SortType sortType) {
+    private void filterTasks(String query) {
         List<Task> filteredTasks = taskDBHelper.getAllTask(this.currentUser.getUserID())
                 .stream()
                 .filter(task -> task.getName().toLowerCase().contains(query.toLowerCase()))
                 .collect(Collectors.toList());
 
-        switch (sortType) {
+        switch (this.sortType) {
             case DUE_DATE_ASCENDING:
                 filteredTasks.sort(Comparator.comparing(Task::getDeadline));
                 break;
