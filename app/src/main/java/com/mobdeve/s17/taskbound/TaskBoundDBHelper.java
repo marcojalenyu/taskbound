@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,19 +102,19 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
     public User getUser(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
-        if (password != null) {
-            cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
-                    USER_COLUMN_EMAIL + "=? AND " + USER_COLUMN_PASSWORD + "=?", new String[] {email, password}, null, null, null, null);
-        } else {
-            cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
-                    USER_COLUMN_EMAIL + "=?", new String[] {email}, null, null, null, null);
-        }
+        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
+                USER_COLUMN_EMAIL + "=?", new String[] {email}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
+            String hashedPassword = cursor.getString(3);
+            if (!HashUtil.checkPassword(password, hashedPassword)) {
+                cursor.close();
+                return null;
+            }
+
             int userID = cursor.getInt(0);
             String userEmail = cursor.getString(1);
             String userName = cursor.getString(2);
-            String userPassword = cursor.getString(3);
             int coins = cursor.getInt(4);
 
             // Convert the JSON string to an ArrayList<MyCollectiblesData>
@@ -122,7 +123,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
             Type type = new TypeToken<ArrayList<MyCollectiblesData>>() {}.getType();
             ArrayList<MyCollectiblesData> collectiblesList = gson.fromJson(collectiblesJson, type);
 
-            User user = new User(userID, userEmail, userName, userPassword, coins, collectiblesList);
+            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList);
 
             cursor.close();
             return user;

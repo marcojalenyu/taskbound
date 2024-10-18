@@ -3,6 +3,7 @@ package com.mobdeve.s17.taskbound;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -61,21 +62,18 @@ public class LoginActivity extends AppCompatActivity {
 
         // Use UserDBHelper to authenticate the user
         User user = userDBHelper.getUser(email, password);
+
         if (user != null) {
-            Toast toastDB = Toast.makeText(LoginActivity.this, user.toString(), Toast.LENGTH_SHORT);
-            toastDB.show();
             //pass user data via session to intent
             this.userSession.addUser(user.getEmail(), user.getUserName(), user.getPassword(), user.getCoins(), user.getCollectiblesList());
-            UserSession.getInstance().setCurrentUser(email, password);
-
             if (this.userSession.setCurrentUser(email, password)) {
                 Toast.makeText(LoginActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
                 Intent home = new Intent(LoginActivity.this, HomeActivity.class);
+                home.putExtra("password", password);
                 startActivity(home);
             } else {
                 Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
             }
-
         } else {
             Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
         }

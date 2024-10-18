@@ -41,6 +41,8 @@ public class HomeActivity extends AppCompatActivity {
     private SortType sortType;
     private Button btnSort;
 
+    private String password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,8 @@ public class HomeActivity extends AppCompatActivity {
         this.btnSort = findViewById(R.id.btnSort);
 
         this.sortType = SortType.DUE_DATE_DESCENDING;
+        Intent login = getIntent();
+        this.password = login.getStringExtra("password");
 
         // Authenticate user
         if (currentUser != null) {
@@ -136,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
-        User currentUser = dbHelper.getUser(UserSession.getInstance().getCurrentUser().getEmail(), null);
+        User currentUser = dbHelper.getUser(UserSession.getInstance().getCurrentUser().getEmail(), this.password);
 
         if (currentUser != null) {
             // Update the coin amount when the activity resumes

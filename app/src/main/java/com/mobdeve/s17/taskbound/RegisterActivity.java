@@ -74,11 +74,11 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-
         int coins = 1000; // Default value for coins
+        String hashedPassword = HashUtil.hashPassword(password);
         ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
 
-        User newUser = new User(0, email, username, password, coins, collectiblesList); // ID is auto-incremented, see UserDBHelper
+        User newUser = new User(0, email, username, hashedPassword, coins, collectiblesList); // ID is auto-incremented, see UserDBHelper
 
         // Use UserDBHelper to add a new user
         if (userDBHelper.insertUser(newUser)) {
@@ -91,18 +91,5 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
         }
-
-        /*
-        if (userSession.addUser(email, username, password)) {
-            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
-            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(backToLogin);
-            finish();
-        } else {
-            Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
-        }
-        */
-
     }
 }
