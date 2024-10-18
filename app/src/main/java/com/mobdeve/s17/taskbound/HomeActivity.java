@@ -22,7 +22,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -38,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
     private TaskBoundDBHelper taskDBHelper;
 
     private User currentUser;
+    private SortType sortType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         this.shopBtn = findViewById(R.id.shopBtn);
         this.addTaskButton = findViewById(R.id.addBtn);
         this.svSearchBar = findViewById(R.id.searchView);
+        this.sortType = SortType.DueDateDescending;
 
         // Authenticate user
         if (currentUser != null) {
@@ -77,7 +82,6 @@ public class HomeActivity extends AppCompatActivity {
 
         // Initialize TaskBoundDBHelper and get all tasks
         this.taskDBHelper = new TaskBoundDBHelper(this);
-        filterTasks("");
 
         tasksView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -120,7 +124,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String q) {
-                filterTasks(q);
+                filterTasks(q, sortType);
                 return false;
             }
         });
@@ -169,12 +173,19 @@ public class HomeActivity extends AppCompatActivity {
         this.currentUser.setCoins(newCoins);
     }
 
-    private void filterTasks(String query) {
-        List<Task> filteredTasks = new ArrayList<>();
-        for (Task task : taskDBHelper.getAllTask(this.currentUser.getUserID())) {
-            if (task.getName().toLowerCase().contains(query.toLowerCase())) {
-                filteredTasks.add(task);
-            }
+    private void filterTasks(String query, SortType sortType) {
+        List<Task> filteredTasks = taskDBHelper.getAllTask(this.currentUser.getUserID())
+                .stream()
+                .filter(task -> task.getName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+
+        switch (sortType) {
+            case DueDateAscending:
+                filteredTasks.sort(Comparator.comparing(Task::getDeadline));
+                break;
+            case DueDateDescending:
+                filteredTasks.sort(Comparator.comparing(Task::getDeadline).reversed());
+                break;
         }
 
         MyTasksAdapter myTasksAdapter = new MyTasksAdapter(filteredTasks, this);
