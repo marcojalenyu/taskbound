@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,13 +59,8 @@ public class HomeActivity extends AppCompatActivity {
             this.collectiblesList = currentUser.getCollectiblesList();
             this.tvCoinAmount.setText(String.valueOf(currentUser.getCoins()));
             this.tvUsername.setText(currentUser.getUserName());
-            //toast current user data
-            Toast toast = Toast.makeText(HomeActivity.this, currentUser.toString(), Toast.LENGTH_SHORT);
-            toast.show();
         } else {
             // Handles the case where currentUser is null and redirects to login
-            Toast toastSession = Toast.makeText(HomeActivity.this, "currentUser is null", Toast.LENGTH_SHORT);
-            toastSession.show();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -74,32 +68,9 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
 
-
-        //this.tvUsername.setText(userSession.getCurrentUser().getUserName());
-        //this is just set on start, but it will be updated onResume
-        //this.tvCoinAmount.setText(String.valueOf(userSession.getCurrentUser().getCoins()));
-
-
         // Initialize TaskBoundDBHelper and get all tasks
         this.taskDBHelper = new TaskBoundDBHelper(this);
-        //List<Task> tasks = taskDBHelper.getAllTask(this.userSession.getCurrentUser().getUserID());
         List<Task> tasks = taskDBHelper.getAllTask(this.currentUser.getUserID());
-
-        // Temporary data for the tasks list
-        /*
-        Task[] tasks = null;
-        try {
-            tasks = new Task[]{
-                    new Task(1, "Study OPESY", "Deal with operating systems, schedulers, etc.", "2024-08-01", 0, 0, "default"),
-                    // new Task(2, "Study MOBDEVE", "", "2024-08-01", 0, 0, "default"),
-                    // new Task(3, "CSARCH2", "talk to me", "2024-08-01", 0, 0, "default"),
-                    // new Task(4, "CSALGCM", "", "2024-08-01", 0, 0, "default"),
-            };
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        */
-
 
         MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
         this.tasksView.setAdapter(myTasksAdapter);
@@ -137,9 +108,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
         TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
         User currentUser = dbHelper.getUser(UserSession.getInstance().getCurrentUser().getEmail(), null);
-
-        Toast toastUserID = Toast.makeText(HomeActivity.this, currentUser.toString(), Toast.LENGTH_SHORT);
-        toastUserID.show();
 
         if (currentUser != null) {
             // Update the coin amount when the activity resumes
