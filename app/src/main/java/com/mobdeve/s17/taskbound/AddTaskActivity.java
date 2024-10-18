@@ -1,5 +1,6 @@
 package com.mobdeve.s17.taskbound;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.gson.Gson;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Random;
 
 public class AddTaskActivity extends AppCompatActivity {
@@ -68,18 +70,19 @@ public class AddTaskActivity extends AppCompatActivity {
 
                     // Get the current user's ID
                     int userID = UserSession.getInstance().getCurrentUser().getUserID();
-                    //Toast userID
 
                     try {
+                        // Trim the name
+                        name = name.trim();
+                        if (name.isEmpty() || deadline.isEmpty()) {
+                            Toast.makeText(AddTaskActivity.this, "Your task lacks a name/deadline.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         Task task = new Task(0, userID, name, content, deadline, taskData.getHealth(), taskData.getCoins(), taskData.getMonster());
                         db.insertTask(task);
                         finish();
-                        Toast.makeText(AddTaskActivity.this, "Task added", Toast.LENGTH_SHORT).show();
-                        Toast toastUserID = Toast.makeText(AddTaskActivity.this, "User ID: " + userID, Toast.LENGTH_SHORT);
-                        toastUserID.show();
                     } catch (ParseException e) {
                         e.printStackTrace();
-                        Toast.makeText(AddTaskActivity.this, "Invalid date format", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     // Handle the case where currentUser is null
@@ -96,6 +99,26 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         });
 
+        taskDeadline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddTaskActivity.this,
+                        (view1, year1, month1, dayOfMonth1) -> {
+                            month1 += 1;
+                            String date = year1 + "-" + month1 + "-" + dayOfMonth1;
+                    taskDeadline.setText(date);
+                    },
+                        year, month, dayOfMonth
+                );
+
+                datePickerDialog.show();
+            }
+        });
 
 
     }
