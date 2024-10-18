@@ -40,16 +40,15 @@ public class UserSession {
         return false;
     }
 
-    public boolean addUser(String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
+    public void addUser(String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
         for (User user : userList) {
             if (user.getEmail().equals(email)) {
-                return false;
+                return;
             }
         }
         User user = new User (lastUserID, email, userName, password, coins, collectiblesList);
         this.lastUserID++;
         this.userList.add(user);
-        return true;
     }
 
     public void clearUserData() {
