@@ -2,16 +2,13 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -20,9 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
         this.shopBtn = findViewById(R.id.shopBtn);
         this.addTaskButton = findViewById(R.id.addBtn);
         this.svSearchBar = findViewById(R.id.searchView);
-        this.sortType = SortType.DueDateDescending;
+        this.sortType = SortType.DUE_DATE_DESCENDING;
 
         // Authenticate user
         if (currentUser != null) {
@@ -180,10 +175,10 @@ public class HomeActivity extends AppCompatActivity {
                 .collect(Collectors.toList());
 
         switch (sortType) {
-            case DueDateAscending:
+            case DUE_DATE_ASCENDING:
                 filteredTasks.sort(Comparator.comparing(Task::getDeadline));
                 break;
-            case DueDateDescending:
+            case DUE_DATE_DESCENDING:
                 filteredTasks.sort(Comparator.comparing(Task::getDeadline).reversed());
                 break;
         }
