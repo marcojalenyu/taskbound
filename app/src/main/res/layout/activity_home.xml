@@ -128,19 +128,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:iconifiedByDefault="true"/>
-<!--                <com.google.android.material.textfield.textinputedittext-->
-<!--                    android:id="@+id/etsearch"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@drawable/rounded_edit_text"-->
-<!--                    android:drawablestart="@drawable/magnifying_glass"-->
-<!--                    android:drawablepadding="16dp"-->
-<!--                    android:fontfamily="@font/retropix"-->
-<!--                    android:hint="search..."-->
-<!--                    android:inputtype="text"-->
-<!--                    android:padding="8dp"-->
-<!--                    android:textsize="24sp" />-->
             </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
     </LinearLayout>
