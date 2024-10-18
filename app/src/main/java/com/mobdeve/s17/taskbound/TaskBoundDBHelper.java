@@ -79,7 +79,28 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
 
     // User table methods
     public boolean insertUser(User user) {
+        if (!(user.getEmail().contains("@") && user.getEmail().contains("."))) {
+            return false;
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.query(USER_TABLE_NAME,
+                new String[] { USER_COLUMN_EMAIL },
+                USER_COLUMN_EMAIL + "=?",
+                new String[] { user.getEmail() },
+                null, null, null);
+
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                // Email already exists, so return false
+                cursor.close();
+                db.close();
+                return false;
+            }
+            cursor.close();
+        }
+
         ContentValues values = new ContentValues();
         values.put(USER_COLUMN_EMAIL, user.getEmail());
         values.put(USER_COLUMN_USERNAME, user.getUserName());
