@@ -118,19 +118,18 @@
                 app:hintEnabled="false"
                 app:startIconTint="@null">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSearch"
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edit_text"
-                    android:drawableStart="@drawable/magnifying_glass"
-                    android:drawablePadding="16dp"
-                    android:fontFamily="@font/retropix"
-                    android:hint="Search..."
-                    android:inputType="text"
-                    android:padding="8dp"
-                    android:textSize="24sp" />
+                    android:queryHint="Search Tasks"
+                    android:background="@drawable/rounded_search_background"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:iconifiedByDefault="true"/>
             </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
     </LinearLayout>
