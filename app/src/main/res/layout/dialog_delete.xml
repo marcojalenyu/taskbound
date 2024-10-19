@@ -6,6 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     tools:context=".DeleteDialogFragment">
 
     <androidx.cardview.widget.CardView

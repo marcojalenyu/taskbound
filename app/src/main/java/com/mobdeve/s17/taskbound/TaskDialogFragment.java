@@ -142,7 +142,6 @@ public class TaskDialogFragment extends DialogFragment {
             params.width = WindowManager.LayoutParams.MATCH_PARENT;
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.CENTER;
-            params.horizontalMargin = 10;
             window.setAttributes(params);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }

@@ -1,13 +1,18 @@
 package com.mobdeve.s17.taskbound;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -58,5 +63,18 @@ public class DeleteDialogFragment extends DialogFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            Window window = getDialog().getWindow();
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setAttributes(params);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 }
