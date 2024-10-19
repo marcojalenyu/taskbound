@@ -1,6 +1,7 @@
 package com.mobdeve.s17.taskbound;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
@@ -115,12 +117,18 @@ public class TaskDialogFragment extends DialogFragment {
 
                 try {
                     db.updateTask(taskID, name, content, deadline);
+                    dismiss();
+                    ((HomeActivity) getActivity()).onResume();
                 } catch (Exception e) {
                     Log.e("LoginReal", e + "");
                 }
             }
         });
-
         return view;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
     }
 }
