@@ -2,6 +2,7 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -27,6 +28,7 @@ public class ShopActivity extends AppCompatActivity {
     private int cumWeight;
     private int[] nums;
     private int coins;
+    private String password;
 
     private UserSession userSession;
     private User user;
@@ -47,6 +49,9 @@ public class ShopActivity extends AppCompatActivity {
 
         this.userSession = UserSession.getInstance();
         this.user = userSession.getCurrentUser();
+
+        Intent home = getIntent();
+        this.password = home.getStringExtra("password");
 
         this.moneyCount = findViewById(R.id.money_count);
         this.collectiblesList = this.user.getCollectiblesList();
@@ -110,7 +115,7 @@ public class ShopActivity extends AppCompatActivity {
     }
      */
     public void btnClickedRoll(View v) {
-        User user = db.getUser(this.user.getEmail(), this.user.getPassword());
+        User user = db.getUser(this.user.getEmail(), this.password);
 
         if (user.getCoins() < 100) {
             Toast.makeText(v.getContext(), "Not enough coins.", Toast.LENGTH_SHORT).show();
@@ -122,18 +127,17 @@ public class ShopActivity extends AppCompatActivity {
 
         MyCollectiblesData collectible = this.collectiblesList.get(this.collectibleIndices[randomNumber]);
 
-        if (this.collectiblesList == null || this.collectiblesList.isEmpty()) {
+        if (this.collectiblesList.isEmpty()) {
             Toast.makeText(v.getContext(), "No collectibles available.", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         if (collectible != null) {
             int collectibleID = collectible.getCollectibleID();
             db.addCollectibleToUser(user.getEmail(), collectibleID);
             db.deductUserCoins(user.getEmail(), 100);
 
-            user = db.getUser(user.getEmail(), user.getPassword()); // Refresh user data
+            user = db.getUser(user.getEmail(), this.password); // Refresh user data
             this.coins = user.getCoins();
             this.moneyCount.setText(String.valueOf(this.coins));
 

@@ -109,6 +109,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ShopActivity.class);
+                intent.putExtra("password", password);
                 startActivity(intent);
             }
         });

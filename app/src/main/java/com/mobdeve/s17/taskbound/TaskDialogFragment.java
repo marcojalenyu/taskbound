@@ -2,9 +2,11 @@ package com.mobdeve.s17.taskbound;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -20,10 +23,21 @@ import java.text.SimpleDateFormat;
  */
 public class TaskDialogFragment extends DialogFragment {
     private TaskBoundDBHelper db;
+    private TaskManager taskManager;
     private final Task task;
+    private Button btnSubmit;
     EditText etTaskName, etTaskDesc, etDeadline;
     ImageView imgTaskIcon;
     TextView tvHealth, tvCoins;
+
+    private UserSession userSession;
+    private User user;
+    private int userID;
+
+    private int taskID;
+    private int taskHealth;
+    private int taskCoins;
+    private String taskMon;
 
     public TaskDialogFragment(Task task) {
         this.task = task;
@@ -40,6 +54,17 @@ public class TaskDialogFragment extends DialogFragment {
         this.imgTaskIcon = view.findViewById(R.id.imgTaskIcon);
         this.tvHealth = view.findViewById(R.id.tvHealth);
         this.tvCoins = view.findViewById(R.id.tvCoins);
+        this.btnSubmit = view.findViewById(R.id.btnSubmit);
+
+        this.userSession = UserSession.getInstance();
+        this.user = userSession.getCurrentUser();
+        this.userID = user.getUserID();
+        this.db = new TaskBoundDBHelper(this.getContext());
+        try {
+            this.taskManager = new TaskManager();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
 
         this.etTaskName.setText(this.task.getName());
         this.etTaskDesc.setText(this.task.getContent());
@@ -52,8 +77,14 @@ public class TaskDialogFragment extends DialogFragment {
         String monsterName = this.task.getMonster().toLowerCase();
         int imageID = getContext().getResources().getIdentifier("enemy_" + monsterName, "drawable", getContext().getPackageName());
         this.imgTaskIcon.setImageResource(imageID);
-        this.tvHealth.setText(String.valueOf(this.task.getHealth()));
-        this.tvCoins.setText(String.valueOf(this.task.getCoins()));
+
+        this.taskID = this.task.getId();
+        this.taskCoins = this.task.getCoins();
+        this.taskHealth = this.task.getHealth();
+        this.taskMon = this.task.getMonster();
+
+        this.tvHealth.setText(String.valueOf(this.taskHealth));
+        this.tvCoins.setText(String.valueOf(this.taskCoins));
 
         etDeadline.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +104,22 @@ public class TaskDialogFragment extends DialogFragment {
                     etDeadline.setText(date1);
                 }, year, month, day);
                 datePickerDialog.show();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = String.valueOf(etTaskName.getText());
+                String content = String.valueOf(etTaskDesc.getText());
+
+                try {
+                    db.updateTask(taskID, name, content, deadline);
+                } catch (Exception e) {
+                    Log.e("LoginReal", e + "");
+                }
+
+
             }
         });
 

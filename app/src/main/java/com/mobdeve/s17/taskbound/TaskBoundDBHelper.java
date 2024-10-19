@@ -251,8 +251,20 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
 
     // Task table methods
     public void insertTask(Task task) {
+        Log.d("LoginReal", task.getName());
+        Log.d("LoginReal", task.getContent());
+        Log.d("LoginReal", task.getDeadlineAsString());
+        Log.d("LoginReal", task.getHealth() + "");
+        Log.d("LoginReal", task.getCoins() + "");
+        Log.d("LoginReal", task.getMonster());
+        Log.d("LoginReal", task.getUserID() + "");
+
         SQLiteDatabase db = this.getWritableDatabase();
+
+
         ContentValues values = new ContentValues();
+
+
         values.put(TASK_COLUMN_USER_ID, task.getUserID());
         values.put(TASK_COLUMN_NAME, task.getName());
         values.put(TASK_COLUMN_CONTENT, task.getContent());
@@ -311,6 +323,18 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TASK_COLUMN_HEALTH, health);
+        // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
+        int userID = UserSession.getInstance().getCurrentUser().getUserID();
+        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        db.close();
+    }
+
+    public void updateTask(int taskId, String taskName, String taskContent, String taskDeadline) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TASK_COLUMN_NAME, taskName);
+        values.put(TASK_COLUMN_CONTENT, taskContent);
+        values.put(TASK_COLUMN_DEADLINE, taskDeadline);
         // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
         int userID = UserSession.getInstance().getCurrentUser().getUserID();
         db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
