@@ -1,13 +1,11 @@
 package com.mobdeve.s17.taskbound;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,7 +54,7 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
         // If collectible is not obtained, make it a shade of gray
         if (!myCollectiblesData[position].isObtained()) {
             holder.collectibleName.setText("???");
-            holder.collectibleImg.setImageResource(R.drawable.collectible_unknown);
+            holder.collectibleImg.setImageResource(R.drawable.ic_unknown);
         } else {
             holder.collectibleName.setText(myMovieDataList.getCollectibleName());
             holder.collectibleImg.setImageResource(myMovieDataList.getCollectibleImage());

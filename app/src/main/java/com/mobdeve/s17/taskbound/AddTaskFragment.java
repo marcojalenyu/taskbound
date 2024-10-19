@@ -54,11 +54,11 @@ public class AddTaskFragment extends DialogFragment {
         this.userSession = UserSession.getInstance();
         currentUser = userSession.getCurrentUser();
 
-        taskName = view.findViewById(R.id.taskName);
-        taskContent = view.findViewById(R.id.taskContent);
-        taskDeadline = view.findViewById(R.id.taskDeadline);
-        btnAddTask = view.findViewById(R.id.applyAddTaskButton);
-        btnCancelAddTask = view.findViewById(R.id.cancelAddTaskButton);
+        taskName = view.findViewById(R.id.etTaskName);
+        taskContent = view.findViewById(R.id.etTaskDesc);
+        taskDeadline = view.findViewById(R.id.etDeadline);
+        btnAddTask = view.findViewById(R.id.btnAddTask);
+        btnCancelAddTask = view.findViewById(R.id.btnCancelTask);
 
         btnAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
