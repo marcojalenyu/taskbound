@@ -1,25 +1,34 @@
 package com.mobdeve.s17.taskbound;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import com.google.gson.Gson;
+import androidx.fragment.app.DialogFragment;
 
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Random;
 
-public class AddTaskActivity extends AppCompatActivity {
+public class AddTaskFragment extends DialogFragment {
+
     private TaskBoundDBHelper db;
     private TaskManager taskManager;
     private Button btnAddTask;
@@ -28,18 +37,14 @@ public class AddTaskActivity extends AppCompatActivity {
     private User currentUser;
     private UserSession userSession;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_addtask);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public AddTaskFragment() {}
 
-        db = new TaskBoundDBHelper(this);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.dialog_addtask, container, false);
+
+        db = new TaskBoundDBHelper(getContext());
         try {
             taskManager = new TaskManager();
         } catch (ParseException e) {
@@ -49,11 +54,11 @@ public class AddTaskActivity extends AppCompatActivity {
         this.userSession = UserSession.getInstance();
         currentUser = userSession.getCurrentUser();
 
-        taskName = findViewById(R.id.taskName);
-        taskContent = findViewById(R.id.taskContent);
-        taskDeadline = findViewById(R.id.taskDeadline);
-        btnAddTask = findViewById(R.id.applyAddTaskButton);
-        btnCancelAddTask = findViewById(R.id.cancelAddTaskButton);
+        taskName = view.findViewById(R.id.taskName);
+        taskContent = view.findViewById(R.id.taskContent);
+        taskDeadline = view.findViewById(R.id.taskDeadline);
+        btnAddTask = view.findViewById(R.id.applyAddTaskButton);
+        btnCancelAddTask = view.findViewById(R.id.cancelAddTaskButton);
 
         btnAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,19 +80,24 @@ public class AddTaskActivity extends AppCompatActivity {
                         // Trim the name
                         name = name.trim();
                         if (name.isEmpty() || deadline.isEmpty()) {
-                            Toast.makeText(AddTaskActivity.this, "Your task lacks a name/deadline.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Your task lacks a name/deadline.", Toast.LENGTH_SHORT).show();
                             return;
                         }
+
+                        // Create a new task
                         Task task = new Task(0, userID, name, content, deadline, taskData.getHealth(), taskData.getCoins(), taskData.getMonster());
                         db.insertTask(task);
-                        finish();
+
+                        dismiss();
+                        ((HomeActivity) getActivity()).onResume();
+
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
                 } else {
                     // Handle the case where currentUser is null
-                    Toast.makeText(AddTaskActivity.this, "User data is missing. Please log in again.", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Toast.makeText(getContext(), "User data is missing. Please log in again.", Toast.LENGTH_SHORT).show();
+                    dismiss();
                 }
             }
         });
@@ -95,7 +105,7 @@ public class AddTaskActivity extends AppCompatActivity {
         btnCancelAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                dismiss();
             }
         });
 
@@ -107,17 +117,38 @@ public class AddTaskActivity extends AppCompatActivity {
                 int month = calendar.get(Calendar.MONTH);
                 int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(AddTaskActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                         (view1, year1, month1, dayOfMonth1) -> {
                             month1 += 1;
                             String date = year1 + "-" + month1 + "-" + dayOfMonth1;
-                    taskDeadline.setText(date);
-                    },
+                            taskDeadline.setText(date);
+                        },
                         year, month, dayOfMonth
                 );
 
                 datePickerDialog.show();
             }
         });
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            Window window = getDialog().getWindow();
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
     }
 }

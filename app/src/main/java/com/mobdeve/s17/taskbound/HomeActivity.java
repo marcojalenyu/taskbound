@@ -92,8 +92,12 @@ public class HomeActivity extends AppCompatActivity {
         this.addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, AddTaskActivity.class);
-                startActivity(intent);
+                try {
+                    AddTaskFragment addTaskFragment = new AddTaskFragment();
+                    addTaskFragment.show(getSupportFragmentManager(), "AddTaskFragment");
+                } catch (Exception e) {
+                    Log.e("LoginReal", e + "");
+                }
             }
         });
 
