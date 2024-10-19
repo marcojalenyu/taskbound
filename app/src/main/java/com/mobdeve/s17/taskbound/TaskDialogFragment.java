@@ -118,8 +118,6 @@ public class TaskDialogFragment extends DialogFragment {
                 } catch (Exception e) {
                     Log.e("LoginReal", e + "");
                 }
-
-
             }
         });
 
