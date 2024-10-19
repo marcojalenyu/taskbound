@@ -181,15 +181,16 @@ public class HomeActivity extends AppCompatActivity {
         String currQuery = this.svSearchBar.getQuery().toString();
         switch (sortType) {
             case DUE_DATE_ASCENDING:
-                this.sortType = SortType.DEFAULT;
-                break;
-            case DUE_DATE_DESCENDING:
-                this.sortType = SortType.DUE_DATE_ASCENDING;
-                txtSort = "^";
-                break;
-            case DEFAULT:
                 this.sortType = SortType.DUE_DATE_DESCENDING;
                 txtSort = "v";
+                break;
+            case DUE_DATE_DESCENDING:
+                this.sortType = SortType.DEFAULT;
+                txtSort = "=";
+                break;
+            case DEFAULT:
+                this.sortType = SortType.DUE_DATE_ASCENDING;
+                txtSort = "^";
                 break;
         }
 
