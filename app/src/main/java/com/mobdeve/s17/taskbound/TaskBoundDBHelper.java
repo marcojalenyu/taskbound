@@ -128,8 +128,14 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
 
         if (cursor != null && cursor.moveToFirst()) {
             String hashedPassword = cursor.getString(3);
-            if (!HashUtil.checkPassword(password, hashedPassword)) {
-                cursor.close();
+
+            try {
+                if (!HashUtil.checkPassword(password, hashedPassword)) {
+                    cursor.close();
+                    return null;
+                }
+            } catch (Exception e) {
+                Log.e("LoginReal", e + "");
                 return null;
             }
 
