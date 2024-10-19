@@ -2,11 +2,16 @@ package com.mobdeve.s17.taskbound;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -114,6 +119,7 @@ public class TaskDialogFragment extends DialogFragment {
             public void onClick(View view) {
                 String name = String.valueOf(etTaskName.getText());
                 String content = String.valueOf(etTaskDesc.getText());
+                String deadline = String.valueOf(etDeadline.getText());
 
                 try {
                     db.updateTask(taskID, name, content, deadline);
@@ -125,6 +131,21 @@ public class TaskDialogFragment extends DialogFragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            Window window = getDialog().getWindow();
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.CENTER;
+            params.horizontalMargin = 10;
+            window.setAttributes(params);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
     @Override
