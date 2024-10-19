@@ -131,13 +131,23 @@
 
             <Button
                 android:id="@+id/btnSort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="="
-                android:onClick="btnClickedSort"
-                android:layout_marginStart="15dp"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-6dp"
+                android:layout_marginRight="-12dp"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="@font/retropix"
                 android:minWidth="0dp"
-                android:paddingHorizontal="17dp"/>
+                android:onClick="btnClickedSort"
+                android:paddingHorizontal="17dp"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:text="="
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:textSize="34sp" />
         </LinearLayout>
 
     </LinearLayout>
