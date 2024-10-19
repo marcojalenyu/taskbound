@@ -119,8 +119,5 @@ public class AddTaskActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
-
-
     }
-
 }
