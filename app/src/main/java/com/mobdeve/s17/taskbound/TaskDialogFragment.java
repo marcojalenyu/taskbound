@@ -2,7 +2,11 @@ package com.mobdeve.s17.taskbound;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -83,7 +87,29 @@ public class TaskDialogFragment extends DialogFragment {
 
         String monsterName = this.task.getMonster().toLowerCase();
         int imageID = getContext().getResources().getIdentifier("enemy_" + monsterName, "drawable", getContext().getPackageName());
-        this.imgTaskIcon.setImageResource(imageID);
+        // this.imgTaskIcon.setImageResource(imageID);
+
+        // Load the spritesheet
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageID);
+        int frameWidth = bitmap.getWidth() / 2;
+        int frameHeight = bitmap.getHeight();
+        Bitmap frame1 = Bitmap.createBitmap(bitmap, 0, 0, frameWidth, frameHeight);
+        Bitmap frame2 = Bitmap.createBitmap(bitmap, frameWidth, 0, frameWidth, frameHeight);
+
+        AnimationDrawable animation = new AnimationDrawable();
+        animation.addFrame(new BitmapDrawable(getResources(), frame1), 400);
+        animation.addFrame(new BitmapDrawable(getResources(), frame2), 400);
+        animation.setOneShot(false);
+
+        this.imgTaskIcon.setBackground(animation);
+
+        // Start the animation
+        this.imgTaskIcon.post(new Runnable() {
+            @Override
+            public void run() {
+                animation.start();
+            }
+        });
 
         this.taskID = this.task.getId();
         this.taskCoins = this.task.getCoins();

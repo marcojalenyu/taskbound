@@ -40,7 +40,7 @@
                         android:id="@+id/imgTaskIcon"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
-                        app:srcCompat="@drawable/enemy_slime" />
+                        android:background="@drawable/enemy_slime" />
 
                     <EditText
                         android:id="@+id/etTaskName"
