@@ -1,15 +1,22 @@
 package com.mobdeve.s17.taskbound;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.os.Handler;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,6 +27,7 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
 
     private TaskBoundDBHelper db;
     private List<Task> myTaskData; //used what I made in TaskDBHelper instead of Task[] myTaskData
+    private Handler handler;
     Context context;
 
     public MyTasksAdapter(List<Task> myTaskData, HomeActivity activity) {
@@ -53,12 +61,33 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
         // Format of the image is "enemy_" + monster name
         String monsterName = myTaskDataList.getMonster().toLowerCase();
         int imageID = context.getResources().getIdentifier("enemy_" + monsterName, "drawable", context.getPackageName());
-        holder.imgTaskEnemy.setImageResource(imageID);
+        // holder.imgTaskEnemy.setImageResource(imageID);
 
-        // TODO: Make it press hold to attack
-        holder.btnAttack.setOnClickListener(new View.OnClickListener() {
+        // Load the spritesheet
+        Bitmap spriteSheet = BitmapFactory.decodeResource(context.getResources(), imageID);
+        int frameWidth = spriteSheet.getWidth() / 2;
+        int frameHeight = spriteSheet.getHeight();
+        Bitmap frame1 = Bitmap.createBitmap(spriteSheet, 0, 0, frameWidth, frameHeight);
+        Bitmap frame2 = Bitmap.createBitmap(spriteSheet, frameWidth, 0, frameWidth, frameHeight);
+
+        AnimationDrawable animation = new AnimationDrawable();
+        animation.addFrame(new BitmapDrawable(context.getResources(), frame1), 400);
+        animation.addFrame(new BitmapDrawable(context.getResources(), frame2), 400);
+        animation.setOneShot(false);
+
+        holder.imgTaskEnemy.setBackground(animation);
+        
+        // Start the animation
+        holder.imgTaskEnemy.post(new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
+                animation.start();
+            }
+        });
+
+        Runnable attackRunnable = new Runnable() {
+            @Override
+            public void run() {
                 // Health of the task decreases by 1
                 // Update the health of the task in the database
                 // If health is 0, delete the task
@@ -73,8 +102,50 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
                     // Remove the task from the list
                     myTaskData.remove(position);
                 }
-                // Refresh the recycler view
-                notifyDataSetChanged();
+                // Refresh only the health of the task
+                holder.tvHealth.setText(String.valueOf(myTaskDataList.getHealth()));
+            }
+        };
+
+        // Attack the task when the attack button is pressed and held
+        holder.btnAttack.setOnTouchListener(new View.OnTouchListener() {
+            private boolean isPressed = false;
+            private int progress = 0;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isPressed = true;
+                        holder.btnAttack.setVisibility(View.GONE);
+                        holder.pbarAttack.setVisibility(View.VISIBLE);
+                        handler = new Handler();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isPressed) {
+                                    progress += 10;
+                                    holder.pbarAttack.setProgress(progress);
+                                    if (progress >= 100) {
+                                        handler.post(attackRunnable);
+                                        progress = 0;
+                                    }
+                                    handler.postDelayed(this, 100);
+                                }
+                            }
+                        });
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_OUTSIDE:
+                    case MotionEvent.ACTION_CANCEL:
+                        isPressed = false;
+                        handler.removeCallbacksAndMessages(null);
+                        holder.btnAttack.setVisibility(View.VISIBLE);
+                        holder.pbarAttack.setVisibility(View.GONE);
+                        holder.pbarAttack.setProgress(0);
+                        return true;
+                }
+                return false;
             }
         });
 
@@ -105,7 +176,9 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
         LinearLayout llTaskDetails;
         ImageView imgTaskEnemy;
         TextView tvTaskName, tvTaskDesc, tvTaskDeadline, tvHealth, tvCoins;
-        FloatingActionButton btnAttack, btnDelete;
+        Button btnAttack;
+        FloatingActionButton btnDelete;
+        ProgressBar pbarAttack;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,6 +191,7 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
             tvCoins = itemView.findViewById(R.id.tvCoins);
             btnAttack = itemView.findViewById(R.id.btnAttack);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            pbarAttack = itemView.findViewById(R.id.pbarAttack);
         }
     }
 

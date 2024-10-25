@@ -48,7 +48,7 @@
                             android:id="@+id/imgTvIcon"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
-                            app:srcCompat="@drawable/enemy_slime" />
+                            android:background="@drawable/enemy_slime" />
 
                         <TextView
                             android:id="@+id/tvTaskName"
@@ -133,18 +133,25 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    <Button
                         android:id="@+id/btnAttack"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
-                        android:clickable="true"
+                        android:backgroundTint="@android:color/transparent"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
-                        android:foreground="@drawable/ic_finish_task"
-                        app:backgroundTint="@android:color/transparent"
-                        app:elevation="0dp"
-                        app:rippleColor="@android:color/transparent" />
+                        android:foreground="@drawable/ic_finish_task" />
+
+                    <ProgressBar
+                        android:id="@+id/pbarAttack"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:max="100"
+                        android:progress="0"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:id="@+id/llTaskEdit"
