@@ -25,10 +25,10 @@ public class TaskManager {
 
         // Uncommon enemies
         tasks.add(new Task(4, 0, "Skeleton", "Defeat the skeleton", "2023-12-31", 5, 30, "Skeleton"));
-        tasks.add(new Task(5, 0, "Shroom", "Defeat the shroom", "2023-12-31", 8, 35, "Shroom"));
+        tasks.add(new Task(5, 0, "Shroom", "Defeat the shroom", "2023-12-31", 7, 35, "Shroom"));
 
         // Rare enemies
-        tasks.add(new Task(7, 0, "Demon", "Defeat the demon", "2023-12-31", 10, 50, "Demon"));
+        tasks.add(new Task(7, 0, "Demon", "Defeat the demon", "2023-12-31", 12, 50, "Demon"));
 
         // Boss enemies
         tasks.add(new Task(6, 0, "Dragon", "Defeat the dragon", "2023-12-31", 20, 40, "Dragon"));
