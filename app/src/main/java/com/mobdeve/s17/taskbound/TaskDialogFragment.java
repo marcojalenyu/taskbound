@@ -43,9 +43,9 @@ public class TaskDialogFragment extends DialogFragment {
 
     private UserSession userSession;
     private User user;
-    private int userID;
+    private String userID;
 
-    private int taskID;
+    private String taskID;
     private int taskHealth;
     private int taskCoins;
     private String taskMon;

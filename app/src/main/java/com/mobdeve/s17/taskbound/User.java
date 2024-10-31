@@ -1,16 +1,23 @@
 package com.mobdeve.s17.taskbound;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.ArrayList;
 
+@IgnoreExtraProperties
 public class User {
-    private int userID;
-    private final String email;
+    private String userID;
+    private String email;
     private String userName;
     private String password;
     private int coins;
-    private final ArrayList<MyCollectiblesData> collectiblesList;
+    private ArrayList<MyCollectiblesData> collectiblesList;
 
-    public User(int userID, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
+    public User(){
+
+    }
+
+    public User(String userID, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
         this.userID = userID;
         this.email = email;
         this.userName = userName;
@@ -20,7 +27,7 @@ public class User {
         this.collectiblesList = collectiblesManager.getCollectibles();
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return this.userID;
     }
     public String getEmail() {
@@ -39,7 +46,7 @@ public class User {
         return this.collectiblesList;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 
@@ -53,6 +60,9 @@ public class User {
         this.coins = coins;
     }
     public void setCollectiblesList(ArrayList<MyCollectiblesData> collectiblesList) {
+        if (collectiblesList == null) {
+            this.collectiblesList = new ArrayList<>();
+        }
         this.collectiblesList.clear();
         this.collectiblesList.addAll(collectiblesList);
     }

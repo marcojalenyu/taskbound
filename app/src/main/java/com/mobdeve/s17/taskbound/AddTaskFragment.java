@@ -74,7 +74,7 @@ public class AddTaskFragment extends DialogFragment {
                     Task taskData = taskManager.getTasks().get(randomIndex);
 
                     // Get the current user's ID
-                    int userID = UserSession.getInstance().getCurrentUser().getUserID();
+                    String userID = UserSession.getInstance().getCurrentUser().getUserID();
 
                     try {
                         // Trim the name
@@ -85,7 +85,7 @@ public class AddTaskFragment extends DialogFragment {
                         }
 
                         // Create a new task
-                        Task task = new Task(0, userID, name, content, deadline, taskData.getHealth(), taskData.getCoins(), taskData.getMonster());
+                        Task task = new Task("0", userID, name, content, deadline, taskData.getHealth(), taskData.getCoins(), taskData.getMonster());
                         db.insertTask(task);
 
                         dismiss();

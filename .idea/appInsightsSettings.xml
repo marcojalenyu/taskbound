@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.mobdeve.s17.taskbound" />
+                  <option name="mobileSdkAppId" value="1:898052751744:android:58d470e2fc5b51513a8165" />
+                  <option name="projectId" value="taskbound-db-a" />
+                  <option name="projectNumber" value="898052751744" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

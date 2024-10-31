@@ -1,21 +1,28 @@
 package com.mobdeve.s17.taskbound;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@IgnoreExtraProperties
 public class Task {
-    private final int id;
-    private final int userid;
-    private final String name;
-    private final String content;
-    private final Date deadline;
+    private String id;
+    private String userid;
+    private String name;
+    private String content;
+    private Date deadline;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private int health;
-    private final int coins;
-    private final String monster;
+    private int coins;
+    private String monster;
 
-    public Task(int id, int userid, String name, String content, String deadline, int health, int coins, String monster) throws ParseException {
+    public Task() {
+
+    }
+
+    public Task(String id, String userid, String name, String content, String deadline, int health, int coins, String monster) throws ParseException {
         this.id = id;
         this.userid = userid;
         this.name = name;
@@ -26,11 +33,11 @@ public class Task {
         this.monster = monster;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userid;
     }
 

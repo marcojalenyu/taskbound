@@ -15,15 +15,23 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
 
     TextInputEditText newEmail, newUsername, newPassword;
-    Button buttonBackToLogin, buttonCreateAccount;
     private UserSession userSession;
     private TaskBoundDBHelper userDBHelper;
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         this.userSession = UserSession.getInstance();
         this.userDBHelper = new TaskBoundDBHelper(this);
+
+        // Initialize the database reference
+        mAuth = FirebaseAuth.getInstance();
+        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
+
         // Initialize the TextInputEditText fields
         newEmail = findViewById(R.id.newEmail);
         newUsername = findViewById(R.id.newUsername);
@@ -45,19 +58,13 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void btnClickedBackToLogin(View v){
-        Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-        backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(backToLogin);
         finish();
     }
 
-
-
     public void btnClickedCreateAccount(View v){
-        String email, username, password;
-        email = String.valueOf(newEmail.getText()); //not doing newEmail.getText().toString() to prevent null pointer exceptions
-        username = String.valueOf(newUsername.getText());
-        password = String.valueOf(newPassword.getText());
+        String email = String.valueOf(newEmail.getText()); //not doing newEmail.getText().toString() to prevent null pointer exceptions
+        String username = String.valueOf(newUsername.getText());
+        String password = String.valueOf(newPassword.getText());
 
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(RegisterActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
@@ -74,22 +81,81 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        int coins = 1000; // Default value for coins
-        String hashedPassword = HashUtil.hashPassword(password);
-        ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
+        // Register the user using Firebase Authentication
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // If sign in succeeds, display a message to the user.
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        System.out.println(1000);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            int initialCoins = 1000; // Default value for coins
+                            ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
 
-        User newUser = new User(0, email, username, hashedPassword, coins, collectiblesList); // ID is auto-incremented, see UserDBHelper
+                            User newUser = new User(userId, email, username, password, initialCoins, collectiblesList); // ID is auto-incremented, see UserDBHelper
 
-        // Use UserDBHelper to add a new user
-        if (userDBHelper.insertUser(newUser)) {
-            //userSession.addUser(email, username, password);
-            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
-            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(backToLogin);
-            finish();
-        } else {
-            Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
-        }
+                            System.out.println("New user: " + newUser);
+                            System.out.println(databaseUsers);
+
+                            // Store the user in the Firebase Realtime Database
+                            databaseUsers.child(userId).setValue(newUser);
+
+                            // Store the user in thesetValue local SQLite database
+                            userDBHelper.insertUser(newUser);
+
+                            // Pass user data via session to intent
+                            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
+                            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+                            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(backToLogin);
+                            finish();
+                        }
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
+//        int initialCoins = 1000; // Default value for coins
+//        String hashedPassword = HashUtil.hashPassword(password);
+//        ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
+//
+//        User newUser = new User(0, email, username, hashedPassword, initialCoins, collectiblesList); // ID is auto-incremented, see UserDBHelper
+//
+//        // Use UserDBHelper to add a new user
+//        if (userDBHelper.insertUser(newUser)) {
+//            //userSession.addUser(email, username, password);
+//            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
+//            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+//            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(backToLogin);
+//            finish();
+//        } else {
+//            Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
+//        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        databaseUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    if (user != null) {
+                        userSession.addUser(user.getUserID(), user.getEmail(), user.getUserName(), user.getPassword(), user.getCoins(), user.getCollectiblesList());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(RegisterActivity.this, "Error fetching users", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

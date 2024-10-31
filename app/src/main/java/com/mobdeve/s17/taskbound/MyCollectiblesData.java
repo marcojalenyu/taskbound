@@ -3,12 +3,19 @@ package com.mobdeve.s17.taskbound;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class MyCollectiblesData implements Parcelable {
-    private final int collectibleID;
-    private final String collectibleName;
-    private final Rarity collectiblesRarity;
+    private int collectibleID;
+    private String collectibleName;
+    private Rarity collectiblesRarity;
     private boolean isObtained;
-    private final Integer collectibleImage;
+    private Integer collectibleImage;
+
+    public MyCollectiblesData() {
+
+    }
 
     public MyCollectiblesData(int collectibleID, String collectibleName, Rarity rarity, Integer collectibleImage) {
         this.collectibleID = collectibleID;

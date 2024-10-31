@@ -17,8 +17,8 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
     TextView collectiblesCount;
     int collectedCount = 0;
 
-    public MyCollectiblesAdapter(MyCollectiblesData[] myMovieData,CollectiblesActivity activity, TextView collectiblesCount) {
-        this.myCollectiblesData = myMovieData;
+    public MyCollectiblesAdapter(MyCollectiblesData[] myCollectiblesData,CollectiblesActivity activity, TextView collectiblesCount) {
+        this.myCollectiblesData = myCollectiblesData;
         this.context = activity;
         this.collectiblesCount = collectiblesCount;
         updateCollectiblesCount();
@@ -44,7 +44,7 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final MyCollectiblesData myMovieDataList = myCollectiblesData[position];
+        final MyCollectiblesData myCollectiblesDataList = myCollectiblesData[position];
         // Set text color depending on rarity
         if (myCollectiblesData[position].getCollectiblesRarity() == Rarity.SR) {
             holder.collectibleName.setTextColor(context.getResources().getColor(R.color.sr));
@@ -56,18 +56,18 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
             holder.collectibleName.setText("???");
             holder.collectibleImg.setImageResource(R.drawable.ic_unknown);
         } else {
-            holder.collectibleName.setText(myMovieDataList.getCollectibleName());
-            holder.collectibleImg.setImageResource(myMovieDataList.getCollectibleImage());
+            holder.collectibleName.setText(myCollectiblesDataList.getCollectibleName());
+            holder.collectibleImg.setImageResource(myCollectiblesDataList.getCollectibleImage());
         }
 //        holder.itemView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Toast.makeText(context, myMovieDataList.getCollectibleName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, myCollectiblesDataList.getCollectibleName(), Toast.LENGTH_SHORT).show();
 //                Intent i = new Intent(context, MovieActivity.class);
-//                i.putExtra("image",myMovieDataList.getMovieImage());
-//                i.putExtra("name",myMovieDataList.getMovieName());
-//                i.putExtra("date",myMovieDataList.getMovieDate());
-//                i.putExtra("summary",myMovieDataList.getMovieSummary());
+//                i.putExtra("image",myCollectiblesDataList.getMovieImage());
+//                i.putExtra("name",myCollectiblesDataList.getMovieName());
+//                i.putExtra("date",myCollectiblesDataList.getMovieDate());
+//                i.putExtra("summary",myCollectiblesDataList.getMovieSummary());
 //
 //                context.startActivity(i);
 //            }

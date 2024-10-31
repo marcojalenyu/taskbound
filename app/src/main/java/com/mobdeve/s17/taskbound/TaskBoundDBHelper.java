@@ -41,7 +41,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
     // Create table statements
     private static final String CREATE_USER_TABLE =
             "CREATE TABLE " + USER_TABLE_NAME + "("
-                    + USER_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + USER_COLUMN_ID + " TEXT,"
                     + USER_COLUMN_EMAIL + " TEXT,"
                     + USER_COLUMN_USERNAME + " TEXT,"
                     + USER_COLUMN_PASSWORD + " TEXT,"
@@ -50,8 +50,8 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TASK_TABLE =
             "CREATE TABLE " + TASK_TABLE_NAME + "("
-                    + TASK_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + TASK_COLUMN_USER_ID + " INTEGER,"
+                    + TASK_COLUMN_ID + "TEXT PRIMARY KEY,"
+                    + TASK_COLUMN_USER_ID + " TEXT,"
                     + TASK_COLUMN_NAME + " TEXT,"
                     + TASK_COLUMN_CONTENT + " TEXT,"
                     + TASK_COLUMN_DEADLINE + " TEXT,"
@@ -78,9 +78,9 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
     }
 
     // User table methods
-    public boolean insertUser(User user) {
+    public void insertUser(User user) {
         if (!(user.getEmail().contains("@") && user.getEmail().contains("."))) {
-            return false;
+            return;
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -96,12 +96,13 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
                 // Email already exists, so return false
                 cursor.close();
                 db.close();
-                return false;
+                return;
             }
             cursor.close();
         }
 
         ContentValues values = new ContentValues();
+        values.put(USER_COLUMN_ID, user.getUserID());
         values.put(USER_COLUMN_EMAIL, user.getEmail());
         values.put(USER_COLUMN_USERNAME, user.getUserName());
         values.put(USER_COLUMN_PASSWORD, user.getPassword());
@@ -113,11 +114,8 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         db.close();
 
         if (result == -1) {
-            return false; // Insert failed
-        } else {
-            return true; // Insert succeeded
+            return;
         }
-
     }
 
     public User getUser(String email, String password) {
@@ -139,7 +137,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
                 return null;
             }
 
-            int userID = cursor.getInt(0);
+            String userID = cursor.getString(0);
             String userEmail = cursor.getString(1);
             String userName = cursor.getString(2);
             int coins = cursor.getInt(4);
@@ -276,7 +274,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Task> getAllTask(int userId) {
+    public List<Task> getAllTask(String userId) {
         List<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = " + userId;
@@ -296,8 +294,8 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
                     if (idIndex >= 0 && userIdIndex >= 0 && nameIndex >= 0 && contentIndex >= 0 &&
                             deadlineIndex >= 0 && healthIndex >= 0 && coinsIndex >= 0 && monsterIndex >= 0) {
                         Task task = new Task(
-                                cursor.getInt(idIndex),
-                                cursor.getInt(userIdIndex),
+                                cursor.getString(idIndex),
+                                cursor.getString(userIdIndex),
                                 cursor.getString(nameIndex),
                                 cursor.getString(contentIndex),
                                 cursor.getString(deadlineIndex),
@@ -319,32 +317,32 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         return taskList;
     }
 
-    public void updateTaskHealth(int taskId, int health) {
+    public void updateTaskHealth(String taskId, int health) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TASK_COLUMN_HEALTH, health);
         // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
-        int userID = UserSession.getInstance().getCurrentUser().getUserID();
-        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        String userID = UserSession.getInstance().getCurrentUser().getUserID();
+        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {taskId, userID});
         db.close();
     }
 
-    public void updateTask(int taskId, String taskName, String taskContent, String taskDeadline) {
+    public void updateTask(String taskId, String taskName, String taskContent, String taskDeadline) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TASK_COLUMN_NAME, taskName);
         values.put(TASK_COLUMN_CONTENT, taskContent);
         values.put(TASK_COLUMN_DEADLINE, taskDeadline);
         // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
-        int userID = UserSession.getInstance().getCurrentUser().getUserID();
-        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        String userID = UserSession.getInstance().getCurrentUser().getUserID();
+        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {taskId, userID});
         db.close();
     }
 
-    public void defeatTask(int taskId, int coins) {
+    public void defeatTask(String taskId, int coins) {
         SQLiteDatabase db = this.getWritableDatabase();
         // DELETE FROM tasks WHERE id = ? && userid = ?
-        int userID = UserSession.getInstance().getCurrentUser().getUserID();
+        String userID = UserSession.getInstance().getCurrentUser().getUserID();
         db.delete(TASK_TABLE_NAME, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
         // UPDATE users SET coins = coins + ? WHERE id = ?
         ContentValues values = new ContentValues();
@@ -354,11 +352,11 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteTask(int taskId) {
+    public void deleteTask(String taskId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int userID = UserSession.getInstance().getCurrentUser().getUserID();
+        String userID = UserSession.getInstance().getCurrentUser().getUserID();
         // DELETE FROM tasks WHERE id = ? && userid = ?
-        db.delete(TASK_TABLE_NAME, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        db.delete(TASK_TABLE_NAME, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {taskId, userID});
         db.close();
     }
 }
