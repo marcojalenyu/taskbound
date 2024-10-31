@@ -81,6 +81,12 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        // Check if password is at least 6 characters long
+        if (password.length() < 6) {
+            Toast.makeText(RegisterActivity.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Register the user using Firebase Authentication
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -93,7 +99,8 @@ public class RegisterActivity extends AppCompatActivity {
                             int initialCoins = 1000; // Default value for coins
                             ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
 
-                            User newUser = new User(userId, email, username, password, initialCoins, collectiblesList); // ID is auto-incremented, see UserDBHelper
+                            String hashedPassword = HashUtil.hashPassword(password);
+                            User newUser = new User(userId, email, username, hashedPassword, initialCoins, collectiblesList); // ID is auto-incremented, see UserDBHelper
 
                             System.out.println("New user: " + newUser);
                             System.out.println(databaseUsers);

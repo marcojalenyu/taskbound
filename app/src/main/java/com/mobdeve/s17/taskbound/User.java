@@ -14,7 +14,7 @@ public class User {
     private ArrayList<MyCollectiblesData> collectiblesList;
 
     public User(){
-
+        this.collectiblesList = new ArrayList<>(); // Initialize collectiblesList
     }
 
     public User(String userID, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {

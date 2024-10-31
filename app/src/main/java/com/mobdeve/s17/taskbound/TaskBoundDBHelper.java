@@ -50,7 +50,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TASK_TABLE =
             "CREATE TABLE " + TASK_TABLE_NAME + "("
-                    + TASK_COLUMN_ID + "TEXT PRIMARY KEY,"
+                    + TASK_COLUMN_ID + " TEXT PRIMARY KEY,"
                     + TASK_COLUMN_USER_ID + " TEXT,"
                     + TASK_COLUMN_NAME + " TEXT,"
                     + TASK_COLUMN_CONTENT + " TEXT,"
@@ -277,7 +277,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
     public List<Task> getAllTask(String userId) {
         List<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = " + userId;
+        String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = '" + userId + "'";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
