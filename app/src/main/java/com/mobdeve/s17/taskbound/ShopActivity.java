@@ -28,7 +28,6 @@ public class ShopActivity extends AppCompatActivity {
     private int cumWeight;
     private int[] nums;
     private int coins;
-    private String password;
 
     private UserSession userSession;
     private User user;
@@ -51,7 +50,6 @@ public class ShopActivity extends AppCompatActivity {
         this.user = userSession.getCurrentUser();
 
         Intent home = getIntent();
-        this.password = home.getStringExtra("password");
 
         this.moneyCount = findViewById(R.id.money_count);
         this.collectiblesList = this.user.getCollectiblesList();
@@ -115,7 +113,7 @@ public class ShopActivity extends AppCompatActivity {
     }
      */
     public void btnClickedRoll(View v) {
-        User user = db.getUser(this.user.getEmail(), this.password);
+        User user = db.getUser(this.user.getEmail(), this.user.getPassword());
 
         if (user.getCoins() < 100) {
             Toast.makeText(v.getContext(), "Not enough coins.", Toast.LENGTH_SHORT).show();
@@ -137,7 +135,7 @@ public class ShopActivity extends AppCompatActivity {
             db.addCollectibleToUser(user.getEmail(), collectibleID);
             db.deductUserCoins(user.getEmail(), 100);
 
-            user = db.getUser(user.getEmail(), this.password); // Refresh user data
+            user = db.getUser(user.getEmail(), user.getPassword()); // Refresh user data
             this.coins = user.getCoins();
             this.moneyCount.setText(String.valueOf(this.coins));
 

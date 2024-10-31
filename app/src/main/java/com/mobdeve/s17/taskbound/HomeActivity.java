@@ -1,6 +1,7 @@
 package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,8 +42,6 @@ public class HomeActivity extends AppCompatActivity {
     private SortType sortType;
     private Button btnSort;
 
-    private String password;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +67,6 @@ public class HomeActivity extends AppCompatActivity {
 
         this.sortType = SortType.DUE_DATE_DESCENDING;
         Intent login = getIntent();
-        this.password = login.getStringExtra("password");
 
         // Authenticate user
         if (currentUser != null) {
@@ -81,7 +79,6 @@ public class HomeActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-            return;
         }
 
         // Initialize TaskBoundDBHelper and get all tasks
@@ -113,7 +110,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ShopActivity.class);
-                intent.putExtra("password", password);
                 startActivity(intent);
             }
         });
@@ -145,7 +141,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
-        User currentUser = dbHelper.getUser(UserSession.getInstance().getCurrentUser().getEmail(), this.password);
+        User currentUser = dbHelper.getUser(UserSession.getInstance().getCurrentUser().getEmail(), UserSession.getInstance().getCurrentUser().getPassword());
 
         if (currentUser != null) {
             // Update the coin amount when the activity resumes
@@ -170,6 +166,14 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void btnClickedLogout(View v) {
+        // CLear the user session and SharedPreferences
+        UserSession.getInstance().clearUserData();
+        SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+
+        // Redirect to login
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

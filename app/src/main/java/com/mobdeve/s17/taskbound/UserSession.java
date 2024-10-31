@@ -51,6 +51,17 @@ public class UserSession {
         this.userList.add(user);
     }
 
+    public void addAndSetUser(String id, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
+        for (User user : userList) {
+            if (user.getEmail().equals(email)) {
+                return;
+            }
+        }
+        User user = new User (id, email, userName, password, coins, collectiblesList);
+        this.userList.add(user);
+        this.currentUser = user;
+    }
+
     public void clearUserData() {
         currentUser = null;
     }
