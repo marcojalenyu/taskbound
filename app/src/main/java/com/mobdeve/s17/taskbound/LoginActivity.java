@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -61,8 +59,10 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is already logged in
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+        long lastLogin = sharedPreferences.getLong("lastLogin", 0);
 
-        if (isLoggedIn) {
+        // If user is logged in and last login is within 14 days, redirect to HomeActivity
+        if (isLoggedIn && System.currentTimeMillis() - lastLogin < 1209600000) {
             String userID = sharedPreferences.getString("userID", "");
             String email = sharedPreferences.getString("email", "");
             String userName = sharedPreferences.getString("userName", "");
@@ -72,6 +72,11 @@ public class LoginActivity extends AppCompatActivity {
             Intent home = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(home);
             finish();
+        } else {
+            // If user is not logged in or last login is more than 14 days, clear SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
         }
 
     }
@@ -124,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                                              editor.putString("email", snapshotUser.getEmail());
                                              editor.putString("userName", snapshotUser.getUserName());
                                              editor.putInt("coins", snapshotUser.getCoins());
+                                             editor.putLong("lastLogin", System.currentTimeMillis());
                                              editor.apply();
 
 
