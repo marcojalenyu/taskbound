@@ -95,27 +95,25 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="btnClickedLogin"
         android:text="Login"
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/mountain"
-        app:layout_constraintEnd_toStartOf="@+id/register_button"
+        app:layout_constraintEnd_toStartOf="@+id/btnRegister"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/passwordLayout" />
 
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="btnClickedRegister"
         android:text="Register"
         android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/mountain"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/login_button"
+        app:layout_constraintStart_toEndOf="@id/btnLogin"
         app:layout_constraintTop_toBottomOf="@id/passwordLayout" />
 
     <ImageView

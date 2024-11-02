@@ -9,10 +9,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,62 +21,114 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 public class LoginActivity extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword;
-    Button buttonLogin, buttonRegister;
-    UserSession userSession;
-    TaskBoundDBHelper userDBHelper;
-    private FirebaseAuth mAuth;
-    DatabaseReference databaseUsers;
+    // UI components
+    private TextInputEditText editTextEmail, editTextPassword;
+    private Button btnLogin, btnRegister;
+    // Session components
+    private SharedPreferences sessionCache;
+    private UserSession currSession;
+    // Database components
+    private FirebaseAuth userAuth;
+    private TaskBoundDBHelper localDB;
+    private DatabaseReference cloudUserDB;
 
+    /**
+     * This method is called when the activity is first created.
+     * @param savedInstanceState - the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(getWindow().getDecorView());
-        if (windowInsetsController != null) {
-            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
-            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        UIUtil.hideSystemBars(getWindow().getDecorView());
+        initializeDataAndSession();
+        initializeUI();
+
+        if (sessionExpired()) {
+            clearSessionCache();
+        } else {
+            // TODO: Sync user data between local and cloud databases (go to syncUserData())
+            autoLogin();
         }
+    }
 
-        this.userSession = UserSession.getInstance(); // Initialize UserSession
-        this.userDBHelper = new TaskBoundDBHelper(this); // Initialize TaskBoundDBHelper
+    /**
+     * This method initializes the DB and session data.
+     */
+    private void initializeDataAndSession() {
+        this.sessionCache = getSharedPreferences("UserSession", MODE_PRIVATE);
+        this.currSession = UserSession.getInstance();
+        this.localDB = new TaskBoundDBHelper(this);
+        this.userAuth = FirebaseAuth.getInstance();
+        this.cloudUserDB = FirebaseDatabase.getInstance().getReference("users");
+    }
 
-        mAuth = FirebaseAuth.getInstance();
-        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
+    /**
+     * This method initializes the UI components of the activity.
+     */
+    private void initializeUI() {
+        this.editTextEmail = findViewById(R.id.email);
+        this.editTextPassword = findViewById(R.id.password);
+        this.btnLogin = findViewById(R.id.btnLogin);
+        this.btnRegister = findViewById(R.id.btnRegister);
+        this.btnLogin.setOnClickListener(this::btnClickedLogin);
+        this.btnRegister.setOnClickListener(this::btnClickedRegister);
+    }
 
-        editTextEmail = findViewById(R.id.email);
-        editTextPassword = findViewById(R.id.password);
-        buttonLogin = findViewById(R.id.login_button);
-        buttonRegister = findViewById(R.id.register_button);
+    /**
+     * Checks if the user's last login is within 14 days.
+     * @return true if the user's last login is within 14 days, false otherwise
+     */
+    private boolean sessionExpired() {
+        return System.currentTimeMillis() - sessionCache.getLong("lastLogin", 0) >= 1209600000;
+    }
 
-        // Check if user is already logged in
-        SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
-        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-        long lastLogin = sharedPreferences.getLong("lastLogin", 0);
+    /**
+     * Clears the session cache.
+     */
+    private void clearSessionCache() {
+        SharedPreferences.Editor editor = sessionCache.edit();
+        editor.clear();
+        editor.apply();
+    }
 
-        // If user is logged in and last login is within 14 days, redirect to HomeActivity
-        if (isLoggedIn && System.currentTimeMillis() - lastLogin < 1209600000) {
-            String userID = sharedPreferences.getString("userID", "");
-            String email = sharedPreferences.getString("email", "");
-            String userName = sharedPreferences.getString("userName", "");
-            String password = sharedPreferences.getString("password", "");
-            int coins = sharedPreferences.getInt("coins", 0);
-            userSession.addAndSetUser(userID, email, userName, password, coins, new ArrayList<>());
+    /**
+     * Automatically logs in the user if user session is still valid.
+     */
+    private void autoLogin() {
+        // Fetch user data from SharedPreferences and set to currSession
+        String userID = sessionCache.getString("userID", "");
+        String password = sessionCache.getString("password", "");
+        // Sync user data and set to currSession
+        syncUserData();
+        User user = localDB.getUserWithIdAndPass(userID, password);
+        currSession.addUser(user);
+        currSession.setCurrentUser(user);
+        saveAndRedirect();
+    }
+
+    /**
+     * Saves the user data to the session cache and redirects to the HomeActivity.
+     */
+    private void saveAndRedirect() {
+        if (currSession.getCurrentUser() != null) {
+            saveSessionCache();
+            // Redirect to HomeActivity
             Intent home = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(home);
             finish();
-        } else {
-            // If user is not logged in or last login is more than 14 days, clear SharedPreferences
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.apply();
         }
+    }
 
+    /**
+     * This method is called when the register button is clicked.
+     */
+    public void btnClickedRegister(View v){
+        Intent register = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivity(register);
     }
 
     /**
@@ -88,80 +138,99 @@ public class LoginActivity extends AppCompatActivity {
      * @param v - the view
      */
     public void btnClickedLogin(View v){
-        String email = String.valueOf(editTextEmail.getText()); //not doing editTextEmail.getText().toString() to prevent null pointer exceptions
-        String password = String.valueOf(editTextPassword.getText());
-
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(LoginActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
-            return;
+        // Get the email and password input
+        String emailInput = String.valueOf(editTextEmail.getText());
+        String passwordInput = String.valueOf(editTextPassword.getText());
+        // If input is valid, authenticate the user
+        if (inputIsValid(emailInput, passwordInput)) {
+            authenticateUser(emailInput, passwordInput);
         }
-
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Authentication
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                   if (task.isSuccessful()) {
-                       // Sign in success
-                       FirebaseUser user = mAuth.getCurrentUser();
-                       if (user != null) {
-                           // Access other data from the user
-                           databaseUsers.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                               @Override
-                               public void onDataChange(DataSnapshot snapshot) {
-                                   // Log.d("LoginActivity", "onDataChange called");
-                                   User snapshotUser = snapshot.getValue(User.class);
-                                   if (snapshotUser != null) {
-                                       // Cache user data local database
-                                       userDBHelper.insertUser(snapshotUser);
-                                       // Pass user data via session to intent
-                                       userSession.addUser(snapshotUser.getUserID(), snapshotUser.getEmail(), snapshotUser.getUserName(), snapshotUser.getPassword(), snapshotUser.getCoins(), snapshotUser.getCollectiblesList());
-                                       if (userSession.setCurrentUser(email, password)) {
-                                           // Save user data to SharedPreferences
-                                           SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
-                                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                                             editor.putBoolean("isLoggedIn", true);
-                                             editor.putString("userID", snapshotUser.getUserID());
-                                             editor.putString("password", snapshotUser.getPassword());
-                                             editor.putString("email", snapshotUser.getEmail());
-                                             editor.putString("userName", snapshotUser.getUserName());
-                                             editor.putInt("coins", snapshotUser.getCoins());
-                                             editor.putLong("lastLogin", System.currentTimeMillis());
-                                             editor.apply();
-
-
-
-                                           Toast.makeText(LoginActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
-                                           Intent home = new Intent(LoginActivity.this, HomeActivity.class);
-                                           startActivity(home);
-                                       } else {
-                                           Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
-                                       }
-                                   } else {
-                                       Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
-                                   }
-                               }
-
-                               @Override
-                               public void onCancelled(DatabaseError error) {
-                                   Toast.makeText(LoginActivity.this, "Account not found.", Toast.LENGTH_SHORT).show();
-                               }
-                           });
-                       }
-                     } else {
-                          // If sign in fails, display a message to the user.
-                          Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                   }
-                });
-
     }
 
+    /**
+     * Validates the email and password input.
+     * @param emailInput - the email input
+     * @param passwordInput - the password input
+     * @return true if the input is valid, false otherwise
+     */
+    private boolean inputIsValid(String emailInput, String passwordInput) {
 
-    public void btnClickedRegister(View v){
-        Intent register = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(register);
+        if (TextUtils.isEmpty(emailInput)) {
+            Toast.makeText(LoginActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(passwordInput)) {
+            Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Authenticates the user through Firebase.
+     */
+    private void authenticateUser(String email, String password) {
+        userAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success
+                        FirebaseUser user = userAuth.getCurrentUser();
+                        if (user != null) {
+                            fetchUserData(user.getUid());
+                        }
+                    } else {
+                        // Sign in failed
+                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    /**
+     * Fetch user data from Firebase (cloudUserDB) and store it in the local database (localDB).
+     */
+    private void fetchUserData(String userID) {
+        // Fetch user data from Firebase
+        cloudUserDB.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    // Sync user data and store in local database
+                    syncUserData();
+                    localDB.insertUser(user);
+                    currSession.addUser(user);
+                    currSession.setCurrentUser(user);
+                    saveAndRedirect();
+                } else {
+                    Toast.makeText(LoginActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Error fetching user data
+                Toast.makeText(LoginActivity.this, "Error fetching user data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Store user credentials in the session cache.
+     */
+    private void saveSessionCache() {
+        SharedPreferences.Editor editor = sessionCache.edit();
+        editor.putLong("lastLogin", System.currentTimeMillis());
+        editor.putString("userID", currSession.getCurrentUser().getUserID());
+        editor.putString("password", currSession.getCurrentUser().getPassword());
+        editor.apply();
+    }
+
+    /**
+     * Sync user data between local and cloud databases.
+     */
+    private void syncUserData() {
+        // TODO: Implement syncing between local and cloud databases (timestamp-based)
     }
 }

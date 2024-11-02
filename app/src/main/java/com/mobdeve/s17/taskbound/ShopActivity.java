@@ -2,7 +2,6 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -11,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -113,7 +111,7 @@ public class ShopActivity extends AppCompatActivity {
     }
      */
     public void btnClickedRoll(View v) {
-        User user = db.getUser(this.user.getEmail(), this.user.getPassword());
+        User user = db.getUserWithEmailAndPass(this.user.getEmail(), this.user.getPassword());
 
         if (user.getCoins() < 100) {
             Toast.makeText(v.getContext(), "Not enough coins.", Toast.LENGTH_SHORT).show();
@@ -135,7 +133,7 @@ public class ShopActivity extends AppCompatActivity {
             db.addCollectibleToUser(user.getEmail(), collectibleID);
             db.deductUserCoins(user.getEmail(), 100);
 
-            user = db.getUser(user.getEmail(), user.getPassword()); // Refresh user data
+            user = db.getUserWithEmailAndPass(user.getEmail(), user.getPassword()); // Refresh user data
             this.coins = user.getCoins();
             this.moneyCount.setText(String.valueOf(this.coins));
 

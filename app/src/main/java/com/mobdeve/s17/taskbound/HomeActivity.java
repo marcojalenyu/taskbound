@@ -12,9 +12,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,11 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
-        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(getWindow().getDecorView());
-        if (windowInsetsController != null) {
-            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
-            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        }
+        UIUtil.hideSystemBars(getWindow().getDecorView());
 
         this.userSession = UserSession.getInstance();
         this.currentUser = userSession.getCurrentUser();
@@ -141,7 +134,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
-        User currentUser = dbHelper.getUser(UserSession.getInstance().getCurrentUser().getEmail(), UserSession.getInstance().getCurrentUser().getPassword());
+        User currentUser = dbHelper.getUserWithEmailAndPass(UserSession.getInstance().getCurrentUser().getEmail(), UserSession.getInstance().getCurrentUser().getPassword());
 
         if (currentUser != null) {
             // Update the coin amount when the activity resumes

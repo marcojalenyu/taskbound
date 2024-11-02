@@ -12,7 +12,11 @@ public class User {
     private String password;
     private int coins;
     private ArrayList<MyCollectiblesData> collectiblesList;
+    private long lastUpdated;
 
+    /**
+     * Default constructor for User (required by Firebase)
+     */
     public User(){
         this.collectiblesList = new ArrayList<>(); // Initialize collectiblesList
     }
@@ -74,5 +78,9 @@ public class User {
                 break;
             }
         }
+    }
+
+    public void setLastUpdated(long lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

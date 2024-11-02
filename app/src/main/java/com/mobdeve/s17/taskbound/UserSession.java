@@ -14,9 +14,6 @@ public class UserSession {
         this.userList = new ArrayList<>();
         this.collectiblesManager = new CollectiblesManager();
         this.lastUserID = 0;
-
-        // Adding some default users for testing first
-        //this.addUser("shaunlim@gmail.com", "shaunlim", "123456");
     }
 
     public static UserSession getInstance() {
@@ -30,44 +27,21 @@ public class UserSession {
         return currentUser;
     }
 
-    public boolean setCurrentUser(String email, String password) {
-        for (User user : userList) {
-            if (user.getEmail().equals(email) && HashUtil.checkPassword(password, user.getPassword())) {
-                currentUser = user;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void addUser(String id, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
-        for (User user : userList) {
-            if (user.getEmail().equals(email)) {
-                return;
-            }
-        }
-        User user = new User (id, email, userName, password, coins, collectiblesList);
-        // this.lastUserID++;
-        this.userList.add(user);
-    }
-
-    public void addAndSetUser(String id, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
-        for (User user : userList) {
-            if (user.getEmail().equals(email)) {
-                return;
-            }
-        }
-        User user = new User (id, email, userName, password, coins, collectiblesList);
-        this.userList.add(user);
+    public void setCurrentUser(User user) {
         this.currentUser = user;
+    }
+
+    public void addUser(User newUser) {
+        for (User user : userList) {
+            if (user.getUserID().equals(newUser.getUserID())) {
+                return;
+            }
+        }
+        this.userList.add(newUser);
     }
 
     public void clearUserData() {
         currentUser = null;
-    }
-
-    public boolean isLoggedIn() {
-        return currentUser != null;
     }
 
     public CollectiblesManager getCollectiblesManager() {
