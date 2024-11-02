@@ -21,7 +21,7 @@ public class User {
         this.collectiblesList = new ArrayList<>(); // Initialize collectiblesList
     }
 
-    public User(String userID, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList) {
+    public User(String userID, String email, String userName, String password, int coins, ArrayList<MyCollectiblesData> collectiblesList, long lastUpdated) {
         this.userID = userID;
         this.email = email;
         this.userName = userName;
@@ -29,6 +29,7 @@ public class User {
         this.coins = coins;
         CollectiblesManager collectiblesManager = new CollectiblesManager();
         this.collectiblesList = collectiblesManager.getCollectibles();
+        this.lastUpdated = lastUpdated;
     }
 
     public String getUserID() {

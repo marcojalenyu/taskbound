@@ -33,7 +33,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView tvCoinAmount;
     SearchView svSearchBar;
     private UserSession userSession;
-    private TaskBoundDBHelper taskDBHelper;
+    private LocalDBManager taskDBHelper;
 
     private User currentUser;
     private SortType sortType;
@@ -75,7 +75,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         // Initialize TaskBoundDBHelper and get all tasks
-        this.taskDBHelper = new TaskBoundDBHelper(this);
+        this.taskDBHelper = new LocalDBManager(this);
 
         tasksView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -133,8 +133,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
-        User currentUser = dbHelper.getUserWithEmailAndPass(UserSession.getInstance().getCurrentUser().getEmail(), UserSession.getInstance().getCurrentUser().getPassword());
+        LocalDBManager dbHelper = new LocalDBManager(this);
+        User currentUser = dbHelper.getUserWithIdAndPass(UserSession.getInstance().getCurrentUser().getUserID(), UserSession.getInstance().getCurrentUser().getPassword());
 
         if (currentUser != null) {
             // Update the coin amount when the activity resumes

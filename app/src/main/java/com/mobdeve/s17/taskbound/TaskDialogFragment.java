@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,7 +32,7 @@ import java.text.SimpleDateFormat;
  * This fragment is used to display a dialog box of the task, allowing the user to edit the task.
  */
 public class TaskDialogFragment extends DialogFragment {
-    private TaskBoundDBHelper db;
+    private LocalDBManager db;
     private TaskManager taskManager;
     private final Task task;
     private Button btnSubmit;
@@ -70,7 +69,7 @@ public class TaskDialogFragment extends DialogFragment {
         this.userSession = UserSession.getInstance();
         this.user = userSession.getCurrentUser();
         this.userID = user.getUserID();
-        this.db = new TaskBoundDBHelper(this.getContext());
+        this.db = new LocalDBManager(this.getContext());
         try {
             this.taskManager = new TaskManager();
         } catch (ParseException e) {

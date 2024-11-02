@@ -7,7 +7,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -28,7 +27,7 @@ public class CollectiblesActivity extends AppCompatActivity {
     int coins;
     ArrayList<MyCollectiblesData> collectiblesList;
 
-    private TaskBoundDBHelper db;
+    private LocalDBManager db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class CollectiblesActivity extends AppCompatActivity {
         // Initialize TaskBoundDBHelper and fetch the latest collectibles data
         try {
             // Initialize TaskBoundDBHelper and fetch the latest collectibles data
-            TaskBoundDBHelper dbHelper = new TaskBoundDBHelper(this);
+            LocalDBManager dbHelper = new LocalDBManager(this);
             collectiblesList = dbHelper.getUserCollectibles(user.getEmail());
 
             if (collectiblesList != null && !collectiblesList.isEmpty()) {

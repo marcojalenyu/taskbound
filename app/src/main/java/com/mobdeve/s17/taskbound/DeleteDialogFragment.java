@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import android.widget.TextView;
  */
 public class DeleteDialogFragment extends DialogFragment {
 
-    private TaskBoundDBHelper db;
+    private LocalDBManager db;
     private final Task task;
     TextView tvHeader;
     Button btnDeleteTask, btnCancel;
@@ -48,7 +47,7 @@ public class DeleteDialogFragment extends DialogFragment {
         this.btnDeleteTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db = new TaskBoundDBHelper(getContext());
+                db = new LocalDBManager(getContext());
                 db.deleteTask(task.getId());
                 dismiss();
                 ((HomeActivity) getActivity()).onResume();

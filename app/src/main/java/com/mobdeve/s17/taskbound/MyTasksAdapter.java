@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHolder> {
 
-    private TaskBoundDBHelper db;
+    private LocalDBManager db;
     private List<Task> myTaskData; //used what I made in TaskDBHelper instead of Task[] myTaskData
     private Handler handler;
     Context context;
@@ -91,7 +91,7 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
                 // Health of the task decreases by 1
                 // Update the health of the task in the database
                 // If health is 0, delete the task
-                db = new TaskBoundDBHelper(context);
+                db = new LocalDBManager(context);
                 if (myTaskDataList.getHealth() > 1) {
                     myTaskDataList.damaged();
                     db.updateTaskHealth(myTaskDataList.getId(), myTaskDataList.getHealth());

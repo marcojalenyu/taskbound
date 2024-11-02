@@ -1,7 +1,6 @@
 package com.mobdeve.s17.taskbound;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,9 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.ParseException;
@@ -29,7 +25,7 @@ import java.util.Random;
 
 public class AddTaskFragment extends DialogFragment {
 
-    private TaskBoundDBHelper db;
+    private LocalDBManager db;
     private TaskManager taskManager;
     private Button btnAddTask;
     private Button btnCancelAddTask;
@@ -44,7 +40,7 @@ public class AddTaskFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_addtask, container, false);
 
-        db = new TaskBoundDBHelper(getContext());
+        db = new LocalDBManager(getContext());
         try {
             taskManager = new TaskManager();
         } catch (ParseException e) {

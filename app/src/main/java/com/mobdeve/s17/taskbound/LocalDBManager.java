@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
-public class TaskBoundDBHelper extends SQLiteOpenHelper {
+public class LocalDBManager extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "taskbound-local.db";
     public static final int DATABASE_VERSION = 1;
 
@@ -38,6 +38,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
     public static final String TASK_COLUMN_HEALTH = "health";
     public static final String TASK_COLUMN_COINS = "coins";
     public static final String TASK_COLUMN_MONSTER = "monster";
+    public static final String TASK_COLUMN_LAST_UPDATED = "last_updated";
 
     // Create table statements
     private static final String CREATE_USER_TABLE =
@@ -60,9 +61,10 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
                     + TASK_COLUMN_HEALTH + " INTEGER,"
                     + TASK_COLUMN_COINS + " INTEGER,"
                     + TASK_COLUMN_MONSTER + " TEXT,"
+                    + TASK_COLUMN_LAST_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
                     + "FOREIGN KEY(" + TASK_COLUMN_USER_ID + ") REFERENCES " + USER_TABLE_NAME + "(" + USER_COLUMN_ID + "))";
 
-    public TaskBoundDBHelper(Context context) {
+    public LocalDBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -123,7 +125,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
     public User getUserWithIdAndPass(String userID, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
-        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
+        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES, USER_COLUMN_LAST_UPDATED},
                 USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -142,6 +144,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
             String userEmail = cursor.getString(1);
             String userName = cursor.getString(2);
             int coins = cursor.getInt(4);
+            long lastUpdated = cursor.getLong(6);
 
             // Convert the JSON string to an ArrayList<MyCollectiblesData>
             String collectiblesJson = cursor.getString(5);
@@ -149,68 +152,12 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
             Type type = new TypeToken<ArrayList<MyCollectiblesData>>() {}.getType();
             ArrayList<MyCollectiblesData> collectiblesList = gson.fromJson(collectiblesJson, type);
 
-            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList);
+            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList, lastUpdated);
 
             cursor.close();
             return user;
         }
         return null;
-    }
-
-    public User getUserWithEmailAndPass(String email, String password) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor;
-        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
-                USER_COLUMN_EMAIL + "=?", new String[] {email}, null, null, null, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            String hashedPassword = cursor.getString(3);
-
-            try {
-                if (!password.equals(hashedPassword)) {
-                    cursor.close();
-                    return null;
-                }
-            } catch (Exception e) {
-                Log.e("LoginReal", e + "");
-                return null;
-            }
-
-            String userID = cursor.getString(0);
-            String userEmail = cursor.getString(1);
-            String userName = cursor.getString(2);
-            int coins = cursor.getInt(4);
-
-            // Convert the JSON string to an ArrayList<MyCollectiblesData>
-            String collectiblesJson = cursor.getString(5);
-            Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<MyCollectiblesData>>() {}.getType();
-            ArrayList<MyCollectiblesData> collectiblesList = gson.fromJson(collectiblesJson, type);
-
-            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList);
-
-            cursor.close();
-            return user;
-        }
-        return null;
-    }
-
-    public User addUserCoins(String email, int coins) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
-                USER_COLUMN_EMAIL + "=?", new String[] {email}, null, null, null, null);
-
-        int coinsColumnIndex = cursor.getColumnIndex(USER_COLUMN_COINS);
-        if (coinsColumnIndex >= 0) {
-            int currentCoins = cursor.getInt(coinsColumnIndex);
-            ContentValues values = new ContentValues();
-            values.put(USER_COLUMN_COINS, currentCoins + coins);
-
-            db.update(USER_TABLE_NAME, values, USER_COLUMN_EMAIL + "=?", new String[] {email});
-        }
-        cursor.close();
-        db.close();
-        return getUserWithEmailAndPass(email, null); // Assuming getUser can handle null password for fetching by email only
     }
 
     public User deductUserCoins(String email, int coins) {
@@ -230,13 +177,13 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         db.close();
-        return getUserWithEmailAndPass(email, null); // Assuming getUser can handle null password for fetching by email only
+        return getUserWithIdAndPass(email, null); // Assuming getUser can handle null password for fetching by email only
     }
 
-    public void addCollectibleToUser(String email, int collectibleID) {
+    public void addCollectibleToUser(String userID, int collectibleID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_COLLECTIBLES},
-                USER_COLUMN_EMAIL + "=?", new String[] {email}, null, null, null, null);
+                USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);
@@ -258,7 +205,7 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
                     ContentValues values = new ContentValues();
                     values.put(USER_COLUMN_COLLECTIBLES, updatedCollectiblesJson);
 
-                    db.update(USER_TABLE_NAME, values, USER_COLUMN_EMAIL + "=?", new String[] {email});
+                    db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {userID});
                 }
             }
             cursor.close();
@@ -266,10 +213,10 @@ public class TaskBoundDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<MyCollectiblesData> getUserCollectibles(String email) {
+    public ArrayList<MyCollectiblesData> getUserCollectibles(String userID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_COLLECTIBLES},
-                USER_COLUMN_EMAIL + "=?", new String[] {email}, null, null, null, null);
+                USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);

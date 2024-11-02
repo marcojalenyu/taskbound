@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private UserSession currSession;
     // Database components
     private FirebaseAuth userAuth;
-    private TaskBoundDBHelper localDB;
+    private LocalDBManager localDB;
     private DatabaseReference cloudUserDB;
 
     /**
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     private void initializeDataAndSession() {
         this.sessionCache = getSharedPreferences("UserSession", MODE_PRIVATE);
         this.currSession = UserSession.getInstance();
-        this.localDB = new TaskBoundDBHelper(this);
+        this.localDB = new LocalDBManager(this);
         this.userAuth = FirebaseAuth.getInstance();
         this.cloudUserDB = FirebaseDatabase.getInstance().getReference("users");
     }

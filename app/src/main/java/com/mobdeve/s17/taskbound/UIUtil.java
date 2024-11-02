@@ -1,4 +1,3 @@
-// UIUtils.java
 package com.mobdeve.s17.taskbound;
 
 import android.view.View;

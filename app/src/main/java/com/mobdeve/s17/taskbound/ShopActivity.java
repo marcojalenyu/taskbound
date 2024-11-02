@@ -29,7 +29,7 @@ public class ShopActivity extends AppCompatActivity {
 
     private UserSession userSession;
     private User user;
-    private TaskBoundDBHelper db;
+    private LocalDBManager db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class ShopActivity extends AppCompatActivity {
             windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
 
-        this.db = new TaskBoundDBHelper(this);
+        this.db = new LocalDBManager(this);
 
         this.userSession = UserSession.getInstance();
         this.user = userSession.getCurrentUser();
@@ -111,7 +111,7 @@ public class ShopActivity extends AppCompatActivity {
     }
      */
     public void btnClickedRoll(View v) {
-        User user = db.getUserWithEmailAndPass(this.user.getEmail(), this.user.getPassword());
+        User user = db.getUserWithIdAndPass(this.user.getUserID(), this.user.getPassword());
 
         if (user.getCoins() < 100) {
             Toast.makeText(v.getContext(), "Not enough coins.", Toast.LENGTH_SHORT).show();
@@ -130,10 +130,10 @@ public class ShopActivity extends AppCompatActivity {
 
         if (collectible != null) {
             int collectibleID = collectible.getCollectibleID();
-            db.addCollectibleToUser(user.getEmail(), collectibleID);
-            db.deductUserCoins(user.getEmail(), 100);
+            db.addCollectibleToUser(user.getUserID(), collectibleID);
+            db.deductUserCoins(user.getUserID(), 100);
 
-            user = db.getUserWithEmailAndPass(user.getEmail(), user.getPassword()); // Refresh user data
+            user = db.getUserWithIdAndPass(this.user.getUserID(), this.user.getPassword());
             this.coins = user.getCoins();
             this.moneyCount.setText(String.valueOf(this.coins));
 

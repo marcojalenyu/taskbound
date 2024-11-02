@@ -30,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
     private UserSession currSession;
     // Database components
     private FirebaseAuth userAuth;
-    private TaskBoundDBHelper localDB;
+    private LocalDBManager localDB;
     private DatabaseReference cloudUserDB;
 
     /**
@@ -52,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void initializeDataAndSession() {
         this.currSession = UserSession.getInstance();
-        this.localDB = new TaskBoundDBHelper(this);
+        this.localDB = new LocalDBManager(this);
         this.userAuth = FirebaseAuth.getInstance();
         this.cloudUserDB = FirebaseDatabase.getInstance().getReference("users");
     }
@@ -148,13 +148,14 @@ public class RegisterActivity extends AppCompatActivity {
      * Create a new user, store it in the Firebase Realtime Database, and store it in the local SQLite database.
      */
     private void registerUserData(String userID, String username, String email, String password) {
-        // Start user with 100 coins, no collectibles
+        // Start user with 100 coins, no collectibles, last updated time of now
         int initialCoins = 100;
         ArrayList<MyCollectiblesData> emptyCollectiblesList = new ArrayList<>();
+        long lastUpdated = System.currentTimeMillis();
         // Hash the password for security purposes
         String hashedPassword = HashUtil.hashPassword(password);
         // Create a new user, then store it in the Firebase Realtime Database and local SQLite database
-        User newUser = new User(userID, email, username, hashedPassword, initialCoins, emptyCollectiblesList);
+        User newUser = new User(userID, email, username, hashedPassword, initialCoins, emptyCollectiblesList, lastUpdated);
         cloudUserDB.child(userID).setValue(newUser);
         localDB.insertUser(newUser);
     }
