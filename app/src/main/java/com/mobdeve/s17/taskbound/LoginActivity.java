@@ -25,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // UI components
     private TextInputEditText editTextEmail, editTextPassword;
-    private Button btnLogin, btnRegister;
     // Session components
     private SharedPreferences sessionCache;
     private UserSession currSession;
@@ -51,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             clearSessionCache();
         } else {
             // TODO: Sync user data between local and cloud databases (go to syncUserData())
+            // Note: This will probably need calling the FirebaseReference
             autoLogin();
         }
     }
@@ -72,10 +72,10 @@ public class LoginActivity extends AppCompatActivity {
     private void initializeUI() {
         this.editTextEmail = findViewById(R.id.email);
         this.editTextPassword = findViewById(R.id.password);
-        this.btnLogin = findViewById(R.id.btnLogin);
-        this.btnRegister = findViewById(R.id.btnRegister);
-        this.btnLogin.setOnClickListener(this::btnClickedLogin);
-        this.btnRegister.setOnClickListener(this::btnClickedRegister);
+        Button btnLogin = findViewById(R.id.btnLogin);
+        Button btnRegister = findViewById(R.id.btnRegister);
+        btnLogin.setOnClickListener(this::btnClickedLogin);
+        btnRegister.setOnClickListener(this::btnClickedRegister);
     }
 
     /**

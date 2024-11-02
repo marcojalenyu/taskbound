@@ -8,12 +8,10 @@ public class UserSession {
     private User currentUser;
     private ArrayList<User> userList;
     private CollectiblesManager collectiblesManager;
-    private int lastUserID;
 
     private UserSession() {
         this.userList = new ArrayList<>();
         this.collectiblesManager = new CollectiblesManager();
-        this.lastUserID = 0;
     }
 
     public static UserSession getInstance() {

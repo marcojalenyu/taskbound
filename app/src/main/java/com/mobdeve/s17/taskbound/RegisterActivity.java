@@ -4,13 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,140 +24,171 @@ import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    // UI components
     TextInputEditText newEmail, newUsername, newPassword;
-    private UserSession userSession;
-    private TaskBoundDBHelper userDBHelper;
-    private FirebaseAuth mAuth;
-    private DatabaseReference databaseUsers;
+    // Session components
+    private UserSession currSession;
+    // Database components
+    private FirebaseAuth userAuth;
+    private TaskBoundDBHelper localDB;
+    private DatabaseReference cloudUserDB;
 
+    /**
+     * This method is called when the activity is first created.
+     * @param savedInstanceState - the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
-        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(getWindow().getDecorView());
-        if (windowInsetsController != null) {
-            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
-            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        }
-
-        this.userSession = UserSession.getInstance();
-        this.userDBHelper = new TaskBoundDBHelper(this);
-
-        // Initialize the database reference
-        mAuth = FirebaseAuth.getInstance();
-        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
-
-        // Initialize the TextInputEditText fields
-        newEmail = findViewById(R.id.newEmail);
-        newUsername = findViewById(R.id.newUsername);
-        newPassword = findViewById(R.id.newPassword);
+        UIUtil.hideSystemBars(getWindow().getDecorView());
+        initializeDataAndSession();
+        initializeUI();
     }
 
+    /**
+     * This method initializes the DB and session data.
+     */
+    private void initializeDataAndSession() {
+        this.currSession = UserSession.getInstance();
+        this.localDB = new TaskBoundDBHelper(this);
+        this.userAuth = FirebaseAuth.getInstance();
+        this.cloudUserDB = FirebaseDatabase.getInstance().getReference("users");
+    }
+
+    /**
+     * This method initializes the UI components.
+     */
+    private void initializeUI() {
+        this.newEmail = findViewById(R.id.newEmail);
+        this.newUsername = findViewById(R.id.newUsername);
+        this.newPassword = findViewById(R.id.newPassword);
+        Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
+        Button btnBackToLogin = findViewById(R.id.btnBackToLogin);
+        btnCreateAccount.setOnClickListener(this::btnClickedCreateAccount);
+        btnBackToLogin.setOnClickListener(this::btnClickedBackToLogin);
+    }
+
+    /**
+     * This method is called when the user clicks the back to login button.
+     */
     public void btnClickedBackToLogin(View v){
         finish();
     }
 
+    /**
+     * This method is called when the user clicks the create account button.
+     * @param v - the view
+     */
     public void btnClickedCreateAccount(View v){
-        String email = String.valueOf(newEmail.getText()); //not doing newEmail.getText().toString() to prevent null pointer exceptions
-        String username = String.valueOf(newUsername.getText());
-        String password = String.valueOf(newPassword.getText());
-
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(RegisterActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
-            return;
+        // Get the username, email, and password input
+        String usernameInput = String.valueOf(newUsername.getText());
+        String emailInput = String.valueOf(newEmail.getText());
+        String passwordInput = String.valueOf(newPassword.getText());
+        // If the input is valid, register the user
+        if (inputIsValid(usernameInput, emailInput, passwordInput)) {
+            registerUser(usernameInput, emailInput, passwordInput);
         }
+    }
 
-        if (TextUtils.isEmpty(username)) {
+    /**
+     * Validates the email, username, and password input.
+     *  @param usernameInput - the username input
+     *  @param emailInput - the email input
+     *  @param passwordInput - the password input
+     */
+    private boolean inputIsValid(String usernameInput, String emailInput, String passwordInput) {
+
+        if (TextUtils.isEmpty(usernameInput)) {
             Toast.makeText(RegisterActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
-        if (TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(emailInput)) {
+            Toast.makeText(RegisterActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(passwordInput)) {
             Toast.makeText(RegisterActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
-        // Check if password is at least 6 characters long
-        if (password.length() < 6) {
+        if (passwordInput.length() < 6) {
             Toast.makeText(RegisterActivity.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
-        // Register the user using Firebase Authentication
-        mAuth.createUserWithEmailAndPassword(email, password)
+        return true;
+    }
+
+    /**
+     * Registers the user using Firebase Authentication.
+     */
+    private void registerUser(String username, String email, String password) {
+        userAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // If sign in succeeds, display a message to the user.
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        System.out.println(1000);
-                        if (firebaseUser != null) {
-                            String userId = firebaseUser.getUid();
-                            int initialCoins = 1000; // Default value for coins
-                            ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
-
-                            String hashedPassword = HashUtil.hashPassword(password);
-                            User newUser = new User(userId, email, username, hashedPassword, initialCoins, collectiblesList); // ID is auto-incremented, see UserDBHelper
-
-                            System.out.println("New user: " + newUser);
-                            System.out.println(databaseUsers);
-
-                            // Store the user in the Firebase Realtime Database
-                            databaseUsers.child(userId).setValue(newUser);
-
-                            // Store the user in thesetValue local SQLite database
-                            userDBHelper.insertUser(newUser);
-
-                            // Pass user data via session to intent
-                            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
-                            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-                            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(backToLogin);
-                            finish();
+                        // Registration success
+                        FirebaseUser registeredUser = userAuth.getCurrentUser();
+                        if (registeredUser != null) {
+                            registerUserData(registeredUser.getUid(), username, email, password);
+                            Toast.makeText(RegisterActivity.this, "Registered " + username, Toast.LENGTH_SHORT).show();
+                            returnToLogin();
                         }
                     } else {
-                        // If sign in fails, display a message to the user.
+                        // If registration failed
                         Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-
-//        int initialCoins = 1000; // Default value for coins
-//        String hashedPassword = HashUtil.hashPassword(password);
-//        ArrayList<MyCollectiblesData> collectiblesList = new ArrayList<>(); // Initialize empty collectibles list for new user
-//
-//        User newUser = new User(0, email, username, hashedPassword, initialCoins, collectiblesList); // ID is auto-incremented, see UserDBHelper
-//
-//        // Use UserDBHelper to add a new user
-//        if (userDBHelper.insertUser(newUser)) {
-//            //userSession.addUser(email, username, password);
-//            Toast.makeText(RegisterActivity.this, "Registered user " + username, Toast.LENGTH_SHORT).show();
-//            Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
-//            backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(backToLogin);
-//            finish();
-//        } else {
-//            Toast.makeText(RegisterActivity.this, "User already exists.", Toast.LENGTH_SHORT).show();
-//        }
     }
 
+    /**
+     * Create a new user, store it in the Firebase Realtime Database, and store it in the local SQLite database.
+     */
+    private void registerUserData(String userID, String username, String email, String password) {
+        // Start user with 100 coins, no collectibles
+        int initialCoins = 100;
+        ArrayList<MyCollectiblesData> emptyCollectiblesList = new ArrayList<>();
+        // Hash the password for security purposes
+        String hashedPassword = HashUtil.hashPassword(password);
+        // Create a new user, then store it in the Firebase Realtime Database and local SQLite database
+        User newUser = new User(userID, email, username, hashedPassword, initialCoins, emptyCollectiblesList);
+        cloudUserDB.child(userID).setValue(newUser);
+        localDB.insertUser(newUser);
+    }
+
+    /**
+     * Redirects the user to the login activity.
+     */
+    private void returnToLogin() {
+        Intent backToLogin = new Intent(RegisterActivity.this, LoginActivity.class);
+        backToLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(backToLogin);
+        finish();
+    }
+
+    /**
+     * This method is called when the activity is started.
+     * It fetches the users from the Firebase Realtime Database and stores them in the current session.
+     */
     @Override
     protected void onStart() {
         super.onStart();
-        databaseUsers.addValueEventListener(new ValueEventListener() {
+        cloudUserDB.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
                     if (user != null) {
-                        userSession.addUser(user);
+                        currSession.addUser(user);
                     }
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(RegisterActivity.this, "Error fetching users", Toast.LENGTH_SHORT).show();
             }
         });
