@@ -51,6 +51,10 @@ public class User {
         return this.collectiblesList;
     }
 
+    public long getLastUpdated() {
+        return this.lastUpdated;
+    }
+
     public void setUserID(String userID) {
         this.userID = userID;
     }
@@ -71,6 +75,9 @@ public class User {
         this.collectiblesList.clear();
         this.collectiblesList.addAll(collectiblesList);
     }
+    public void setLastUpdated(long lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
     public void obtainCollectible(int collectibleID, boolean isObtained) {
         for (MyCollectiblesData collectible : collectiblesList) {
@@ -79,9 +86,5 @@ public class User {
                 break;
             }
         }
-    }
-
-    public void setLastUpdated(long lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 }

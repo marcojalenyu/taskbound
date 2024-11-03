@@ -49,8 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         if (sessionExpired()) {
             clearSessionCache();
         } else {
-            // TODO: Sync user data between local and cloud databases (go to syncUserData())
-            // Note: This will probably need calling the FirebaseReference
             autoLogin();
         }
     }
@@ -102,12 +100,8 @@ public class LoginActivity extends AppCompatActivity {
         // Fetch user data from SharedPreferences and set to currSession
         String userID = sessionCache.getString("userID", "");
         String password = sessionCache.getString("password", "");
-        // Sync user data and set to currSession
-        syncUserData();
         User user = localDB.getUserWithIdAndPass(userID, password);
-        currSession.addUser(user);
-        currSession.setCurrentUser(user);
-        saveAndRedirect();
+        fetchUserData(user.getUserID());
     }
 
     /**
@@ -197,9 +191,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
-                    // Sync user data and store in local database
-                    syncUserData();
-                    localDB.insertUser(user);
+                    syncUserData(user);
                     currSession.addUser(user);
                     currSession.setCurrentUser(user);
                     saveAndRedirect();
@@ -230,7 +222,23 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Sync user data between local and cloud databases.
      */
-    private void syncUserData() {
-        // TODO: Implement syncing between local and cloud databases (timestamp-based)
+    private void syncUserData(User cloudUser) {
+        try {
+            User localUser = localDB.getUserWithIdAndPass(cloudUser.getUserID(), cloudUser.getPassword());
+            // If local user data is not found, insert cloud user data to local database
+            if (localUser == null) {
+                localDB.insertUser(cloudUser);
+            } else {
+                // If local user data is found, update whichever is more recent
+                if (cloudUser.getLastUpdated() > localUser.getLastUpdated()) {
+                    localDB.updateUser(cloudUser);
+                } else {
+                    cloudUserDB.child(cloudUser.getUserID()).setValue(localUser);
+                }
+            }
+            Toast.makeText(LoginActivity.this, "Syncing successful.", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(LoginActivity.this, "Syncing failed.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

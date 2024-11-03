@@ -160,6 +160,21 @@ public class LocalDBManager extends SQLiteOpenHelper {
         return null;
     }
 
+    public void updateUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_COLUMN_EMAIL, user.getEmail());
+        values.put(USER_COLUMN_USERNAME, user.getUserName());
+        values.put(USER_COLUMN_PASSWORD, user.getPassword());
+        values.put(USER_COLUMN_COINS, user.getCoins());
+        Gson gson = new Gson();
+        String collectiblesJson = gson.toJson(user.getCollectiblesList());
+        values.put(USER_COLUMN_COLLECTIBLES, collectiblesJson);
+        values.put(USER_COLUMN_LAST_UPDATED, user.getLastUpdated());
+        db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {user.getUserID()});
+        db.close();
+    }
+
     public User deductUserCoins(String email, int coins) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
