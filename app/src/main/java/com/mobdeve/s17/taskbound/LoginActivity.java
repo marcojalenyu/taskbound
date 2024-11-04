@@ -21,6 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * A class that represents the login activity of the application.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     // UI components
@@ -190,12 +193,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
+                // Only sync user data if user is found in cloud database
                 if (user != null) {
                     syncUserData(user);
                     currSession.addUser(user);
                     currSession.setCurrentUser(user);
                     saveAndRedirect();
                 } else {
+                    localDB.hardDeleteUser(userID);
                     Toast.makeText(LoginActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -225,15 +230,24 @@ public class LoginActivity extends AppCompatActivity {
     private void syncUserData(User cloudUser) {
         try {
             User localUser = localDB.getUserWithIdAndPass(cloudUser.getUserID(), cloudUser.getPassword());
-            // If local user data is not found, insert cloud user data to local database
+            // Check if user data is found in local database
             if (localUser == null) {
-                localDB.insertUser(cloudUser);
+                if (cloudUser.isDeleted()) {
+                    cloudUserDB.child(cloudUser.getUserID()).removeValue();
+                } else {
+                    localDB.insertUser(cloudUser);
+                }
             } else {
                 // If local user data is found, update whichever is more recent
                 if (cloudUser.getLastUpdated() > localUser.getLastUpdated()) {
                     localDB.updateUser(cloudUser);
                 } else {
                     cloudUserDB.child(cloudUser.getUserID()).setValue(localUser);
+                }
+                // If user is deleted, remove from both databases
+                if (cloudUser.isDeleted()) {
+                    localDB.hardDeleteUser(cloudUser.getUserID());
+                    cloudUserDB.child(cloudUser.getUserID()).removeValue();
                 }
             }
             Toast.makeText(LoginActivity.this, "Syncing successful.", Toast.LENGTH_SHORT).show();

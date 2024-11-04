@@ -19,9 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Random;
+import java.util.UUID;
 
 public class AddTaskFragment extends DialogFragment {
 
@@ -32,6 +36,7 @@ public class AddTaskFragment extends DialogFragment {
     private EditText taskName, taskContent, taskDeadline;
     private User currentUser;
     private UserSession userSession;
+    private DatabaseReference cloudTaskDB;
 
     public AddTaskFragment() {}
 
@@ -49,6 +54,7 @@ public class AddTaskFragment extends DialogFragment {
 
         this.userSession = UserSession.getInstance();
         currentUser = userSession.getCurrentUser();
+        cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks").child(currentUser.getUserID());
 
         taskName = view.findViewById(R.id.etTaskName);
         taskContent = view.findViewById(R.id.etTaskDesc);
@@ -80,9 +86,13 @@ public class AddTaskFragment extends DialogFragment {
                             return;
                         }
 
+                        // Generate an id
+                        String taskID = UUID.randomUUID().toString();
+
                         // Create a new task
-                        Task task = new Task("0", userID, name, content, deadline, taskData.getHealth(), taskData.getCoins(), taskData.getMonster());
+                        Task task = new Task(taskID, userID, name, content, deadline, taskData.getHealth(), taskData.getCoins(), taskData.getMonster());
                         db.insertTask(task);
+                        cloudTaskDB.child(taskID).setValue(task);
 
                         dismiss();
                         ((HomeActivity) getActivity()).onResume();

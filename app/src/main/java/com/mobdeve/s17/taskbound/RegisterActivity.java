@@ -20,8 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
+/**
+ * A class that represents the registration activity of the application.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     // UI components
@@ -148,14 +149,10 @@ public class RegisterActivity extends AppCompatActivity {
      * Create a new user, store it in the Firebase Realtime Database, and store it in the local SQLite database.
      */
     private void registerUserData(String userID, String username, String email, String password) {
-        // Start user with 100 coins, no collectibles, last updated time of now
-        int initialCoins = 100;
-        ArrayList<MyCollectiblesData> emptyCollectiblesList = new ArrayList<>();
-        long lastUpdated = System.currentTimeMillis();
         // Hash the password for security purposes
         String hashedPassword = HashUtil.hashPassword(password);
         // Create a new user, then store it in the Firebase Realtime Database and local SQLite database
-        User newUser = new User(userID, email, username, hashedPassword, initialCoins, emptyCollectiblesList, lastUpdated);
+        User newUser = new User(userID, email, username, hashedPassword);
         cloudUserDB.child(userID).setValue(newUser);
         localDB.insertUser(newUser);
     }

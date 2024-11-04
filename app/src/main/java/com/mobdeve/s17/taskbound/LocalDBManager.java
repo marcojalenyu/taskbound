@@ -26,7 +26,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public static final String USER_COLUMN_PASSWORD = "password";
     public static final String USER_COLUMN_COINS = "coins";
     public static final String USER_COLUMN_COLLECTIBLES = "collectibles";
+    public static final String USER_COLUMN_SORT_TYPE = "sort_type";
     public static final String USER_COLUMN_LAST_UPDATED = "last_updated";
+    public static final String USER_COLUMN_DELETED = "deleted";
 
     // Task table
     public static final String TASK_TABLE_NAME = "tasks";
@@ -39,6 +41,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public static final String TASK_COLUMN_COINS = "coins";
     public static final String TASK_COLUMN_MONSTER = "monster";
     public static final String TASK_COLUMN_LAST_UPDATED = "last_updated";
+    public static final String TASK_COLUMN_DELETED = "deleted";
 
     // Create table statements
     private static final String CREATE_USER_TABLE =
@@ -49,7 +52,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
                     + USER_COLUMN_PASSWORD + " TEXT,"
                     + USER_COLUMN_COINS + " INTEGER,"
                     + USER_COLUMN_COLLECTIBLES + " TEXT,"
-                    + USER_COLUMN_LAST_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
+                    + USER_COLUMN_SORT_TYPE + " TEXT,"
+                    + USER_COLUMN_LAST_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
+                    + USER_COLUMN_DELETED + " INTEGER DEFAULT 0)";
 
     private static final String CREATE_TASK_TABLE =
             "CREATE TABLE " + TASK_TABLE_NAME + "("
@@ -62,6 +67,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
                     + TASK_COLUMN_COINS + " INTEGER,"
                     + TASK_COLUMN_MONSTER + " TEXT,"
                     + TASK_COLUMN_LAST_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
+                    + TASK_COLUMN_DELETED + " INTEGER DEFAULT 0,"
                     + "FOREIGN KEY(" + TASK_COLUMN_USER_ID + ") REFERENCES " + USER_TABLE_NAME + "(" + USER_COLUMN_ID + "))";
 
     public LocalDBManager(Context context) {
@@ -114,6 +120,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
         Gson gson = new Gson();
         String collectiblesJson = gson.toJson(user.getCollectiblesList());
         values.put(USER_COLUMN_COLLECTIBLES, collectiblesJson);
+        values.put(USER_COLUMN_LAST_UPDATED, user.getLastUpdated());
+        values.put(USER_COLUMN_SORT_TYPE, user.getSortType().toString());
+        values.put(USER_COLUMN_DELETED, user.isDeleted() ? 1 : 0);
         long result = db.insert(USER_TABLE_NAME, null, values);
         db.close();
 
@@ -125,7 +134,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public User getUserWithIdAndPass(String userID, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
-        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES, USER_COLUMN_LAST_UPDATED},
+        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES, USER_COLUMN_SORT_TYPE, USER_COLUMN_LAST_UPDATED, USER_COLUMN_DELETED},
                 USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -141,10 +150,18 @@ public class LocalDBManager extends SQLiteOpenHelper {
                 return null;
             }
 
+            boolean isDeleted = cursor.getInt(8) == 1;
+            // Check if the user is deleted
+            if (isDeleted) {
+                cursor.close();
+                return null;
+            }
+
             String userEmail = cursor.getString(1);
             String userName = cursor.getString(2);
             int coins = cursor.getInt(4);
-            long lastUpdated = cursor.getLong(6);
+            String sortType = cursor.getString(6);
+            long lastUpdated = cursor.getLong(7);
 
             // Convert the JSON string to an ArrayList<MyCollectiblesData>
             String collectiblesJson = cursor.getString(5);
@@ -152,7 +169,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
             Type type = new TypeToken<ArrayList<MyCollectiblesData>>() {}.getType();
             ArrayList<MyCollectiblesData> collectiblesList = gson.fromJson(collectiblesJson, type);
 
-            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList, lastUpdated);
+            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList, sortType, lastUpdated);
 
             cursor.close();
             return user;
@@ -171,6 +188,26 @@ public class LocalDBManager extends SQLiteOpenHelper {
         String collectiblesJson = gson.toJson(user.getCollectiblesList());
         values.put(USER_COLUMN_COLLECTIBLES, collectiblesJson);
         values.put(USER_COLUMN_LAST_UPDATED, user.getLastUpdated());
+        db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {user.getUserID()});
+        db.close();
+    }
+
+    /**
+     * Deletes a user from the local database (hard delete).
+     * @param userID
+     */
+    public void hardDeleteUser(String userID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        // DELETE FROM users WHERE id = ?
+        db.delete(USER_TABLE_NAME, USER_COLUMN_ID + "=?", new String[] {userID});
+        db.close();
+    }
+
+    public void updateUserSortType(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_COLUMN_SORT_TYPE, user.getSortType().toString());
         db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {user.getUserID()});
         db.close();
     }
@@ -250,20 +287,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
 
     // Task table methods
     public void insertTask(Task task) {
-        Log.d("LoginReal", task.getName());
-        Log.d("LoginReal", task.getContent());
-        Log.d("LoginReal", task.getDeadlineAsString());
-        Log.d("LoginReal", task.getHealth() + "");
-        Log.d("LoginReal", task.getCoins() + "");
-        Log.d("LoginReal", task.getMonster());
-        Log.d("LoginReal", task.getUserID() + "");
-
         SQLiteDatabase db = this.getWritableDatabase();
-
-
         ContentValues values = new ContentValues();
-
-
+        values.put(TASK_COLUMN_ID, task.getId());
         values.put(TASK_COLUMN_USER_ID, task.getUserID());
         values.put(TASK_COLUMN_NAME, task.getName());
         values.put(TASK_COLUMN_CONTENT, task.getContent());
@@ -271,6 +297,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(TASK_COLUMN_HEALTH, task.getHealth());
         values.put(TASK_COLUMN_COINS, task.getCoins());
         values.put(TASK_COLUMN_MONSTER, task.getMonster());
+        values.put(TASK_COLUMN_LAST_UPDATED, task.getLastUpdated());
+        values.put(TASK_COLUMN_DELETED, task.isDeleted() ? 1 : 0);
         db.insert(TASK_TABLE_NAME, null, values);
         db.close();
     }
@@ -328,7 +356,23 @@ public class LocalDBManager extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateTask(String taskId, String taskName, String taskContent, String taskDeadline) {
+    public void updateTask(Task task) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TASK_COLUMN_NAME, task.getName());
+        values.put(TASK_COLUMN_CONTENT, task.getContent());
+        values.put(TASK_COLUMN_DEADLINE, task.getDeadlineAsString());
+        values.put(TASK_COLUMN_HEALTH, task.getHealth());
+        values.put(TASK_COLUMN_COINS, task.getCoins());
+        values.put(TASK_COLUMN_MONSTER, task.getMonster());
+        values.put(TASK_COLUMN_LAST_UPDATED, task.getLastUpdated());
+        // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
+        String userID = UserSession.getInstance().getCurrentUser().getUserID();
+        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {task.getId(), userID});
+        db.close();
+    }
+
+    public void updateTaskInfo(String taskId, String taskName, String taskContent, String taskDeadline) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TASK_COLUMN_NAME, taskName);
@@ -353,7 +397,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteTask(String taskId) {
+    public void hardDeleteTask(String taskId) {
         SQLiteDatabase db = this.getWritableDatabase();
         String userID = UserSession.getInstance().getCurrentUser().getUserID();
         // DELETE FROM tasks WHERE id = ? && userid = ?

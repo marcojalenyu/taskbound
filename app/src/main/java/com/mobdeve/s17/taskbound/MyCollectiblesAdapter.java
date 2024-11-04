@@ -59,19 +59,6 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
             holder.collectibleName.setText(myCollectiblesDataList.getCollectibleName());
             holder.collectibleImg.setImageResource(myCollectiblesDataList.getCollectibleImage());
         }
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(context, myCollectiblesDataList.getCollectibleName(), Toast.LENGTH_SHORT).show();
-//                Intent i = new Intent(context, MovieActivity.class);
-//                i.putExtra("image",myCollectiblesDataList.getMovieImage());
-//                i.putExtra("name",myCollectiblesDataList.getMovieName());
-//                i.putExtra("date",myCollectiblesDataList.getMovieDate());
-//                i.putExtra("summary",myCollectiblesDataList.getMovieSummary());
-//
-//                context.startActivity(i);
-//            }
-//        });
     }
 
     @Override

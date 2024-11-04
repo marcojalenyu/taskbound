@@ -147,7 +147,7 @@ public class TaskDialogFragment extends DialogFragment {
                 String deadline = String.valueOf(etDeadline.getText());
 
                 try {
-                    db.updateTask(taskID, name, content, deadline);
+                    db.updateTaskInfo(taskID, name, content, deadline);
                     dismiss();
                     ((HomeActivity) getActivity()).onResume();
                 } catch (Exception e) {

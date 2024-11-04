@@ -89,7 +89,6 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
-                    android:onClick="btnClickedLogout"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_logout" />
 
@@ -119,14 +118,14 @@
                     android:id="@+id/searchView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:queryHint="Search Tasks"
                     android:background="@drawable/rounded_search_background"
                     android:clickable="true"
+                    android:drawableStart="@drawable/magnifying_glass"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:drawableStart="@drawable/magnifying_glass"
                     android:fontFamily="@font/retropix"
-                    android:iconifiedByDefault="true"/>
+                    android:iconifiedByDefault="true"
+                    android:queryHint="Search tasks..." />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
@@ -138,7 +137,6 @@
                 android:backgroundTint="@android:color/transparent"
                 android:fontFamily="@font/retropix"
                 android:minWidth="0dp"
-                android:onClick="btnClickedSort"
                 android:paddingHorizontal="17dp"
                 android:paddingLeft="0dp"
                 android:paddingTop="0dp"
@@ -184,7 +182,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/collectiblesBtn"
+            android:id="@+id/btnCollectibles"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:clickable="true"
@@ -194,7 +192,7 @@
             app:rippleColor="@android:color/transparent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addBtn"
+            android:id="@+id/btnAdd"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center|center_horizontal"
@@ -206,7 +204,7 @@
             app:rippleColor="@android:color/transparent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/shopBtn"
+            android:id="@+id/btnShop"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:clickable="true"
