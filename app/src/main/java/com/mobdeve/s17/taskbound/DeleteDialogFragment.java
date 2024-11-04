@@ -20,50 +20,78 @@ import android.widget.TextView;
  */
 public class DeleteDialogFragment extends DialogFragment {
 
-    private LocalDBManager db;
+    // UI components
     private final Task task;
-    TextView tvHeader;
-    Button btnDeleteTask, btnCancel;
+    private TextView tvHeader;
 
+    /**
+     * Constructor for the DeleteDialogFragment class.
+     * @param task - the task to be deleted
+     */
     public DeleteDialogFragment(Task task) {
         this.task = task;
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_delete, container, false);
-
-        this.tvHeader = view.findViewById(R.id.tvTaskName);
-        this.btnDeleteTask = view.findViewById(R.id.btnDeleteTask);
-        this.btnCancel = view.findViewById(R.id.btnCancel);
-
-        if (this.task.getName().length() > 18)
-            this.tvHeader.setText("Delete " + this.task.getName().substring(0, 15) + "...");
-        else {
-            this.tvHeader.setText("Delete " + this.task.getName());
-        }
-
-        this.btnDeleteTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                db = new LocalDBManager(getContext());
-                db.deleteTask(task.getId());
-                dismiss();
-                ((HomeActivity) getActivity()).onResume();
-            }
-        });
-
-        this.btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
-
+        initializeUI(view);
         return view;
     }
 
+    /**
+     * This method initializes the UI components of the dialog box.
+     * @param view - the view of the dialog box
+     */
+    private void initializeUI(View view) {
+        this.tvHeader = view.findViewById(R.id.tvTaskName);
+        setupHeader();
+        Button btnDeleteTask = view.findViewById(R.id.btnDeleteTask);
+        Button btnCancel = view.findViewById(R.id.btnCancel);
+        btnDeleteTask.setOnClickListener(this::btnClickedDelete);
+        btnCancel.setOnClickListener(this::btnClickedCancel);
+    }
+
+    /**
+     * This method sets the header of the dialog box.
+     */
+    private void setupHeader() {
+        // If the task name is too long, truncate it
+        if (this.task.getName().length() > 18)
+            this.tvHeader.setText(String.format("Delete %s...", this.task.getName().substring(0, 15)));
+        else {
+            this.tvHeader.setText(String.format("Delete %s", this.task.getName()));
+        }
+    }
+
+    /**
+     * This method is called when the delete button is clicked.
+     */
+    public void btnClickedDelete(View view) {
+        try {
+            LocalDBManager localDB = new LocalDBManager(getContext());
+            localDB.deleteTask(task.getId());
+            dismiss();
+            ((HomeActivity) getActivity()).onResume();
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method is called when the cancel button is clicked.
+     */
+    public void btnClickedCancel(View view) {
+        dismiss();
+    }
+
+    /**
+     * This method is called when the dialog is first created.
+     * It sets the width and height of the dialog box.
+     */
     @Override
     public void onStart() {
         super.onStart();

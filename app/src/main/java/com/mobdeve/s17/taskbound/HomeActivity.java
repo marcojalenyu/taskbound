@@ -201,7 +201,7 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void filterTasks(String query) {
         // Filter the tasks based on the query by name
-        List<Task> filteredTasks = localDB.getAllTask(this.currentUser.getUserID())
+        List<Task> filteredTasks = localDB.getAllExistingTasks(this.currentUser.getUserID())
                 .stream()
                 .filter(task -> task.getName().toLowerCase().contains(query.toLowerCase()))
                 .collect(Collectors.toList());
@@ -252,7 +252,7 @@ public class HomeActivity extends AppCompatActivity {
             this.currentUser.setCoins(localUser.getCoins());
             this.currentUser.setUserID(localUser.getUserID());
             // Fetch the latest tasks and update the adapter
-            List<Task> tasks = localDB.getAllTask(localUser.getUserID());
+            List<Task> tasks = localDB.getAllExistingTasks(localUser.getUserID());
             MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
             this.tasksView.setAdapter(myTasksAdapter);
         } else {
@@ -326,7 +326,7 @@ public class HomeActivity extends AppCompatActivity {
      * Sync the user's tasks between the local and cloud databases.
      */
     private void syncTasks(List<Task> cloudTasks) {
-        List<Task> localTasks = localDB.getAllTask(currentUser.getUserID());
+        List<Task> localTasks = localDB.getAllTasks(currentUser.getUserID());
         Map<String, Task> localTaskMap = localTasks.stream().
                 collect(Collectors.toMap(Task::getId, task -> task));
         // Sync the tasks from cloud to local

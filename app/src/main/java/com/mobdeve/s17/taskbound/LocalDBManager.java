@@ -303,10 +303,58 @@ public class LocalDBManager extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Task> getAllTask(String userId) {
+    public List<Task> getAllTasks(String userId) {
         List<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = '" + userId + "'";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                try {
+                    int idIndex = cursor.getColumnIndex(TASK_COLUMN_ID);
+                    int userIdIndex = cursor.getColumnIndex(TASK_COLUMN_USER_ID);
+                    int nameIndex = cursor.getColumnIndex(TASK_COLUMN_NAME);
+                    int contentIndex = cursor.getColumnIndex(TASK_COLUMN_CONTENT);
+                    int deadlineIndex = cursor.getColumnIndex(TASK_COLUMN_DEADLINE);
+                    int healthIndex = cursor.getColumnIndex(TASK_COLUMN_HEALTH);
+                    int coinsIndex = cursor.getColumnIndex(TASK_COLUMN_COINS);
+                    int monsterIndex = cursor.getColumnIndex(TASK_COLUMN_MONSTER);
+                    int lastUpdatedIndex = cursor.getColumnIndex(TASK_COLUMN_LAST_UPDATED);
+                    int deletedIndex = cursor.getColumnIndex(TASK_COLUMN_DELETED);
+
+                    if (idIndex >= 0 && userIdIndex >= 0 && nameIndex >= 0 && contentIndex >= 0 &&
+                            deadlineIndex >= 0 && healthIndex >= 0 && coinsIndex >= 0 && monsterIndex >= 0 &&
+                            lastUpdatedIndex >= 0 && deletedIndex >= 0) {
+                        Task task = new Task(
+                                cursor.getString(idIndex),
+                                cursor.getString(userIdIndex),
+                                cursor.getString(nameIndex),
+                                cursor.getString(contentIndex),
+                                cursor.getString(deadlineIndex),
+                                cursor.getInt(healthIndex),
+                                cursor.getInt(coinsIndex),
+                                cursor.getString(monsterIndex),
+                                cursor.getLong(lastUpdatedIndex),
+                                cursor.getInt(deletedIndex) == 1
+                        );
+                        taskList.add(task);
+                    } else {
+                        throw new IllegalArgumentException("Invalid column index");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return taskList;
+    }
+
+    public List<Task> getAllExistingTasks(String userid) {
+        List<Task> taskList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = '" + userid + "' AND " + TASK_COLUMN_DELETED + " = 0";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
@@ -355,6 +403,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TASK_COLUMN_HEALTH, health);
+        values.put(TASK_COLUMN_LAST_UPDATED, System.currentTimeMillis());
         // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
         String userID = UserSession.getInstance().getCurrentUser().getUserID();
         db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {taskId, userID});
@@ -383,6 +432,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(TASK_COLUMN_NAME, taskName);
         values.put(TASK_COLUMN_CONTENT, taskContent);
         values.put(TASK_COLUMN_DEADLINE, taskDeadline);
+        values.put(TASK_COLUMN_LAST_UPDATED, System.currentTimeMillis());
         // UPDATE tasks SET health = ? WHERE id = ? && userid = ?
         String userID = UserSession.getInstance().getCurrentUser().getUserID();
         db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {taskId, userID});
@@ -390,14 +440,15 @@ public class LocalDBManager extends SQLiteOpenHelper {
     }
 
     public void defeatTask(String taskId, int coins) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        // DELETE FROM tasks WHERE id = ? && userid = ?
-        String userID = UserSession.getInstance().getCurrentUser().getUserID();
-        db.delete(TASK_TABLE_NAME, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {String.valueOf(taskId), String.valueOf(userID)});
+        // Soft delete the task
+        deleteTask(taskId);
         // UPDATE users SET coins = coins + ? WHERE id = ?
+        SQLiteDatabase db = this.getWritableDatabase();
+        String userID = UserSession.getInstance().getCurrentUser().getUserID();
         ContentValues values = new ContentValues();
         int currentCoins = UserSession.getInstance().getCurrentUser().getCoins();
         values.put(USER_COLUMN_COINS, currentCoins + coins);
+        values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
         db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + " = ?", new String[] {String.valueOf(userID)});
         db.close();
     }
