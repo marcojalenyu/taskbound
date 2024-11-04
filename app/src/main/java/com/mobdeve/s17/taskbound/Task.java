@@ -63,7 +63,7 @@ public class Task {
      * @param monster - the task's monster
      * @param lastUpdated - the last time the task's data was updated
      */
-    public Task(String id, String userid, String name, String content, String deadline, int health, int coins, String monster, long lastUpdated) throws ParseException {
+    public Task(String id, String userid, String name, String content, String deadline, int health, int coins, String monster, long lastUpdated, boolean deleted) throws ParseException {
         this.id = id;
         this.userid = userid;
         this.name = name;
@@ -73,7 +73,7 @@ public class Task {
         this.coins = coins;
         this.monster = monster;
         this.lastUpdated = lastUpdated;
-        this.deleted = false;
+        this.deleted = deleted;
     }
 
     public String getId() {

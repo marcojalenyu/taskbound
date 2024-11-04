@@ -56,6 +56,8 @@ public class HomeActivity extends AppCompatActivity {
         initializeUI();
         setupSearchBar();
         authenticateUser();
+        syncCloudUser();
+        syncCloudTasks();
         tasksView.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -358,6 +360,7 @@ public class HomeActivity extends AppCompatActivity {
                 // If the task is deleted in the local database, delete it in the cloud database
                 if (localTask.isDeleted()) {
                     cloudTaskDB.child(localTask.getId()).removeValue();
+                    localDB.hardDeleteTask(localTask.getId());
                 } else {
                     cloudTaskDB.child(localTask.getId()).setValue(localTask);
                 }

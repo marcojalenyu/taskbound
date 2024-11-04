@@ -319,9 +319,12 @@ public class LocalDBManager extends SQLiteOpenHelper {
                     int healthIndex = cursor.getColumnIndex(TASK_COLUMN_HEALTH);
                     int coinsIndex = cursor.getColumnIndex(TASK_COLUMN_COINS);
                     int monsterIndex = cursor.getColumnIndex(TASK_COLUMN_MONSTER);
+                    int lastUpdatedIndex = cursor.getColumnIndex(TASK_COLUMN_LAST_UPDATED);
+                    int deletedIndex = cursor.getColumnIndex(TASK_COLUMN_DELETED);
 
                     if (idIndex >= 0 && userIdIndex >= 0 && nameIndex >= 0 && contentIndex >= 0 &&
-                            deadlineIndex >= 0 && healthIndex >= 0 && coinsIndex >= 0 && monsterIndex >= 0) {
+                            deadlineIndex >= 0 && healthIndex >= 0 && coinsIndex >= 0 && monsterIndex >= 0 &&
+                            lastUpdatedIndex >= 0 && deletedIndex >= 0) {
                         Task task = new Task(
                                 cursor.getString(idIndex),
                                 cursor.getString(userIdIndex),
@@ -330,7 +333,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
                                 cursor.getString(deadlineIndex),
                                 cursor.getInt(healthIndex),
                                 cursor.getInt(coinsIndex),
-                                cursor.getString(monsterIndex)
+                                cursor.getString(monsterIndex),
+                                cursor.getLong(lastUpdatedIndex),
+                                cursor.getInt(deletedIndex) == 1
                         );
                         taskList.add(task);
                     } else {
@@ -394,6 +399,17 @@ public class LocalDBManager extends SQLiteOpenHelper {
         int currentCoins = UserSession.getInstance().getCurrentUser().getCoins();
         values.put(USER_COLUMN_COINS, currentCoins + coins);
         db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + " = ?", new String[] {String.valueOf(userID)});
+        db.close();
+    }
+
+    public void deleteTask(String taskId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TASK_COLUMN_DELETED, 1);
+        values.put(TASK_COLUMN_LAST_UPDATED, System.currentTimeMillis());
+        // UPDATE tasks SET deleted = 1 WHERE id = ? && userid = ?
+        String userID = UserSession.getInstance().getCurrentUser().getUserID();
+        db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {taskId, userID});
         db.close();
     }
 

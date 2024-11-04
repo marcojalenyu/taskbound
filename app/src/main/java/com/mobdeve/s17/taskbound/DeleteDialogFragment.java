@@ -48,7 +48,7 @@ public class DeleteDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 db = new LocalDBManager(getContext());
-                db.hardDeleteTask(task.getId());
+                db.deleteTask(task.getId());
                 dismiss();
                 ((HomeActivity) getActivity()).onResume();
             }
