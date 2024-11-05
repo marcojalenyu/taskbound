@@ -173,8 +173,8 @@ public class HomeActivity extends AppCompatActivity {
      * This method is called when the add task button is clicked.
      */
     public void btnClickedAddTask(View v) {
-        AddTaskFragment addTaskFragment = new AddTaskFragment();
-        addTaskFragment.show(getSupportFragmentManager(), "AddTaskFragment");
+        TaskAddFragment taskAddFragment = new TaskAddFragment();
+        taskAddFragment.show(getSupportFragmentManager(), "TaskAddFragment");
     }
 
     /**

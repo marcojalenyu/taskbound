@@ -25,13 +25,19 @@ public class TaskDeleteFragment extends DialogFragment {
     private TextView tvHeader;
 
     /**
-     * Constructor for the DeleteDialogFragment class.
+     * Constructor for the TaskDeleteFragment class.
      * @param task - the task to be deleted
      */
     public TaskDeleteFragment(Task task) {
         this.task = task;
     }
 
+    /**
+     * This method is called when the fragment is first created.
+     * @param inflater - LayoutInflater object that can be used to inflate
+     * @param container - the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState - the previous saved state
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,

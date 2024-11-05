@@ -1,7 +1,7 @@
 package com.mobdeve.s17.taskbound;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -21,43 +21,55 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
  * This fragment is used to display a dialog box of the task, allowing the user to edit the task.
  */
 public class TaskFragment extends DialogFragment {
-    private LocalDBManager db;
-    private TaskManager taskManager;
-    private final Task task;
+
+    // UI components
     private Button btnSubmit;
-    EditText etTaskName, etTaskDesc, etDeadline;
-    ImageView imgTaskIcon;
-    TextView tvHealth, tvCoins;
+    private EditText etTaskName, etTaskDesc, etDeadline;
+    private ImageView imgTaskIcon;
+    private TextView tvHealth, tvCoins;
+    // Data components
+    private final Task task;
+    private LocalDBManager localDB;
 
-    private UserSession userSession;
-    private User user;
-    private String userID;
-
-    private String taskID;
-    private int taskHealth;
-    private int taskCoins;
-    private String taskMon;
-
+    /**
+     * Constructor for the TaskFragment class.
+     * @param task - the task to be edited
+     */
     public TaskFragment(Task task) {
         this.task = task;
     }
 
+    /**
+     * This method is called when the fragment is first created.
+     * @param inflater - LayoutInflater object that can be used to inflate
+     * @param container - the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState - the previous saved state
+     */
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_task, container, false);
+        initializeUI(view);
+        initializeData();
+        loadTaskSprite();
+        return view;
+    }
 
+    /**
+     * This method initializes the UI components of the dialog box.
+     */
+    private void initializeUI(View view) {
         this.etTaskName = view.findViewById(R.id.etTaskName);
         this.etTaskDesc = view.findViewById(R.id.etTaskDesc);
         this.etDeadline = view.findViewById(R.id.etDeadline);
@@ -65,99 +77,95 @@ public class TaskFragment extends DialogFragment {
         this.tvHealth = view.findViewById(R.id.tvHealth);
         this.tvCoins = view.findViewById(R.id.tvCoins);
         this.btnSubmit = view.findViewById(R.id.btnSubmit);
+    }
 
-        this.userSession = UserSession.getInstance();
-        this.user = userSession.getCurrentUser();
-        this.userID = user.getUserID();
-        this.db = new LocalDBManager(this.getContext());
-        try {
-            this.taskManager = new TaskManager();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
+    /**
+     * This method initializes the data components of the dialog box.
+     */
+    private void initializeData() {
+        this.localDB = new LocalDBManager(this.getContext());
         this.etTaskName.setText(this.task.getName());
         this.etTaskDesc.setText(this.task.getContent());
+        this.etDeadline.setText(getFormattedDate());
+        this.tvHealth.setText(String.valueOf(this.task.getHealth()));
+        this.tvCoins.setText(String.valueOf(this.task.getCoins()));
+        etDeadline.setOnClickListener(this::etClickedDeadline);
+        btnSubmit.setOnClickListener(this::btnClickedSubmit);
+    }
 
-        // Format the date as String YYYY-MM-DD
+    /**
+     * Formats the date as a string in the format YYYY-MM-DD.
+     */
+    private String getFormattedDate() {
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String deadline = sdf.format(this.task.getDeadline());
-        this.etDeadline.setText(deadline);
+        return sdf.format(this.task.getDeadline());
+    }
 
+    /**
+     * Load the sprite sheet of the monster.
+     */
+    private void loadTaskSprite() {
         String monsterName = this.task.getMonster().toLowerCase();
         int imageID = getContext().getResources().getIdentifier("enemy_" + monsterName, "drawable", getContext().getPackageName());
-        // this.imgTaskIcon.setImageResource(imageID);
-
-        // Load the spritesheet
+        // Load the sprite sheet
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageID);
         int frameWidth = bitmap.getWidth() / 2;
         int frameHeight = bitmap.getHeight();
         Bitmap frame1 = Bitmap.createBitmap(bitmap, 0, 0, frameWidth, frameHeight);
         Bitmap frame2 = Bitmap.createBitmap(bitmap, frameWidth, 0, frameWidth, frameHeight);
-
+        // Create an animation drawable from the sprite sheet
         AnimationDrawable animation = new AnimationDrawable();
         animation.addFrame(new BitmapDrawable(getResources(), frame1), 400);
         animation.addFrame(new BitmapDrawable(getResources(), frame2), 400);
         animation.setOneShot(false);
-
+        // Set the animation as the background of the image view
         this.imgTaskIcon.setBackground(animation);
-
         // Start the animation
-        this.imgTaskIcon.post(new Runnable() {
-            @Override
-            public void run() {
-                animation.start();
-            }
-        });
-
-        this.taskID = this.task.getId();
-        this.taskCoins = this.task.getCoins();
-        this.taskHealth = this.task.getHealth();
-        this.taskMon = this.task.getMonster();
-
-        this.tvHealth.setText(String.valueOf(this.taskHealth));
-        this.tvCoins.setText(String.valueOf(this.taskCoins));
-
-        etDeadline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get the date of the task
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String deadline = sdf.format(task.getDeadline());
-                String[] date = deadline.split("-");
-                int year = Integer.parseInt(date[0]);
-                int month = Integer.parseInt(date[1]) - 1;
-                int day = Integer.parseInt(date[2]);
-
-                // Create a date picker dialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), (view, year1, month1, dayOfMonth) -> {
-                    month1 += 1;
-                    String date1 = year1 + "-" + month1 + "-" + dayOfMonth;
-                    etDeadline.setText(date1);
-                }, year, month, day);
-                datePickerDialog.show();
-            }
-        });
-
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = String.valueOf(etTaskName.getText());
-                String content = String.valueOf(etTaskDesc.getText());
-                String deadline = String.valueOf(etDeadline.getText());
-
-                try {
-                    db.updateTaskInfo(taskID, name, content, deadline);
-                    dismiss();
-                    ((HomeActivity) getActivity()).onResume();
-                } catch (Exception e) {
-                    Log.e("LoginReal", e + "");
-                }
-            }
-        });
-        return view;
+        this.imgTaskIcon.post(animation::start);
     }
 
+    /**
+     * This method is called when the deadline is clicked.
+     */
+    public void etClickedDeadline(View view) {
+        // Get the date of the task
+        String deadline = task.getDeadlineAsString();
+        String[] date = deadline.split("-");
+        // Get the year, month, and day of the task
+        int year = Integer.parseInt(date[0]);
+        int month = Integer.parseInt(date[1]) - 1;
+        int day = Integer.parseInt(date[2]);
+        // Create a date picker dialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), (view1, year1, month1, dayOfMonth) -> {
+            month1 += 1;
+            String date1 = year1 + "-" + month1 + "-" + dayOfMonth;
+            etDeadline.setText(date1);
+        }, year, month, day);
+        datePickerDialog.show();
+    }
+
+    /**
+     * This method is called when the submit button is clicked.
+     */
+    public void btnClickedSubmit(View view) {
+        // Get the task information
+        String name = String.valueOf(etTaskName.getText());
+        String content = String.valueOf(etTaskDesc.getText());
+        String deadline = String.valueOf(etDeadline.getText());
+        try {
+            localDB.updateTaskInfo(task.getId(), name, content, deadline);
+            dismiss();
+            ((HomeActivity) getActivity()).onResume();
+        } catch (Exception e) {
+            Log.e("LoginReal", e + "");
+        }
+    }
+
+    /**
+     * This method is called when the dialog is first created.
+     * It sets the width and height of the dialog box.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -170,10 +178,5 @@ public class TaskFragment extends DialogFragment {
             window.setAttributes(params);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-    }
-
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
     }
 }

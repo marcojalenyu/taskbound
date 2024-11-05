@@ -106,7 +106,7 @@ public class ShopActivity extends AppCompatActivity {
             this.coins = user.getCoins();
             this.moneyCount.setText(String.valueOf(this.coins));
 
-            CollectibleDialogFragment dialog = new CollectibleDialogFragment(collectible);
+            CollectibleAddFragment dialog = new CollectibleAddFragment(collectible);
             dialog.show(getSupportFragmentManager(), "CollectibleDialog");
         } else {
             Toast.makeText(v.getContext(), "Error: Collectible not found.", Toast.LENGTH_SHORT).show();

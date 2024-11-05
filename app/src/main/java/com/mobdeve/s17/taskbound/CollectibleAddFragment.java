@@ -21,14 +21,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class CollectibleDialogFragment extends DialogFragment {
+public class CollectibleAddFragment extends DialogFragment {
 
     private final Collectible collectible;
     private MediaPlayer mediaPlayer;
     private VideoView videoView;
     private static int playbackPosition = 0;
 
-    public CollectibleDialogFragment(Collectible collectible) {
+    public CollectibleAddFragment(Collectible collectible) {
         this.collectible = collectible;
     }
 
