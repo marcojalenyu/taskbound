@@ -62,7 +62,7 @@ public class CollectibleAdapter extends RecyclerView.Adapter<CollectibleAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.activity_collectibles_list,parent,false);
+        View view = layoutInflater.inflate(R.layout.item_collectible,parent,false);
         return new ViewHolder(view);
     }
 

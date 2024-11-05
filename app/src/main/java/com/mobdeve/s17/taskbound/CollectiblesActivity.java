@@ -1,6 +1,7 @@
 package com.mobdeve.s17.taskbound;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,61 +18,103 @@ import java.util.ArrayList;
  */
 public class CollectiblesActivity extends AppCompatActivity {
 
-
+    // UI Components
     RecyclerView collectiblesView;
     TextView collectiblesCount;
     TextView moneyCount;
-    ImageButton btnBack;
-
-    UserSession userSession;
+    // Data Components
     User user;
-    int coins;
     ArrayList<Collectible> collectiblesList;
+    private LocalDBManager localDB;
 
-    private LocalDBManager db;
-
+    /**
+     * This method initializes the activity.
+     * @param savedInstanceState - the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_collectibles);
         UIUtil.hideSystemBars(getWindow().getDecorView());
+        initializeUI();
+        initializeData();
+        setComponents();
+        fetchCollectiblesData();
+    }
 
-        userSession = UserSession.getInstance();
-        user = userSession.getCurrentUser();
-        coins = user.getCoins();
-        collectiblesList = user.getCollectiblesList();
+    /**
+     * Refreshes the collectibles data when the activity is resumed.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCoins();
+        fetchCollectiblesData();
+    }
 
-        collectiblesView = findViewById(R.id.collectiblesView);
-        collectiblesCount = findViewById(R.id.collectiblesCount);
-        moneyCount = findViewById(R.id.textView2);
-        btnBack = findViewById(R.id.btnBack);
+    /**
+     * Initializes the UI components of the activity.
+     */
+    private void initializeUI() {
+        this.collectiblesView = findViewById(R.id.collectiblesView);
+        this.collectiblesCount = findViewById(R.id.collectiblesCount);
+        this.moneyCount = findViewById(R.id.moneyCount);
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(this::btnBackClicked);
+    }
 
+    /**
+     * Initializes the data components of the activity.
+     */
+    private void initializeData() {
+        this.localDB = new LocalDBManager(this);
+        this.user = UserSession.getInstance().getCurrentUser();
+        this.collectiblesList = user.getCollectiblesList();
+    }
+
+    /**
+     * Sets the data of the activity.
+     */
+    private void setComponents() {
+        this.collectiblesCount.setText(String.valueOf(this.collectiblesList.size()));
+        this.moneyCount.setText(String.valueOf(this.user.getCoins()));
         collectiblesView.setLayoutManager(new GridLayoutManager(this, 3));
-        moneyCount.setText(String.valueOf(this.user.getCoins()));
+    }
 
-        // Initialize TaskBoundDBHelper and fetch the latest collectibles data
+    /**
+     * Fetches the latest coins data from the database.
+     */
+    public void updateCoins() {
+        int coins = this.localDB.getUserCoins(this.user.getUserID());
+        this.user.setCoins(coins);
+        this.moneyCount.setText(String.valueOf(coins));
+    }
+
+    /**
+     * Fetches the latest collectibles data from the database.
+     */
+    private void fetchCollectiblesData() {
         try {
-            // Initialize TaskBoundDBHelper and fetch the latest collectibles data
-            LocalDBManager dbHelper = new LocalDBManager(this);
-            collectiblesList = dbHelper.getUserCollectibles(user.getUserID());
-
+            // Fetch the latest collectibles data from the database
+            collectiblesList = localDB.getUserCollectibles(user.getUserID());
+            // If the collectibles list is not empty, set the adapter
             if (collectiblesList != null && !collectiblesList.isEmpty()) {
-                Collectible[] myCollectiblesData = collectiblesList.toArray(new Collectible[0]);
-
-                CollectibleAdapter collectibleAdapter = new CollectibleAdapter(myCollectiblesData, this, collectiblesCount);
+                Collectible[] myCollectibles = collectiblesList.toArray(new Collectible[0]);
+                CollectibleAdapter collectibleAdapter = new CollectibleAdapter(myCollectibles, this, collectiblesCount);
                 collectiblesView.setAdapter(collectibleAdapter);
             } else {
-                collectiblesCount.setText("Skill issue.");
+                collectiblesCount.setText("?");
             }
         } catch (Exception e) {
-            // Handle the exception, e.g., show a toast or log the error
             Toast.makeText(this, "Error fetching collectibles: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            e.printStackTrace();
         }
+    }
 
-        btnBack.setOnClickListener(v -> {
-            finish();
-        });
+    /**
+     * This method finishes the activity if the back button is pressed.
+     */
+    public void btnBackClicked(View view) {
+        finish();
     }
 }

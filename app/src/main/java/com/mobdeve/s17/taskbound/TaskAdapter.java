@@ -25,8 +25,8 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
-    private LocalDBManager db;
-    private List<Task> myTaskData; //used what I made in TaskDBHelper instead of Task[] myTaskData
+    private LocalDBManager locaLDB;
+    private List<Task> myTaskData;
     private Handler handler;
     Context context;
 
@@ -39,7 +39,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.task_item_list, parent, false);
+        View view = layoutInflater.inflate(R.layout.item_task, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -91,12 +91,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 // Health of the task decreases by 1
                 // Update the health of the task in the database
                 // If health is 0, delete the task
-                db = new LocalDBManager(context);
+                locaLDB = new LocalDBManager(context);
                 if (myTaskDataList.getHealth() > 1) {
                     myTaskDataList.takeDamage();
-                    db.updateTaskHealth(myTaskDataList.getId(), myTaskDataList.getHealth());
+                    locaLDB.updateTaskHealth(myTaskDataList.getId(), myTaskDataList.getHealth());
                 } else {
-                    db.defeatTask(myTaskDataList.getId(), myTaskDataList.getCoins());
+                    locaLDB.defeatTask(myTaskDataList.getId(), myTaskDataList.getCoins());
                     // Update the coins of the user
                     ((HomeActivity) context).updateCoins(myTaskDataList.getCoins());
                     // Remove the task from the list
