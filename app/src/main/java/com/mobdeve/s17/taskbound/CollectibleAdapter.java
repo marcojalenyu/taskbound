@@ -1,5 +1,6 @@
 package com.mobdeve.s17.taskbound;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,49 +11,78 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * A class that represents the adapter for the collectibles recycler view.
+ */
 public class CollectibleAdapter extends RecyclerView.Adapter<CollectibleAdapter.ViewHolder> {
 
-    Collectible[] myCollectiblesData;
-    Context context;
-    TextView collectiblesCount;
-    int collectedCount = 0;
+    // UI components
+    private final TextView collectiblesCount;
+    // Data components
+    private int collectedCount = 0;
+    private final Collectible[] collectibles;
+    private final Context context;
 
-    public CollectibleAdapter(Collectible[] myCollectiblesData, CollectiblesActivity activity, TextView collectiblesCount) {
-        this.myCollectiblesData = myCollectiblesData;
+    /**
+     * Constructor for the CollectibleAdapter class.
+     * @param collectibles - the collectibles data
+     * @param activity - the CollectiblesActivity
+     * @param collectiblesCount - the TextView for the collectibles count
+     */
+    public CollectibleAdapter(Collectible[] collectibles,
+                              CollectiblesActivity activity,
+                              TextView collectiblesCount) {
+        this.collectibles = collectibles;
         this.context = activity;
         this.collectiblesCount = collectiblesCount;
         updateCollectiblesCount();
     }
 
+    /**
+     * Updates the collectibles count.
+     */
+    @SuppressLint("DefaultLocale")
     private void updateCollectiblesCount() {
-        for (Collectible collectible : myCollectiblesData) {
+        // Count the number of collectibles obtained by the user
+        for (Collectible collectible : collectibles) {
             if (collectible.isObtained()) {
                 collectedCount++;
             }
         }
-        collectiblesCount.setText(collectedCount + " / " + myCollectiblesData.length);
+        collectiblesCount.setText(String.format("%d / %d", collectedCount, collectibles.length));
     }
 
+    /**
+     * This method is called when the view holder is created.
+     * @param parent - the ViewGroup
+     * @param viewType - the int
+     * @return the ViewHolder
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.activity_collectibles_list,parent,false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
+    /**
+     * This method is called when the view holder is bound.
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final Collectible collectibleList = myCollectiblesData[position];
+        final Collectible collectibleList = collectibles[position];
         // Set text color depending on rarity
-        if (myCollectiblesData[position].getCollectiblesRarity() == Rarity.SR) {
+        if (collectibles[position].getCollectiblesRarity() == Rarity.SR) {
             holder.collectibleName.setTextColor(context.getResources().getColor(R.color.sr));
-        } else if (myCollectiblesData[position].getCollectiblesRarity() == Rarity.SSR) {
+        } else if (collectibles[position].getCollectiblesRarity() == Rarity.SSR) {
             holder.collectibleName.setTextColor(context.getResources().getColor(R.color.ssr));
         }
         // If collectible is not obtained, make it a shade of gray
-        if (!myCollectiblesData[position].isObtained()) {
+        if (!collectibles[position].isObtained()) {
             holder.collectibleName.setText("???");
             holder.collectibleImg.setImageResource(R.drawable.ic_unknown);
         } else {
@@ -61,13 +91,19 @@ public class CollectibleAdapter extends RecyclerView.Adapter<CollectibleAdapter.
         }
     }
 
+    /**
+     * This method returns the number of items in the data set held by the adapter.
+     * @return the number of collectibles
+     */
     @Override
     public int getItemCount() {
-        return myCollectiblesData.length;
+        return collectibles.length;
     }
 
-
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    /**
+     * A class that represents the view holder for the collectibles recycler view.
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView collectibleImg;
         TextView collectibleName;
 

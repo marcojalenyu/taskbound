@@ -21,36 +21,70 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * A dialog fragment that displays the collectible that the user has obtained.
+ */
 public class CollectibleAddFragment extends DialogFragment {
 
+    // The collectible that the user has obtained
     private final Collectible collectible;
+    // UI components
+    TextView collectibleMessage;
+    ImageView collectibleImageView;
+    TextView collectibleNameTextView;
+    Button closeButton;
+    // Media and video player for the background music and video
     private MediaPlayer mediaPlayer;
     private VideoView videoView;
     private static int playbackPosition = 0;
 
+    /**
+     * Constructor for the CollectibleAddFragment class.
+     * @param collectible - the collectible that the user has obtained
+     */
     public CollectibleAddFragment(Collectible collectible) {
         this.collectible = collectible;
     }
 
+    /**
+     * This method is called when the fragment is first created.
+     * @param inflater - the LayoutInflater
+     * @param container - the ViewGroup
+     * @param savedInstanceState - the Bundle
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_collectible, container, false);
+        initializeUI(view);
+        setupVideoView();
+        return view;
+    }
 
+    /**
+     * Initializes the UI components of the dialog fragment.
+     */
+    private void initializeUI(View view) {
+        this.collectibleMessage = view.findViewById(R.id.dialog_message);
+        this.collectibleImageView = view.findViewById(R.id.dialog_collectible_image);
+        this.collectibleNameTextView = view.findViewById(R.id.dialog_collectible_name);
+        this.closeButton = view.findViewById(R.id.dialog_close_button);
         this.videoView = view.findViewById(R.id.dialog_video_view);
-        TextView collectibleMessage = view.findViewById(R.id.dialog_message);
-        ImageView collectibleImageView = view.findViewById(R.id.dialog_collectible_image);
-        TextView collectibleNameTextView = view.findViewById(R.id.dialog_collectible_name);
-        Button closeButton = view.findViewById(R.id.dialog_close_button);
-
         collectibleImageView.setImageResource(collectible.getCollectibleImage());
         collectibleNameTextView.setText(collectible.getCollectibleName());
+    }
 
+    /**
+     * Sets up the video view for the dialog fragment.
+     * Includes the video of the collectible animation.
+     * The video is played when the dialog is first created.
+     * The video is hidden when the video is completed.
+     * The collectible image, name, and close button are shown when the video is completed.
+     */
+    private void setupVideoView() {
         Uri videoUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.vid_roll_animation);
         videoView.setVideoURI(videoUri);
-
         videoView.setOnPreparedListener(mp -> videoView.start());
-
         videoView.setOnCompletionListener(mp -> {
             videoView.setVisibility(View.GONE);
             collectibleMessage.setVisibility(View.VISIBLE);
@@ -60,10 +94,12 @@ public class CollectibleAddFragment extends DialogFragment {
             collectibleImageView.setImageResource(collectible.getCollectibleImage());
             closeButton.setOnClickListener(v -> dismiss());
         });
-
-        return view;
     }
 
+    /**
+     * This method is called when the dialog is first created.
+     * It sets the width and height of the dialog box.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -76,16 +112,22 @@ public class CollectibleAddFragment extends DialogFragment {
             window.setAttributes(params);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-
         playMusic();
     }
 
+    /**
+     * This method is called when the dialog is dismissed.
+     * It stops the background music.
+     */
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         stopMusic();
     }
 
+    /**
+     * Plays the background music.
+     */
     private void playMusic() {
         if (this.mediaPlayer == null) {
             this.mediaPlayer = MediaPlayer.create(getContext(), R.raw.usagi_flap);
@@ -95,9 +137,12 @@ public class CollectibleAddFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Stops the background music.
+     */
     private void stopMusic() {
         if (this.mediaPlayer != null) {
-            playbackPosition = mediaPlayer.getCurrentPosition();
+            playbackPosition = 0;
             this.mediaPlayer.stop();
             this.mediaPlayer.release();
             this.mediaPlayer = null;

@@ -212,10 +212,10 @@ public class LocalDBManager extends SQLiteOpenHelper {
         db.close();
     }
 
-    public User deductUserCoins(String email, int coins) {
+    public void deductUserCoins(String userID, int coins) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES},
-                USER_COLUMN_EMAIL + "=?", new String[] {email}, null, null, null, null);
+        Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_COINS},
+                USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             int coinsColumnIndex = cursor.getColumnIndex(USER_COLUMN_COINS);
@@ -223,13 +223,12 @@ public class LocalDBManager extends SQLiteOpenHelper {
                 int currentCoins = cursor.getInt(coinsColumnIndex);
                 ContentValues values = new ContentValues();
                 values.put(USER_COLUMN_COINS, currentCoins - coins);
-
-                db.update(USER_TABLE_NAME, values, USER_COLUMN_EMAIL + "=?", new String[] {email});
+                values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
+                db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {userID});
             }
             cursor.close();
         }
         db.close();
-        return getUserWithIdAndPass(email, null); // Assuming getUser can handle null password for fetching by email only
     }
 
     public void addCollectibleToUser(String userID, int collectibleID) {

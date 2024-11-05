@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * A class that represents the activity for the shop.
+ */
 public class ShopActivity extends AppCompatActivity {
     TextView moneyCount;
     Button btnRoll;
@@ -51,7 +54,7 @@ public class ShopActivity extends AppCompatActivity {
         this.cumWeight = this.userSession.getCollectiblesManager().getCumWeight();
         this.collectibleIndices = new int[cumWeight];
 
-        this.nums = this.userSession.getCollectiblesManager().getNums();
+        this.nums = this.userSession.getCollectiblesManager().getNumOfEachRarity();
         int num;
         int index = 0;
 
