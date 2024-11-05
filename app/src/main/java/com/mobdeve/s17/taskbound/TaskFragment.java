@@ -31,7 +31,7 @@ import java.text.SimpleDateFormat;
 /**
  * This fragment is used to display a dialog box of the task, allowing the user to edit the task.
  */
-public class TaskDialogFragment extends DialogFragment {
+public class TaskFragment extends DialogFragment {
     private LocalDBManager db;
     private TaskManager taskManager;
     private final Task task;
@@ -49,7 +49,7 @@ public class TaskDialogFragment extends DialogFragment {
     private int taskCoins;
     private String taskMon;
 
-    public TaskDialogFragment(Task task) {
+    public TaskFragment(Task task) {
         this.task = task;
     }
 

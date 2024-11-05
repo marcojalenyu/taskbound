@@ -46,6 +46,14 @@ public class HomeActivity extends AppCompatActivity {
     private LocalDBManager localDB;
     private SortType sortType;
 
+    /**
+     * This method is called when the activity is first created.
+     * Initializes the data and UI components.
+     * Sets up the search bar.
+     * Authenticates the user and fetches the user data.
+     * Syncs the user and task data with the cloud database.
+     * @param savedInstanceState - the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,8 +223,8 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
         // Update the adapter with the filtered tasks
-        MyTasksAdapter myTasksAdapter = new MyTasksAdapter(filteredTasks, this);
-        this.tasksView.setAdapter(myTasksAdapter);
+        TaskAdapter taskAdapter = new TaskAdapter(filteredTasks, this);
+        this.tasksView.setAdapter(taskAdapter);
     }
 
     /**
@@ -249,12 +257,11 @@ public class HomeActivity extends AppCompatActivity {
             // Update the coin amount when the activity resumes
             this.tvCoinAmount.setText(String.valueOf(localUser.getCoins()));
             this.tvUsername.setText(localUser.getUserName());
-            this.currentUser.setCoins(localUser.getCoins());
-            this.currentUser.setUserID(localUser.getUserID());
+            this.currentUser = localUser;
             // Fetch the latest tasks and update the adapter
             List<Task> tasks = localDB.getAllExistingTasks(localUser.getUserID());
-            MyTasksAdapter myTasksAdapter = new MyTasksAdapter(tasks, this);
-            this.tasksView.setAdapter(myTasksAdapter);
+            TaskAdapter taskAdapter = new TaskAdapter(tasks, this);
+            this.tasksView.setAdapter(taskAdapter);
         } else {
             redirectToLogin();
         }
@@ -381,7 +388,7 @@ public class HomeActivity extends AppCompatActivity {
 
     /**
      * Updates the coin amount of the user.
-     * (Called when the user completes a task - at MyTasksAdapter)
+     * (Called when the user completes a task - at TaskAdapter)
      * @param coins - the amount of coins to add
      */
     public void updateCoins(int coins) {

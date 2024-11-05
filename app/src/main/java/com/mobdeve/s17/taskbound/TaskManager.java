@@ -3,6 +3,9 @@ package com.mobdeve.s17.taskbound;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+/**
+ * Manages the tasks in the game.
+ */
 public class TaskManager {
 
     private final ArrayList<Task> tasks;

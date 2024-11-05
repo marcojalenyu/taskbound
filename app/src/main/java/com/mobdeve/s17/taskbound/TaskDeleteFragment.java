@@ -18,7 +18,7 @@ import android.widget.TextView;
 /**
  * This fragment is used to display a dialog box that asks the user if they want to delete a task.
  */
-public class DeleteDialogFragment extends DialogFragment {
+public class TaskDeleteFragment extends DialogFragment {
 
     // UI components
     private final Task task;
@@ -28,7 +28,7 @@ public class DeleteDialogFragment extends DialogFragment {
      * Constructor for the DeleteDialogFragment class.
      * @param task - the task to be deleted
      */
-    public DeleteDialogFragment(Task task) {
+    public TaskDeleteFragment(Task task) {
         this.task = task;
     }
 

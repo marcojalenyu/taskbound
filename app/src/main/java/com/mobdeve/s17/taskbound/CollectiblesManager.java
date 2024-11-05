@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CollectiblesManager {
-    private final ArrayList<MyCollectiblesData> collectibles;
+    private final ArrayList<Collectible> collectibles;
     private int cumWeight;
     private int rNum, srNum, ssrNum;
 
@@ -17,7 +17,7 @@ public class CollectiblesManager {
         int srCount = 0;
         int ssrCount = 0;
 
-        for (MyCollectiblesData collectible : collectibles) {
+        for (Collectible collectible : collectibles) {
             switch (collectible.getCollectiblesRarity()) {
                 case R:
                     rCount++;
@@ -38,7 +38,7 @@ public class CollectiblesManager {
         this.cumWeight = (rCount * rNum) + (srCount * srNum) + (ssrCount * ssrNum);
     }
 
-    public ArrayList<MyCollectiblesData> getCollectibles() {
+    public ArrayList<Collectible> getCollectibles() {
         return collectibles;
     }
 
@@ -57,22 +57,22 @@ public class CollectiblesManager {
         return (int) ((totalWeight * percentage) / count);
     }
 
-    private ArrayList<MyCollectiblesData> initializeCollectibles() {
+    private ArrayList<Collectible> initializeCollectibles() {
         return new ArrayList<>(Arrays.asList(
-                new MyCollectiblesData(1, "Chicken", Rarity.R, R.drawable.collectible_chicken),
-                new MyCollectiblesData(2, "Capybara", Rarity.R, R.drawable.collectible_capybara),
-                new MyCollectiblesData(3, "Cat", Rarity.R, R.drawable.collectible_cat),
-                new MyCollectiblesData(4, "Coin", Rarity.R, R.drawable.collectible_coin),
-                new MyCollectiblesData(5, "Clover", Rarity.R, R.drawable.collectible_clover),
+                new Collectible(1, "Chicken", Rarity.R, R.drawable.collectible_chicken),
+                new Collectible(2, "Capybara", Rarity.R, R.drawable.collectible_capybara),
+                new Collectible(3, "Cat", Rarity.R, R.drawable.collectible_cat),
+                new Collectible(4, "Coin", Rarity.R, R.drawable.collectible_coin),
+                new Collectible(5, "Clover", Rarity.R, R.drawable.collectible_clover),
 
-                new MyCollectiblesData(6, "Katana", Rarity.SR, R.drawable.collectible_katana),
-                new MyCollectiblesData(7, "Diamond", Rarity.SR, R.drawable.collectible_diamond),
-                new MyCollectiblesData(8, "Key", Rarity.SR, R.drawable.collectible_key),
-                new MyCollectiblesData(9, "Flower", Rarity.SR, R.drawable.collectible_flower),
+                new Collectible(6, "Katana", Rarity.SR, R.drawable.collectible_katana),
+                new Collectible(7, "Diamond", Rarity.SR, R.drawable.collectible_diamond),
+                new Collectible(8, "Key", Rarity.SR, R.drawable.collectible_key),
+                new Collectible(9, "Flower", Rarity.SR, R.drawable.collectible_flower),
 
-                new MyCollectiblesData(10, "Lilydayo", Rarity.SSR, R.drawable.collectible_lilydayo),
-                new MyCollectiblesData(11, "Hat Lily", Rarity.SSR, R.drawable.collectible_lilyhat),
-                new MyCollectiblesData(12, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry)
+                new Collectible(10, "Lilydayo", Rarity.SSR, R.drawable.collectible_lilydayo),
+                new Collectible(11, "Hat Lily", Rarity.SSR, R.drawable.collectible_lilyhat),
+                new Collectible(12, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry)
         ));
     }
 }

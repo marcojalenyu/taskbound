@@ -8,21 +8,30 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Class for the task, which stores the task's information
+ */
 @IgnoreExtraProperties
 public class Task {
+
+    // Attributes
     private String id;
     private String userid;
     private String name;
     private String content;
     private Date deadline;
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private int health;
     private int coins;
     private String monster;
     private long lastUpdated;
     private boolean deleted;
+    // Date format for the deadline
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    /**
+     * Default constructor for Task (for Firebase)
+     */
     public Task() {
 
     }
@@ -38,7 +47,14 @@ public class Task {
      * @param coins - the task's coins
      * @param monster - the task's monster
      */
-    public Task(String id, String userid, String name, String content, String deadline, int health, int coins, String monster) throws ParseException {
+    public Task(String id,
+                String userid,
+                String name,
+                String content,
+                String deadline,
+                int health,
+                int coins,
+                String monster) throws ParseException {
         this.id = id;
         this.userid = userid;
         this.name = name;
@@ -63,7 +79,16 @@ public class Task {
      * @param monster - the task's monster
      * @param lastUpdated - the last time the task's data was updated
      */
-    public Task(String id, String userid, String name, String content, String deadline, int health, int coins, String monster, long lastUpdated, boolean deleted) throws ParseException {
+    public Task(String id,
+                String userid,
+                String name,
+                String content,
+                String deadline,
+                int health,
+                int coins,
+                String monster,
+                long lastUpdated,
+                boolean deleted) throws ParseException {
         this.id = id;
         this.userid = userid;
         this.name = name;
@@ -75,6 +100,17 @@ public class Task {
         this.lastUpdated = lastUpdated;
         this.deleted = deleted;
     }
+
+    // Methods
+
+    /**
+     * Attacks the task monster, reducing its health by 1
+     */
+    public void takeDamage() {
+        this.health--;
+    }
+
+    // Getters and setters
 
     public String getId() {
         return id;
@@ -118,9 +154,5 @@ public class Task {
 
     public boolean isDeleted() {
         return deleted;
-    }
-
-    public void damaged() {
-        this.health--;
     }
 }

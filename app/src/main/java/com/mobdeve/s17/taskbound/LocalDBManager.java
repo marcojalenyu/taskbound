@@ -166,8 +166,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
             // Convert the JSON string to an ArrayList<MyCollectiblesData>
             String collectiblesJson = cursor.getString(5);
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<MyCollectiblesData>>() {}.getType();
-            ArrayList<MyCollectiblesData> collectiblesList = gson.fromJson(collectiblesJson, type);
+            Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
+            ArrayList<Collectible> collectiblesList = gson.fromJson(collectiblesJson, type);
 
             User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList, sortType, lastUpdated);
 
@@ -242,11 +242,11 @@ public class LocalDBManager extends SQLiteOpenHelper {
             if (columnIndex != -1) {
                 String collectiblesJson = cursor.getString(columnIndex);
                 Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<MyCollectiblesData>>() {}.getType();
-                ArrayList<MyCollectiblesData> collectiblesList = gson.fromJson(collectiblesJson, type);
+                Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
+                ArrayList<Collectible> collectiblesList = gson.fromJson(collectiblesJson, type);
 
                 if (collectiblesList != null) {
-                    for (MyCollectiblesData collectible : collectiblesList) {
+                    for (Collectible collectible : collectiblesList) {
                         if (collectible.getCollectibleID() == collectibleID) {
                             collectible.setObtained(true);
                             break;
@@ -265,7 +265,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<MyCollectiblesData> getUserCollectibles(String userID) {
+    public ArrayList<Collectible> getUserCollectibles(String userID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_COLLECTIBLES},
                 USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
@@ -275,8 +275,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
             if (columnIndex != -1) {
                 String collectiblesJson = cursor.getString(columnIndex);
                 Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<MyCollectiblesData>>() {}.getType();
-                ArrayList<MyCollectiblesData> collectiblesList = gson.fromJson(collectiblesJson, type);
+                Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
+                ArrayList<Collectible> collectiblesList = gson.fromJson(collectiblesJson, type);
                 cursor.close();
                 db.close();
                 return collectiblesList;

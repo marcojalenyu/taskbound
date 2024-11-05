@@ -23,12 +23,12 @@ import androidx.fragment.app.DialogFragment;
 
 public class CollectibleDialogFragment extends DialogFragment {
 
-    private final MyCollectiblesData collectible;
+    private final Collectible collectible;
     private MediaPlayer mediaPlayer;
     private VideoView videoView;
     private static int playbackPosition = 0;
 
-    public CollectibleDialogFragment(MyCollectiblesData collectible) {
+    public CollectibleDialogFragment(Collectible collectible) {
         this.collectible = collectible;
     }
 

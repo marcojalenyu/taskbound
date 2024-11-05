@@ -10,14 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAdapter.ViewHolder> {
+public class CollectibleAdapter extends RecyclerView.Adapter<CollectibleAdapter.ViewHolder> {
 
-    MyCollectiblesData[] myCollectiblesData;
+    Collectible[] myCollectiblesData;
     Context context;
     TextView collectiblesCount;
     int collectedCount = 0;
 
-    public MyCollectiblesAdapter(MyCollectiblesData[] myCollectiblesData,CollectiblesActivity activity, TextView collectiblesCount) {
+    public CollectibleAdapter(Collectible[] myCollectiblesData, CollectiblesActivity activity, TextView collectiblesCount) {
         this.myCollectiblesData = myCollectiblesData;
         this.context = activity;
         this.collectiblesCount = collectiblesCount;
@@ -25,7 +25,7 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
     }
 
     private void updateCollectiblesCount() {
-        for (MyCollectiblesData collectible : myCollectiblesData) {
+        for (Collectible collectible : myCollectiblesData) {
             if (collectible.isObtained()) {
                 collectedCount++;
             }
@@ -44,7 +44,7 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final MyCollectiblesData myCollectiblesDataList = myCollectiblesData[position];
+        final Collectible collectibleList = myCollectiblesData[position];
         // Set text color depending on rarity
         if (myCollectiblesData[position].getCollectiblesRarity() == Rarity.SR) {
             holder.collectibleName.setTextColor(context.getResources().getColor(R.color.sr));
@@ -56,8 +56,8 @@ public class MyCollectiblesAdapter extends RecyclerView.Adapter<MyCollectiblesAd
             holder.collectibleName.setText("???");
             holder.collectibleImg.setImageResource(R.drawable.ic_unknown);
         } else {
-            holder.collectibleName.setText(myCollectiblesDataList.getCollectibleName());
-            holder.collectibleImg.setImageResource(myCollectiblesDataList.getCollectibleImage());
+            holder.collectibleName.setText(collectibleList.getCollectibleName());
+            holder.collectibleImg.setImageResource(collectibleList.getCollectibleImage());
         }
     }
 

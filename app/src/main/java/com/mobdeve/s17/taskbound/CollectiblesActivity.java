@@ -25,7 +25,7 @@ public class CollectiblesActivity extends AppCompatActivity {
     UserSession userSession;
     User user;
     int coins;
-    ArrayList<MyCollectiblesData> collectiblesList;
+    ArrayList<Collectible> collectiblesList;
 
     private LocalDBManager db;
 
@@ -57,13 +57,13 @@ public class CollectiblesActivity extends AppCompatActivity {
         try {
             // Initialize TaskBoundDBHelper and fetch the latest collectibles data
             LocalDBManager dbHelper = new LocalDBManager(this);
-            collectiblesList = dbHelper.getUserCollectibles(user.getEmail());
+            collectiblesList = dbHelper.getUserCollectibles(user.getUserID());
 
             if (collectiblesList != null && !collectiblesList.isEmpty()) {
-                MyCollectiblesData[] myCollectiblesData = collectiblesList.toArray(new MyCollectiblesData[0]);
+                Collectible[] myCollectiblesData = collectiblesList.toArray(new Collectible[0]);
 
-                MyCollectiblesAdapter myCollectiblesAdapter = new MyCollectiblesAdapter(myCollectiblesData, this, collectiblesCount);
-                collectiblesView.setAdapter(myCollectiblesAdapter);
+                CollectibleAdapter collectibleAdapter = new CollectibleAdapter(myCollectiblesData, this, collectiblesCount);
+                collectiblesView.setAdapter(collectibleAdapter);
             } else {
                 collectiblesCount.setText("Skill issue.");
             }

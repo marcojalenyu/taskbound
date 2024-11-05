@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    tools:context=".DeleteDialogFragment">
+    tools:context=".TaskDeleteFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardOutline"

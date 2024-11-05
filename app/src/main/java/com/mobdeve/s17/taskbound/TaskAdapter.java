@@ -23,14 +23,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private LocalDBManager db;
     private List<Task> myTaskData; //used what I made in TaskDBHelper instead of Task[] myTaskData
     private Handler handler;
     Context context;
 
-    public MyTasksAdapter(List<Task> myTaskData, HomeActivity activity) {
+    public TaskAdapter(List<Task> myTaskData, HomeActivity activity) {
         this.myTaskData = myTaskData;
         this.context = activity;
     }
@@ -93,7 +93,7 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
                 // If health is 0, delete the task
                 db = new LocalDBManager(context);
                 if (myTaskDataList.getHealth() > 1) {
-                    myTaskDataList.damaged();
+                    myTaskDataList.takeDamage();
                     db.updateTaskHealth(myTaskDataList.getId(), myTaskDataList.getHealth());
                 } else {
                     db.defeatTask(myTaskDataList.getId(), myTaskDataList.getCoins());
@@ -152,16 +152,16 @@ public class MyTasksAdapter extends RecyclerView.Adapter<MyTasksAdapter.ViewHold
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeleteDialogFragment deleteDialogFragment = new DeleteDialogFragment(myTaskDataList);
-                deleteDialogFragment.show(((HomeActivity) context).getSupportFragmentManager(), "Delete Task");
+                TaskDeleteFragment taskDeleteFragment = new TaskDeleteFragment(myTaskDataList);
+                taskDeleteFragment.show(((HomeActivity) context).getSupportFragmentManager(), "Delete Task");
             }
         });
 
         holder.llTaskDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TaskDialogFragment taskDialogFragment = new TaskDialogFragment(myTaskDataList);
-                taskDialogFragment.show(((HomeActivity) context).getSupportFragmentManager(), "Task Details");
+                TaskFragment taskFragment = new TaskFragment(myTaskDataList);
+                taskFragment.show(((HomeActivity) context).getSupportFragmentManager(), "Task Details");
             }
         });
     }

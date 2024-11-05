@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 /**
  * A class that represents the registration activity of the application.
  */
@@ -150,7 +152,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void registerUserData(String userID, String username, String email, String password) {
         // Hash the password for security purposes
-        String hashedPassword = HashUtil.hashPassword(password);
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         // Create a new user, then store it in the Firebase Realtime Database and local SQLite database
         User newUser = new User(userID, email, username, hashedPassword);
         cloudUserDB.child(userID).setValue(newUser);

@@ -6,18 +6,18 @@ import android.os.Parcelable;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
-public class MyCollectiblesData implements Parcelable {
+public class Collectible implements Parcelable {
     private int collectibleID;
     private String collectibleName;
     private Rarity collectiblesRarity;
     private boolean isObtained;
     private Integer collectibleImage;
 
-    public MyCollectiblesData() {
+    public Collectible() {
 
     }
 
-    public MyCollectiblesData(int collectibleID, String collectibleName, Rarity rarity, Integer collectibleImage) {
+    public Collectible(int collectibleID, String collectibleName, Rarity rarity, Integer collectibleImage) {
         this.collectibleID = collectibleID;
         this.collectibleName = collectibleName;
         this.collectiblesRarity = rarity;
@@ -25,7 +25,7 @@ public class MyCollectiblesData implements Parcelable {
         this.collectibleImage = collectibleImage;
     }
 
-    protected MyCollectiblesData(Parcel in) {
+    protected Collectible(Parcel in) {
         collectibleID = in.readInt();
         collectibleName = in.readString();
         collectiblesRarity = Rarity.valueOf(in.readString());
@@ -37,15 +37,15 @@ public class MyCollectiblesData implements Parcelable {
         }
     }
 
-    public static final Creator<MyCollectiblesData> CREATOR = new Creator<MyCollectiblesData>() {
+    public static final Creator<Collectible> CREATOR = new Creator<Collectible>() {
         @Override
-        public MyCollectiblesData createFromParcel(Parcel in) {
-            return new MyCollectiblesData(in);
+        public Collectible createFromParcel(Parcel in) {
+            return new Collectible(in);
         }
 
         @Override
-        public MyCollectiblesData[] newArray(int size) {
-            return new MyCollectiblesData[size];
+        public Collectible[] newArray(int size) {
+            return new Collectible[size];
         }
     };
 

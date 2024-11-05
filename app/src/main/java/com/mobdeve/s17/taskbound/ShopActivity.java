@@ -10,9 +10,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,7 +18,7 @@ public class ShopActivity extends AppCompatActivity {
     TextView moneyCount;
     Button btnRoll;
     ImageButton buttonBack;
-    ArrayList<MyCollectiblesData> collectiblesList;
+    ArrayList<Collectible> collectiblesList;
     int[] collectibleIndices;
     private int cumWeight;
     private int[] nums;
@@ -36,11 +33,7 @@ public class ShopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_shop);
-        WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(getWindow().getDecorView());
-        if (windowInsetsController != null) {
-            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
-            windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        }
+        UIUtil.hideSystemBars(getWindow().getDecorView());
 
         this.db = new LocalDBManager(this);
 
@@ -86,30 +79,6 @@ public class ShopActivity extends AppCompatActivity {
         this.buttonBack = findViewById(R.id.back_button);
     }
 
-    /*
-    public void btnClickedRoll(View v){
-        if (this.coins < 100) {
-            Toast.makeText(v.getContext(), "Not enough coins.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Random random = new Random();
-        int randomNumber = random.nextInt(this.cumWeight);
-
-        MyCollectiblesData collectible = this.collectiblesList.get(this.collectibleIndices[randomNumber]);
-
-        if (collectible != null) {
-            int collectibleID = collectible.getCollectibleID();
-            this.user.obtainCollectible(collectible.getCollectibleID(), true);
-            this.coins -= 100;
-            this.user.setCoins(this.coins);
-            this.moneyCount.setText(String.valueOf(this.user.getCoins()));
-            CollectibleDialogFragment dialog = new CollectibleDialogFragment(collectible);
-            dialog.show(getSupportFragmentManager(), "CollectibleDialog");
-        } else {
-            Toast.makeText(v.getContext(), "Error: Collectible not found.", Toast.LENGTH_SHORT).show();
-        }
-    }
-     */
     public void btnClickedRoll(View v) {
         User user = db.getUserWithIdAndPass(this.user.getUserID(), this.user.getPassword());
 
@@ -121,7 +90,7 @@ public class ShopActivity extends AppCompatActivity {
         Random random = new Random();
         int randomNumber = random.nextInt(this.cumWeight);
 
-        MyCollectiblesData collectible = this.collectiblesList.get(this.collectibleIndices[randomNumber]);
+        Collectible collectible = this.collectiblesList.get(this.collectibleIndices[randomNumber]);
 
         if (this.collectiblesList.isEmpty()) {
             Toast.makeText(v.getContext(), "No collectibles available.", Toast.LENGTH_SHORT).show();
