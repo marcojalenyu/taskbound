@@ -64,7 +64,6 @@ public class HomeActivity extends AppCompatActivity {
         initializeUI();
         setupSearchBar();
         authenticateUser();
-        syncCloudUser();
         syncCloudTasks();
         tasksView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -233,6 +232,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        syncCloudUser();
+        syncCloudTasks();
         fetchLocalData();
     }
 

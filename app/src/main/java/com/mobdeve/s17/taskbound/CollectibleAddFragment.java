@@ -56,6 +56,7 @@ public class CollectibleAddFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_collectible, container, false);
+        setCancelable(false);
         initializeUI(view);
         setupVideoView();
         return view;

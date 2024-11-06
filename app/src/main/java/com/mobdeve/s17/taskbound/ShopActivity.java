@@ -126,6 +126,7 @@ public class ShopActivity extends AppCompatActivity {
             }
             else {
                 rollCollectible(user);
+                updateCoins();
             }
         }
     }
@@ -149,7 +150,6 @@ public class ShopActivity extends AppCompatActivity {
             int collectibleID = collectible.getCollectibleID();
             localDB.addCollectibleToUser(user.getUserID(), collectibleID);
             localDB.deductUserCoins(user.getUserID(), 100);
-            this.moneyCount.setText(String.valueOf(user.getCoins()));
             // Show dialog for the collectible
             CollectibleAddFragment dialog = new CollectibleAddFragment(collectible);
             dialog.show(getSupportFragmentManager(), "CollectibleDialog");

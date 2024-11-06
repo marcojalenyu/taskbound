@@ -21,6 +21,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * A class that represents the login activity of the application.
  */
@@ -198,6 +203,7 @@ public class LoginActivity extends AppCompatActivity {
                     syncUserData(user);
                     currSession.addUser(user);
                     currSession.setCurrentUser(user);
+                    fetchTaskData(user.getUserID());
                     saveAndRedirect();
                 } else {
                     localDB.hardDeleteUser(userID);
@@ -209,6 +215,33 @@ public class LoginActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 // Error fetching user data
                 Toast.makeText(LoginActivity.this, "Error fetching user data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Fetch task data from Firebase (cloudTaskDB) and store it in the local database (localDB).
+     */
+    private void fetchTaskData(String userID) {
+        // Fetch task data from Firebase
+        DatabaseReference cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks");
+        cloudTaskDB.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Task> cloudTasks = new ArrayList<>();
+                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
+                    Task task = taskSnapshot.getValue(Task.class);
+                    if (task != null) {
+                        cloudTasks.add(task);
+                    }
+                }
+                syncTasks(cloudTasks);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Error fetching task data
+                Toast.makeText(LoginActivity.this, "Error fetching task data.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -253,6 +286,53 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Syncing successful.", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(LoginActivity.this, "Syncing failed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Sync task data between local and cloud databases.
+     */
+    private void syncTasks(List<Task> cloudTasks) {
+        List<Task> localTasks = localDB.getAllTasks(currSession.getCurrentUser().getUserID());
+        DatabaseReference cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks").child(currSession.getCurrentUser().getUserID());
+        Map<String, Task> localTaskMap = localTasks.stream().
+                collect(Collectors.toMap(Task::getId, task -> task));
+        // Sync the tasks from cloud to local
+        for (Task cloudTask : cloudTasks) {
+            Task localTask = localTaskMap.get(cloudTask.getId());
+            // Check if the task is found in the local database
+            if (localTask == null) {
+                if (cloudTask.isDeleted()) {
+                    cloudTaskDB.child(cloudTask.getId()).removeValue();
+                } else {
+                    localDB.insertTask(cloudTask);
+                }
+            } else {
+                // If the task is found, update whichever is more recent
+                if (cloudTask.getLastUpdated() > localTask.getLastUpdated()) {
+                    localDB.updateTask(cloudTask);
+                } else {
+                    cloudTaskDB.child(localTask.getId()).setValue(localTask);
+                }
+                // If the task is deleted in the cloud, delete it in the local database
+                if (cloudTask.isDeleted()) {
+                    localDB.hardDeleteTask(localTask.getId());
+                    cloudTaskDB.child(localTask.getId()).removeValue();
+                }
+            }
+        }
+        // Sync the tasks from local to cloud
+        for (Task localTask : localTasks) {
+            // If the task is not found in the cloud database
+            if (!cloudTasks.contains(localTask)) {
+                // If the task is deleted in the local database, delete it in the cloud database
+                if (localTask.isDeleted()) {
+                    cloudTaskDB.child(localTask.getId()).removeValue();
+                    localDB.hardDeleteTask(localTask.getId());
+                } else {
+                    cloudTaskDB.child(localTask.getId()).setValue(localTask);
+                }
+            }
         }
     }
 }

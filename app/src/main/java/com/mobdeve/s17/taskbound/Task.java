@@ -16,7 +16,7 @@ public class Task {
 
     // Attributes
     private String id;
-    private String userid;
+    private String userID;
     private String name;
     private String content;
     private Date deadline;
@@ -39,7 +39,7 @@ public class Task {
     /**
      * Constructor for Task (for a new task)
      * @param id - the task's unique ID
-     * @param userid - the user's unique ID (who created the task, foreign key)
+     * @param userID - the user's unique ID (who created the task, foreign key)
      * @param name - the task's name
      * @param content - the task's content
      * @param deadline - the task's deadline
@@ -48,7 +48,7 @@ public class Task {
      * @param monster - the task's monster
      */
     public Task(String id,
-                String userid,
+                String userID,
                 String name,
                 String content,
                 String deadline,
@@ -56,7 +56,7 @@ public class Task {
                 int coins,
                 String monster) throws ParseException {
         this.id = id;
-        this.userid = userid;
+        this.userID = userID;
         this.name = name;
         this.content = content;
         this.deadline = dateFormat.parse(deadline);
@@ -70,7 +70,7 @@ public class Task {
     /**
      * Constructor for Task (for an existing task)
      * @param id - the task's unique ID
-     * @param userid - the user's unique ID (who created the task, foreign key)
+     * @param userID - the user's unique ID (who created the task, foreign key)
      * @param name - the task's name
      * @param content - the task's content
      * @param deadline - the task's deadline
@@ -80,7 +80,7 @@ public class Task {
      * @param lastUpdated - the last time the task's data was updated
      */
     public Task(String id,
-                String userid,
+                String userID,
                 String name,
                 String content,
                 String deadline,
@@ -90,7 +90,7 @@ public class Task {
                 long lastUpdated,
                 boolean deleted) throws ParseException {
         this.id = id;
-        this.userid = userid;
+        this.userID = userID;
         this.name = name;
         this.content = content;
         this.deadline = dateFormat.parse(deadline);
@@ -117,7 +117,7 @@ public class Task {
     }
 
     public String getUserID() {
-        return userid;
+        return userID;
     }
 
     public String getName() {
