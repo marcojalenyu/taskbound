@@ -85,6 +85,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             }
         });
 
+        // Update the look of the task based on the deadline
+        ((HomeActivity) context).updateTaskLook(myTaskDataList, holder.itemView);
+
         Runnable attackRunnable = new Runnable() {
             @Override
             public void run() {
@@ -193,6 +196,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             btnDelete = itemView.findViewById(R.id.btnDelete);
             pbarAttack = itemView.findViewById(R.id.pbarAttack);
         }
-    }
 
+        public Task getTask() {
+            return myTaskData.get(getAdapterPosition());
+        }
+    }
 }

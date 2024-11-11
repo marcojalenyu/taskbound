@@ -2,6 +2,7 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,8 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -396,5 +399,33 @@ public class HomeActivity extends AppCompatActivity {
         int newCoins = this.currentUser.getCoins() + coins;
         this.tvCoinAmount.setText(String.valueOf(newCoins));
         this.currentUser.setCoins(newCoins);
+    }
+
+    /**
+     * Updates the look of the task to red to show that the deadline for the task has passed
+     * (Called on create and on update of home activity)
+     * @param task - the task to update
+     */
+
+    public void updateTaskLook(Task task, View taskItemView) {
+        CardView cardOutline = taskItemView.findViewById(R.id.cardOutline);
+        TextView tvTaskName = taskItemView.findViewById(R.id.tvTaskName);
+        if (cardOutline != null) {
+            GradientDrawable border = new GradientDrawable();
+            border.setColor(ContextCompat.getColor(this, android.R.color.transparent)); // Transparent background, need this so the border would be even for both cases, see item_task.xml for change
+            border.setCornerRadius(24f); //scuffed fix but this is basically around the same curve as the original cardBorder
+            if (task.getDeadline().before(UIUtil.getCurrentDate())) {
+                border.setStroke(5, ContextCompat.getColor(this, R.color.red)); // Red border with 5dp width
+                if (tvTaskName != null) {
+                    tvTaskName.setTextColor(ContextCompat.getColor(this, R.color.red)); // Set task title to red
+                }
+            } else {
+                border.setStroke(5, ContextCompat.getColor(this, android.R.color.black));
+                if (tvTaskName != null) {
+                    tvTaskName.setTextColor(ContextCompat.getColor(this, android.R.color.black));
+                }
+            }
+            cardOutline.setBackground(border);
+        }
     }
 }

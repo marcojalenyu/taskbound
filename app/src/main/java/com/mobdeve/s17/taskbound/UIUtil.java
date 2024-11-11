@@ -5,6 +5,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import java.util.Date;
+
 /**
  * Utility class for UI-related functions
  */
@@ -20,5 +22,12 @@ public class UIUtil {
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
             windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
+    }
+
+    /**
+     * Gets the current date for use in changing look of task when past deadline
+     */
+    public static Date getCurrentDate() {
+        return new Date();
     }
 }
