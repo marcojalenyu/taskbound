@@ -415,9 +415,9 @@ public class HomeActivity extends AppCompatActivity {
             border.setColor(ContextCompat.getColor(this, android.R.color.transparent)); // Transparent background, need this so the border would be even for both cases, see item_task.xml for change
             border.setCornerRadius(24f); //scuffed fix but this is basically around the same curve as the original cardBorder
             if (task.getDeadline().before(UIUtil.getCurrentDate())) {
-                border.setStroke(5, ContextCompat.getColor(this, R.color.red)); // Red border with 5dp width
+                border.setStroke(5, ContextCompat.getColor(this, R.color.red));
                 if (tvTaskName != null) {
-                    tvTaskName.setTextColor(ContextCompat.getColor(this, R.color.red)); // Set task title to red
+                    tvTaskName.setTextColor(ContextCompat.getColor(this, R.color.red));
                 }
             } else {
                 border.setStroke(5, ContextCompat.getColor(this, android.R.color.black));
