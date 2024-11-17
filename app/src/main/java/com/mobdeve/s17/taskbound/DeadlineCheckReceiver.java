@@ -52,7 +52,9 @@ public class DeadlineCheckReceiver extends BroadcastReceiver {
                 .setContentTitle("Task Deadline Passed")
                 .setContentText("The deadline for task \"" + task.getName() + "\" has passed.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
+
 
         notificationManager.notify(task.getId().hashCode(), builder.build());
 
