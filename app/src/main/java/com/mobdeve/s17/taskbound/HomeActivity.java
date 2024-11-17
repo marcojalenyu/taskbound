@@ -146,7 +146,7 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void scheduleDeadlineCheck() {
         Intent intent = new Intent(this, DeadlineCheckReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         long interval = 1000; // 1 second
         long startTime = System.currentTimeMillis() + interval;
