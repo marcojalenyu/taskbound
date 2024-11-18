@@ -122,6 +122,8 @@ public class User {
         return this.deleted;
     }
 
+    public void setUserName(String userName) { this.userName = userName; }
+
     public void setCoins(int coins) {
         this.coins = coins;
     }
