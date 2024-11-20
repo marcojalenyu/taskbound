@@ -1,11 +1,16 @@
 package com.mobdeve.s17.taskbound;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -59,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             autoLogin();
         }
+
+        startAnimations();
     }
 
     /**
@@ -82,6 +89,35 @@ public class LoginActivity extends AppCompatActivity {
         Button btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(this::btnClickedLogin);
         btnRegister.setOnClickListener(this::btnClickedRegister);
+    }
+
+    /**
+     * Start background animations.
+     */
+    private void startAnimations() {
+        ImageView frame1 = findViewById(R.id.imgTitleBgLayer2A);
+        ImageView frame2 = findViewById(R.id.imgTitleBgLayer2B);
+
+        frame1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                frame1.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                float width = frame1.getWidth();
+                frame2.setTranslationX(width);
+
+                ValueAnimator animator = ValueAnimator.ofFloat(0, width);
+                animator.setDuration(30000);
+                animator.setRepeatCount(ValueAnimator.INFINITE);
+                animator.addUpdateListener(animation -> {
+                    float value = (float) animation.getAnimatedValue();
+                    frame1.setTranslationX(-value);
+                    frame2.setTranslationX(width - value);
+                });
+
+                animator.start();
+            }
+        });
     }
 
     /**

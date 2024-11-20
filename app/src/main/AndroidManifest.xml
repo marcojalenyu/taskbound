@@ -16,9 +16,6 @@
         tools:targetApi="31">
         <receiver android:name=".DeadlineCheckReceiver"/>
         <activity
-            android:name=".AddTaskActivity"
-            android:exported="false" />
-        <activity
             android:name=".CollectiblesActivity"
             android:exported="false" />
         <activity
