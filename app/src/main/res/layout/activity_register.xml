@@ -1,134 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/mainRegister"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_scroll"
     tools:context=".RegisterActivity">
 
     <ImageView
-        android:id="@+id/cloud2"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_marginStart="-140dp"
-        android:layout_marginTop="88dp"
-        android:scaleX="-1"
-        android:src="@drawable/cloud"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/imgTitleBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/bg_mountains" />
 
     <ImageView
-        android:id="@+id/cloud"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_marginStart="104dp"
-        android:layout_marginTop="90dp"
-        android:src="@drawable/cloud"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/imgTitleBgLayer2A"
+        android:layout_width="1920px"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingBottom="300dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/bg_clouds" />
 
     <ImageView
-        android:id="@+id/imgTitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/imgTitleBgLayer2B"
+        android:layout_width="1920px"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingBottom="300dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/bg_clouds" />
+
+    <ImageButton
+        android:id="@+id/btnBackToLogin"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/ic_back" />
+
+    <TextView
+        android:id="@+id/tvCopyright2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:src="@drawable/ic_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cloud" />
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
+        android:text="© 2024 While Lily"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvRegister"
+            android:layout_width="420dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:text="Registration:"
+            android:textColor="@color/black"
+            android:textSize="38sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/newUsernameLayout"
+            android:layout_width="420dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingTop="10dp"
+            android:paddingRight="30dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/newUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edit_text"
+                android:hint="Enter Username"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/newEmailLayout"
+            android:layout_width="420dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingTop="10dp"
+            android:paddingRight="30dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/newEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edit_text"
+                android:hint="Enter Email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/newPasswordLayout"
+            android:layout_width="420dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingTop="10dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/newPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edit_text"
+                android:hint="Enter Password"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnCreateAccount"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/primary"
+            android:text="Create Account"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <!--@drawable/rounded_edit_text.xml contains the color of the text box + border radius-->
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/newUsernameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgTitle">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/newUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="Enter Username"
-            android:inputType="text"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/newEmailLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="30dp"
-        android:paddingTop="10dp"
-        android:paddingRight="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newUsernameLayout">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/newEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="Enter Email"
-            android:inputType="textEmailAddress"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/newPasswordLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="30dp"
-        android:paddingTop="10dp"
-        android:paddingRight="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newEmailLayout">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/newPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="Enter Password"
-            android:inputType="textPassword"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/btnBackToLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:textColor="#ffffff"
-        app:layout_constraintBottom_toTopOf="@+id/mountain"
-        app:layout_constraintEnd_toStartOf="@+id/btnCreateAccount"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newPasswordLayout" />
-
-    <Button
-        android:id="@+id/btnCreateAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create Account"
-        android:textColor="#ffffff"
-        app:layout_constraintBottom_toTopOf="@+id/mountain"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnBackToLogin"
-        app:layout_constraintTop_toBottomOf="@+id/newPasswordLayout" />
-
-    <ImageView
-        android:id="@+id/mountain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-10dp"
-        android:src="@drawable/mountain"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -1,6 +1,10 @@
 package com.mobdeve.s17.taskbound;
 
+import android.animation.ValueAnimator;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -29,5 +33,34 @@ public class UIUtil {
      */
     public static Date getCurrentDate() {
         return new Date();
+    }
+
+    /**
+     * Start cloud background animation.
+     */
+    public static void startCloudAnimations(View view) {
+        ImageView frame1 = view.findViewById(R.id.imgTitleBgLayer2A);
+        ImageView frame2 = view.findViewById(R.id.imgTitleBgLayer2B);
+
+        frame1.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                frame1.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                float width = frame1.getWidth();
+                frame2.setTranslationX(width);
+
+                ValueAnimator animator = ValueAnimator.ofFloat(0, width);
+                animator.setDuration(30000);
+                animator.setRepeatCount(ValueAnimator.INFINITE);
+                animator.addUpdateListener(animation -> {
+                    float value = (float) animation.getAnimatedValue();
+                    frame1.setTranslationX(-value);
+                    frame2.setTranslationX(width - value);
+                });
+
+                animator.start();
+            }
+        });
     }
 }

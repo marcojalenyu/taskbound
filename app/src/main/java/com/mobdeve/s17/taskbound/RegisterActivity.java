@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -48,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
         UIUtil.hideSystemBars(getWindow().getDecorView());
         initializeDataAndSession();
         initializeUI();
+        UIUtil.startCloudAnimations(findViewById(R.id.mainRegister));
     }
 
     /**
@@ -68,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
         this.newUsername = findViewById(R.id.newUsername);
         this.newPassword = findViewById(R.id.newPassword);
         Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
-        Button btnBackToLogin = findViewById(R.id.btnBackToLogin);
+        ImageButton btnBackToLogin = findViewById(R.id.btnBackToLogin);
         btnCreateAccount.setOnClickListener(this::btnClickedCreateAccount);
         btnBackToLogin.setOnClickListener(this::btnClickedBackToLogin);
     }

@@ -34,6 +34,16 @@
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/bg_clouds" />
 
+    <TextView
+        android:id="@+id/tvCopyright"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
+        android:text="© 2024 While Lily"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -120,7 +130,9 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
                 android:paddingLeft="0dp"
+                android:paddingTop="0dp"
                 android:paddingRight="0dp"
+                android:paddingBottom="0dp"
                 android:text="Register here."
                 android:textColor="@color/primary"
                 android:textSize="16sp"
