@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -28,9 +29,10 @@ import java.text.SimpleDateFormat;
 
 public class CollectibleViewFragment extends DialogFragment {
     // UI components
-    private Button submitButton, closeButton;
+    private Button submitButton;
     private ImageView collectibleImageView;
-    private TextView collectibleNameTextView;
+    private TextView collectibleNameTextView, collectibleMessage;;
+    private VideoView videoView;
     // Data components
     private final Collectible collectible;
     private User currentUser;
@@ -65,9 +67,17 @@ public class CollectibleViewFragment extends DialogFragment {
      * This method initializes the UI components of the dialog box.
      */
     private void initializeUI(View view) {
+        this.videoView = view.findViewById(R.id.dialog_video_view);
+        this.collectibleMessage = view.findViewById(R.id.dialog_message);
         this.collectibleImageView = view.findViewById(R.id.dialog_collectible_image);
         this.collectibleNameTextView = view.findViewById(R.id.dialog_collectible_name);
         this.submitButton = view.findViewById(R.id.dialog_close_button);
+
+        this.videoView.setVisibility(View.GONE);
+        this.collectibleMessage.setVisibility(View.VISIBLE);
+        this.collectibleImageView.setVisibility(View.VISIBLE);
+        this.collectibleNameTextView.setVisibility(View.VISIBLE);
+        this.submitButton.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -79,10 +89,13 @@ public class CollectibleViewFragment extends DialogFragment {
         this.collectibleNameTextView.setText(this.collectible.getCollectibleName());
         this.collectibleImageView.setImageResource(this.collectible.getCollectibleImage());
 
-        String text = "Set pfp";
-        this.submitButton.setTag(text);
+        String text = " ";
+        this.collectibleMessage.setText(text);
 
-        submitButton.setOnClickListener(this::btnClickedSubmit);
+        text = "Set pfp";
+        this.submitButton.setText(text);
+
+        this.submitButton.setOnClickListener(this::btnClickedSubmit);
     }
 
     /**
@@ -112,7 +125,7 @@ public class CollectibleViewFragment extends DialogFragment {
         if (getDialog() != null && getDialog().getWindow() != null) {
             Window window = getDialog().getWindow();
             WindowManager.LayoutParams params = window.getAttributes();
-            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.CENTER;
             window.setAttributes(params);

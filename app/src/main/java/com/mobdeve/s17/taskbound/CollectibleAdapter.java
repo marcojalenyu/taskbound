@@ -89,7 +89,7 @@ public class CollectibleAdapter extends RecyclerView.Adapter<CollectibleAdapter.
             holder.collectibleName.setText(collectibleList.getCollectibleName());
             holder.collectibleImg.setImageResource(collectibleList.getCollectibleImage());
             holder.collectibleImg.setOnClickListener(v -> {
-                CollectibleViewFragment collectibleFragment = new CollectibleViewFragment(collectibleList);
+                CollectibleViewFragment collectibleFragment = new CollectibleViewFragment(collectibles[position]);
                 collectibleFragment.show(((CollectiblesActivity) context).getSupportFragmentManager(), "Collectible Details");
             });
         }
