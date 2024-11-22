@@ -71,9 +71,10 @@ public class CollectiblesManager {
                 new Collectible(8, "Key", Rarity.SR, R.drawable.collectible_key),
                 new Collectible(9, "Flower", Rarity.SR, R.drawable.collectible_flower),
                 // Super rare collectibles
-                new Collectible(10, "Lilydayo", Rarity.SSR, R.drawable.collectible_lilydayo),
-                new Collectible(11, "Hat Lily", Rarity.SSR, R.drawable.collectible_lilyhat),
-                new Collectible(12, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry)
+                new Collectible(12, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry),
+                // Lily collectibles
+                new Collectible(10, "Lilydayo", Rarity.LILY, R.drawable.collectible_lilydayo),
+                new Collectible(11, "Hat Lily", Rarity.LILY, R.drawable.collectible_lilyhat)
         ));
     }
 
