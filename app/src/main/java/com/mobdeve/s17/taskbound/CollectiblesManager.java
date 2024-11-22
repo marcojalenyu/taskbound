@@ -13,7 +13,7 @@ public class CollectiblesManager {
     // Cumulative weight of the collectibles
     private int cumWeight;
     // Number of collectibles per rarity
-    private final int rNum, srNum, ssrNum;
+    private final int rNum, srNum, ssrNum, lilyNum;
 
     /**
      * Default constructor for CollectiblesManager class.
@@ -21,11 +21,12 @@ public class CollectiblesManager {
      */
     public CollectiblesManager() {
         this.collectibles = initializeCollectibles();
-        this.cumWeight = 1000;
+        this.cumWeight = 100000;
         // Each rarity has a different probability of being obtained
         int rCount = 0;
         int srCount = 0;
         int ssrCount = 0;
+        int lilyCount = 0;
         // Count the number of collectibles per rarity
         for (Collectible collectible : collectibles) {
             switch (collectible.getCollectiblesRarity()) {
@@ -38,12 +39,16 @@ public class CollectiblesManager {
                 case SSR:
                     ssrCount++;
                     break;
+                case LILY:
+                    lilyCount++;
+                    break;
             }
         }
         // Calculate the weight of the collectibles
-        this.rNum = calculateWeight(cumWeight, rCount, 0.86);
-        this.srNum = calculateWeight(cumWeight, srCount, 0.1);
-        this.ssrNum = calculateWeight(cumWeight, ssrCount, 0.04);
+        this.rNum = calculateWeight(rCount, 0.86);
+        this.srNum = calculateWeight(srCount, 0.1);
+        this.ssrNum = calculateWeight(ssrCount, 0.035);
+        this.lilyNum = calculateWeight(lilyCount, 0.005);
         // Calculate the cumulative weight
         this.cumWeight = (rCount * rNum) + (srCount * srNum) + (ssrCount * ssrNum);
     }
@@ -74,16 +79,15 @@ public class CollectiblesManager {
 
     /**
      * Calculates the probability weight of the collectibles.
-     * @param totalWeight - the total weight
      * @param count - the count of collectibles
      * @param percentage - the percentage of the collectibles
      * @return the weight of the collectibles in terms of probability
      */
-    private int calculateWeight(int totalWeight, int count, double percentage) {
+    private int calculateWeight(int count, double percentage) {
         if (count == 0) {
             return 0;
         }
-        return (int) ((totalWeight * percentage) / count);
+        return (int) ((this.cumWeight * percentage) / count);
     }
 
     // Getters
@@ -97,7 +101,7 @@ public class CollectiblesManager {
     }
 
     public int[] getNumOfEachRarity() {
-        return new int[]{this.rNum, this.srNum, this.ssrNum};
+        return new int[]{this.rNum, this.srNum, this.ssrNum, this.lilyNum};
     }
 
 }

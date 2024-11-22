@@ -90,6 +90,9 @@ public class ShopActivity extends AppCompatActivity {
                 case SSR:
                     num = this.rarityWeights[2];
                     break;
+                case LILY:
+                    num = this.rarityWeights[3];
+                    break;
                 default:
                     num = 0;
             }
