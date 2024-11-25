@@ -101,7 +101,9 @@ public class HomeActivity extends AppCompatActivity {
         this.tasksView = findViewById(R.id.tasksView);
         this.btnProf = findViewById(R.id.imgProfile);
 
-        this.btnProf.setImageResource(this.currentUser.getCollectiblesList().get(localDB.getUserPicture(this.currentUser.getUserID())).getCollectibleImage());
+        int index = localDB.getUserPicture(this.currentUser.getUserID());
+        Collectible collectible = this.currentUser.getCollectiblesList().get(index);
+        this.btnProf.setImageResource(collectible.getCollectibleImage());
 
         ImageButton btnLogout = findViewById(R.id.btnLogout);
         FloatingActionButton btnCollectibles = findViewById(R.id.btnCollectibles);
