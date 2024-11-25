@@ -21,7 +21,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
 
     // Database information
     public static final String DATABASE_NAME = "taskbound-local.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
 
     // User table
     public static final String USER_TABLE_NAME = "users";
@@ -61,7 +61,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
                     + USER_COLUMN_COLLECTIBLES + " TEXT,"
                     + USER_COLUMN_SORT_TYPE + " TEXT,"
                     + USER_COLUMN_LAST_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
-                    + USER_COLUMN_DELETED + " INTEGER DEFAULT 0)";
+                    + USER_COLUMN_DELETED + " INTEGER DEFAULT 0,"
+                    + USER_COLUMN_PICTURE + " INTEGER DEFAULT -1)";
 
     // Create table query for task table
     private static final String CREATE_TASK_TABLE =
@@ -148,14 +149,41 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(USER_COLUMN_LAST_UPDATED, user.getLastUpdated());
         values.put(USER_COLUMN_SORT_TYPE, user.getSortType().toString());
         values.put(USER_COLUMN_DELETED, user.isDeleted() ? 1 : 0);
+        values.put(USER_COLUMN_PICTURE, user.getPicture());
         long result = db.insert(USER_TABLE_NAME, null, values);
         db.close();
-
 
         if (result == -1) {
             return;
         }
     }
+
+
+    // For debugging
+    public void logAllUserIds() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(USER_TABLE_NAME, new String[]{USER_COLUMN_ID}, null, null, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String userId = cursor.getString(0); // Column 0 is USER_COLUMN_ID
+                    Log.d("LocalDBManager", "User ID: " + userId);
+                } while (cursor.moveToNext());
+            } else {
+                Log.d("LocalDBManager", "No users found in the table.");
+            }
+        } catch (Exception e) {
+            Log.e("LocalDBManager", "Error retrieving user IDs: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
 
     /**
      * Gets a user from the local database using the user ID and password.
@@ -166,8 +194,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public User getUserWithIdAndPass(String userID, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
-        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES, USER_COLUMN_SORT_TYPE, USER_COLUMN_LAST_UPDATED, USER_COLUMN_DELETED},
+        cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES, USER_COLUMN_SORT_TYPE, USER_COLUMN_LAST_UPDATED, USER_COLUMN_DELETED, USER_COLUMN_PICTURE},
                 USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
+        logAllUserIds();
 
         if (cursor != null && cursor.moveToFirst()) {
             String hashedPassword = cursor.getString(3);
@@ -194,6 +223,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
             int coins = cursor.getInt(4);
             String sortType = cursor.getString(6);
             long lastUpdated = cursor.getLong(7);
+            int picture = cursor.getInt(8);
 
             // Convert the JSON string to an ArrayList<MyCollectiblesData>
             String collectiblesJson = cursor.getString(5);
@@ -201,7 +231,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
             Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
             ArrayList<Collectible> collectiblesList = gson.fromJson(collectiblesJson, type);
 
-            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList, sortType, lastUpdated);
+            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList, sortType, lastUpdated, picture);
 
             cursor.close();
             return user;
@@ -224,6 +254,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         String collectiblesJson = gson.toJson(user.getCollectiblesList());
         values.put(USER_COLUMN_COLLECTIBLES, collectiblesJson);
         values.put(USER_COLUMN_LAST_UPDATED, user.getLastUpdated());
+        values.put(USER_COLUMN_PICTURE, user.getPicture());
         db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {user.getUserID()});
         db.close();
     }
@@ -335,6 +366,56 @@ public class LocalDBManager extends SQLiteOpenHelper {
         }
         return -1;
     }
+
+    /**
+     * Gets the coins of the user from the local database.
+     * @param userID - the ID of the user
+     * @return the id of the collectible set as the profile picture
+     */
+    public int getUserPicture(String userID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(USER_TABLE_NAME,
+                new String[] {USER_COLUMN_PICTURE, USER_COLUMN_COLLECTIBLES},
+                USER_COLUMN_ID + "=?",
+                new String[] {userID},
+                null, null, null, null);
+
+        ArrayList<Collectible> collectiblesList = null;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int collectiblesColumnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);
+            if (collectiblesColumnIndex != -1) {
+                String collectiblesJson = cursor.getString(collectiblesColumnIndex);
+                Gson gson = new Gson();
+                Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
+                collectiblesList = gson.fromJson(collectiblesJson, type);
+            }
+        }
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int pictureColumnIndex = cursor.getColumnIndex(USER_COLUMN_PICTURE);
+            if (pictureColumnIndex >= 0) {
+                int picture = cursor.getInt(pictureColumnIndex);
+                cursor.close();
+                db.close();
+
+                if (collectiblesList != null) {
+                    for (Collectible collectible : collectiblesList) {
+                        if (collectible.getCollectibleID() == picture) {
+                            return picture;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+        return -1;
+    }
+
 
     /**
      * Gets the collectibles of the user from the local database.
