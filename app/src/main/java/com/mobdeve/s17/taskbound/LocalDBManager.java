@@ -443,21 +443,14 @@ public class LocalDBManager extends SQLiteOpenHelper {
      * @param collectibleID - the ID of the new profile picture
      */
     public void updateUserPicture(String userID, int collectibleID) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_PICTURE},
-                USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int coinsColumnIndex = cursor.getColumnIndex(USER_COLUMN_COINS);
-            if (coinsColumnIndex >= 0) {
-                int currentCoins = cursor.getInt(coinsColumnIndex);
-                ContentValues values = new ContentValues();
-                values.put(USER_COLUMN_PICTURE, collectibleID);
-                values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
-                db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {userID});
-            }
-            cursor.close();
+        if (!checkValidCollectible(userID, collectibleID)) {
+            return;
         }
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(USER_COLUMN_PICTURE, collectibleID);
+        values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
+        db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {userID});
         db.close();
     }
 
