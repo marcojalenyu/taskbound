@@ -16,6 +16,7 @@ public class User {
     private String userName;
     private String password;
     private int coins;
+    private int picture;
     private ArrayList<Collectible> collectiblesList;
     private SortType sortType;
     private long lastUpdated;
@@ -52,6 +53,7 @@ public class User {
         this.sortType = SortType.DEFAULT;
         this.lastUpdated = System.currentTimeMillis();
         this.deleted = false;
+        this.picture = -1;
     }
 
     /**
@@ -64,6 +66,7 @@ public class User {
      * @param collectiblesList - the user's collectibles list
      * @param sortType - the user's sort type
      * @param lastUpdated - the last time the user's data was updated
+     * @param picture - the id of the collectible set as the profile picture
      */
     public User(String userID,
                 String email,
@@ -72,7 +75,8 @@ public class User {
                 int coins,
                 ArrayList<Collectible> collectiblesList,
                 String sortType,
-                long lastUpdated) {
+                long lastUpdated,
+                int picture) {
         this.userID = userID;
         this.email = email;
         this.userName = userName;
@@ -82,6 +86,7 @@ public class User {
         this.sortType = SortType.valueOf(sortType);
         this.lastUpdated = lastUpdated;
         this.deleted = false;
+        this.picture = picture;
     }
 
     // Getters and setters
@@ -105,6 +110,8 @@ public class User {
     public int getCoins() {
         return this.coins;
     }
+
+    public int getPicture() { return this.picture; }
 
     public ArrayList<Collectible> getCollectiblesList() {
         return this.collectiblesList;
@@ -131,4 +138,6 @@ public class User {
     public void setSortType(SortType sortType) {
         this.sortType = sortType;
     }
+
+    public void setPicture(int pic) { this.picture = pic; }
 }
