@@ -97,7 +97,7 @@
                             android:id="@+id/imgHealth"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            app:srcCompat="@drawable/ic_health" />
+                            app:srcCompat="@drawable/ic_task_health" />
 
                         <TextView
                             android:id="@+id/tvHealth"
@@ -141,7 +141,7 @@
                         android:backgroundTint="@android:color/transparent"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
-                        android:foreground="@drawable/ic_finish_task" />
+                        android:foreground="@drawable/ic_task_finish" />
 
                     <ProgressBar
                         android:id="@+id/pbarAttack"
@@ -168,7 +168,7 @@
                             android:clickable="true"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
-                            android:foreground="@drawable/ic_delete_task"
+                            android:foreground="@drawable/ic_task_delete"
                             app:backgroundTint="@android:color/transparent"
                             app:elevation="0dp" />
                     </LinearLayout>
