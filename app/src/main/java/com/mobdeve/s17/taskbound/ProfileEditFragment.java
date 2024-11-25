@@ -1,5 +1,6 @@
 package com.mobdeve.s17.taskbound;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +29,7 @@ public class ProfileEditFragment extends DialogFragment {
     // UI components
     private EditText etUserName;
     private Button btnSaveDetails;
+    private ImageView ivUserPicture;
     // Data components
     private User currentUser;
     private DatabaseReference cloudTaskDB;
@@ -57,7 +60,9 @@ public class ProfileEditFragment extends DialogFragment {
     private void initializeUI(View view) {
         this.etUserName = view.findViewById(R.id.usernameEdit);
         this.btnSaveDetails = view.findViewById(R.id.saveButton);
+        this.ivUserPicture = view.findViewById(R.id.profileImage);
         btnSaveDetails.setOnClickListener(this::btnClickedSaved);
+        ivUserPicture.setOnClickListener(this::btnClickedProfile);
     }
 
     private void initializeData() {
@@ -66,6 +71,7 @@ public class ProfileEditFragment extends DialogFragment {
         this.localDB = new LocalDBManager(getContext());
 
         this.etUserName.setText(this.currentUser.getUserName());
+        this.ivUserPicture.setImageResource(this.currentUser.getCollectiblesList().get(this.currentUser.getPicture()).getCollectibleImage());
     }
 
     /**
@@ -83,6 +89,12 @@ public class ProfileEditFragment extends DialogFragment {
             Log.e("LoginReal", e + "");
         }
     }
+
+    public void btnClickedProfile(View v) {
+        Intent intent = new Intent(getContext(), CollectiblesActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     public void onStart() {
