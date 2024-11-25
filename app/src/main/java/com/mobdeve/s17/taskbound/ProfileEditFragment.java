@@ -71,7 +71,7 @@ public class ProfileEditFragment extends DialogFragment {
         this.localDB = new LocalDBManager(getContext());
 
         this.etUserName.setText(this.currentUser.getUserName());
-        this.ivUserPicture.setImageResource(this.currentUser.getCollectiblesList().get(this.currentUser.getPicture()).getCollectibleImage());
+        this.ivUserPicture.setImageResource(this.currentUser.getCollectiblesList().get(localDB.getUserPicture(this.currentUser.getUserID())).getCollectibleImage());
     }
 
     /**
