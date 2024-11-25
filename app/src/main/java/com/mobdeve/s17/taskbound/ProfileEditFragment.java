@@ -71,7 +71,10 @@ public class ProfileEditFragment extends DialogFragment {
         this.localDB = new LocalDBManager(getContext());
 
         this.etUserName.setText(this.currentUser.getUserName());
-        this.ivUserPicture.setImageResource(this.currentUser.getCollectiblesList().get(localDB.getUserPicture(this.currentUser.getUserID())).getCollectibleImage());
+
+        int index = localDB.getUserPicture(this.currentUser.getUserID());
+        Collectible collectible = this.currentUser.getCollectiblesList().get(index);
+        this.ivUserPicture.setImageResource(collectible.getCollectibleImage());
     }
 
     /**
@@ -95,6 +98,11 @@ public class ProfileEditFragment extends DialogFragment {
         startActivity(intent);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initializeData();
+    }
 
     @Override
     public void onStart() {
