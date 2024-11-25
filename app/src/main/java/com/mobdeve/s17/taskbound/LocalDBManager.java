@@ -387,6 +387,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
             Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
             collectiblesList = gson.fromJson(collectiblesJson, type);
             cursor.close();
+            db.close();
         }
 
         if (collectiblesList == null) {
@@ -399,7 +400,6 @@ public class LocalDBManager extends SQLiteOpenHelper {
             }
         }
 
-        db.close();
         return false;
     }
 
@@ -411,37 +411,22 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public int getUserPicture(String userID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_TABLE_NAME,
-                new String[] {USER_COLUMN_PICTURE, USER_COLUMN_COLLECTIBLES},
+                new String[] {USER_COLUMN_PICTURE},
                 USER_COLUMN_ID + "=?",
                 new String[] {userID},
                 null, null, null, null);
 
-        ArrayList<Collectible> collectiblesList = null;
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int collectiblesColumnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);
-            if (collectiblesColumnIndex == -1) {
-                return -1;
-            }
-            String collectiblesJson = cursor.getString(collectiblesColumnIndex);
-            Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
-            collectiblesList = gson.fromJson(collectiblesJson, type);
-        }
-
         if (cursor != null && cursor.moveToFirst()) {
             int pictureColumnIndex = cursor.getColumnIndex(USER_COLUMN_PICTURE);
-            if (pictureColumnIndex < 0 || collectiblesList == null) {
+            if (pictureColumnIndex < 0) {
                 return -1;
             }
             int picture = cursor.getInt(pictureColumnIndex);
             cursor.close();
             db.close();
 
-            for (Collectible collectible : collectiblesList) {
-                if (collectible.getCollectibleID() == picture) {
-                    return picture;
-                }
+            if (checkValidCollectible(userID, picture)) {
+                return picture;
             }
         }
 
