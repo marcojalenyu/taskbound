@@ -1,5 +1,7 @@
 package com.mobdeve.s17.taskbound;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -50,7 +52,7 @@ public class CollectiblesManager {
         this.ssrNum = calculateWeight(ssrCount, 0.035);
         this.lilyNum = calculateWeight(lilyCount, 0.005);
         // Calculate the cumulative weight
-        this.cumWeight = (rCount * rNum) + (srCount * srNum) + (ssrCount * ssrNum);
+        this.cumWeight = (rCount * rNum) + (srCount * srNum) + (ssrCount * ssrNum) + (lilyCount * lilyNum);
     }
 
     /**
