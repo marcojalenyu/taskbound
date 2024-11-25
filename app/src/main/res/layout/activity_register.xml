@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/bg_mountains" />
+        app:srcCompat="@drawable/bg_title" />
 
     <ImageView
         android:id="@+id/imgTitleBgLayer2A"

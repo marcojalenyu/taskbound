@@ -119,7 +119,7 @@
                         android:id="@+id/imgHealth"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        app:srcCompat="@drawable/ic_health" />
+                        app:srcCompat="@drawable/ic_task_health" />
 
                     <TextView
                         android:id="@+id/tvHealth"

@@ -210,7 +210,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:clickable="true"
-            android:foreground="@drawable/ic_chest"
+            android:foreground="@drawable/ic_shop"
             app:backgroundTint="@android:color/transparent"
             app:elevation="0dp"
             app:rippleColor="@android:color/transparent" />
