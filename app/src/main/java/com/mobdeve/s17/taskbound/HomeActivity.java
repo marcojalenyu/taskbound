@@ -267,6 +267,7 @@ public class HomeActivity extends AppCompatActivity {
         syncCloudUser();
         syncCloudTasks();
         fetchLocalData();
+        initializeUI();
     }
 
     /**
