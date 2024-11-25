@@ -253,7 +253,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         Gson gson = new Gson();
         String collectiblesJson = gson.toJson(user.getCollectiblesList());
         values.put(USER_COLUMN_COLLECTIBLES, collectiblesJson);
-        values.put(USER_COLUMN_LAST_UPDATED, user.getLastUpdated());
+        values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
         values.put(USER_COLUMN_PICTURE, user.getPicture());
         db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {user.getUserID()});
         db.close();
