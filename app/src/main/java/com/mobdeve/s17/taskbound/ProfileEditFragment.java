@@ -50,6 +50,7 @@ public class ProfileEditFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_profile, container, false);
         initializeUI(view);
         initializeData();
+        setEtUserName();
         return view;
     }
 
@@ -70,11 +71,13 @@ public class ProfileEditFragment extends DialogFragment {
         this.cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks").child(currentUser.getUserID());
         this.localDB = new LocalDBManager(getContext());
 
-        this.etUserName.setText(this.currentUser.getUserName());
-
         int index = localDB.getUserPicture(this.currentUser.getUserID());
         Collectible collectible = this.currentUser.getCollectiblesList().get(index);
         this.ivUserPicture.setImageResource(collectible.getCollectibleImage());
+    }
+
+    private void setEtUserName() {
+        this.etUserName.setText(this.currentUser.getUserName());
     }
 
     /**
