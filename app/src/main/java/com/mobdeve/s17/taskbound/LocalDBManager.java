@@ -367,6 +367,10 @@ public class LocalDBManager extends SQLiteOpenHelper {
         return -1;
     }
 
+//    private boolean checkValidPicture(int collectibleID) {
+//
+//    }
+//
     /**
      * Gets the coins of the user from the local database.
      * @param userID - the ID of the user
@@ -384,27 +388,27 @@ public class LocalDBManager extends SQLiteOpenHelper {
 
         if (cursor != null && cursor.moveToFirst()) {
             int collectiblesColumnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);
-            if (collectiblesColumnIndex != -1) {
-                String collectiblesJson = cursor.getString(collectiblesColumnIndex);
-                Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
-                collectiblesList = gson.fromJson(collectiblesJson, type);
+            if (collectiblesColumnIndex == -1) {
+                return -1;
             }
+            String collectiblesJson = cursor.getString(collectiblesColumnIndex);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
+            collectiblesList = gson.fromJson(collectiblesJson, type);
         }
 
         if (cursor != null && cursor.moveToFirst()) {
             int pictureColumnIndex = cursor.getColumnIndex(USER_COLUMN_PICTURE);
-            if (pictureColumnIndex >= 0) {
-                int picture = cursor.getInt(pictureColumnIndex);
-                cursor.close();
-                db.close();
+            if (pictureColumnIndex < 0 || collectiblesList == null) {
+                return -1;
+            }
+            int picture = cursor.getInt(pictureColumnIndex);
+            cursor.close();
+            db.close();
 
-                if (collectiblesList != null) {
-                    for (Collectible collectible : collectiblesList) {
-                        if (collectible.getCollectibleID() == picture) {
-                            return picture;
-                        }
-                    }
+            for (Collectible collectible : collectiblesList) {
+                if (collectible.getCollectibleID() == picture) {
+                    return picture;
                 }
             }
         }
@@ -415,6 +419,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
         db.close();
         return -1;
     }
+
+
 
 
     /**
