@@ -367,7 +367,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         return -1;
     }
 
-    private boolean checkValidCollectible(String userID, int collectibleID) {
+    private int checkValidCollectible(String userID, int collectibleID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_TABLE_NAME,
                 new String[] {USER_COLUMN_COLLECTIBLES},
@@ -380,7 +380,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         if (cursor != null && cursor.moveToFirst()) {
             int collectiblesColumnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);
             if (collectiblesColumnIndex == -1) {
-                return false;
+                return -1;
             }
             String collectiblesJson = cursor.getString(collectiblesColumnIndex);
             Gson gson = new Gson();
@@ -391,16 +391,16 @@ public class LocalDBManager extends SQLiteOpenHelper {
         }
 
         if (collectiblesList == null) {
-            return false;
+            return -1;
         }
 
-        for (Collectible collectible : collectiblesList) {
-            if (collectible.getCollectibleID() == collectibleID) {
-                return true;
+        for (int i = 0; i < collectiblesList.size(); i++) {
+            if (collectiblesList.get(i).getCollectibleID() == collectibleID) {
+                return i;
             }
         }
 
-        return false;
+        return -1;
     }
 
     /**
@@ -408,7 +408,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
      * @param userID - the ID of the user
      * @return the id of the collectible set as the profile picture
      */
-    public int getUserPicture(String userID) {
+    public Integer getUserPicture(String userID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(USER_TABLE_NAME,
                 new String[] {USER_COLUMN_PICTURE},
@@ -424,9 +424,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
             int picture = cursor.getInt(pictureColumnIndex);
             cursor.close();
             db.close();
-
-            if (checkValidCollectible(userID, picture)) {
-                return picture;
+            int collectibleImg = checkValidCollectible(userID, picture);
+            if (collectibleImg != -1) {
+                return collectibleImg;
             }
         }
 
@@ -443,7 +443,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
      * @param collectibleID - the ID of the new profile picture
      */
     public void updateUserPicture(String userID, int collectibleID) {
-        if (!checkValidCollectible(userID, collectibleID)) {
+        if (checkValidCollectible(userID, collectibleID) == -1) {
             return;
         }
         SQLiteDatabase db = this.getWritableDatabase();
