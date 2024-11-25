@@ -367,10 +367,42 @@ public class LocalDBManager extends SQLiteOpenHelper {
         return -1;
     }
 
-//    private boolean checkValidPicture(int collectibleID) {
-//
-//    }
-//
+    private boolean checkValidCollectible(String userID, int collectibleID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(USER_TABLE_NAME,
+                new String[] {USER_COLUMN_COLLECTIBLES},
+                USER_COLUMN_ID + "=?",
+                new String[] {userID},
+                null, null, null, null);
+
+        ArrayList<Collectible> collectiblesList = null;
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int collectiblesColumnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);
+            if (collectiblesColumnIndex == -1) {
+                return false;
+            }
+            String collectiblesJson = cursor.getString(collectiblesColumnIndex);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
+            collectiblesList = gson.fromJson(collectiblesJson, type);
+            cursor.close();
+        }
+
+        if (collectiblesList == null) {
+            return false;
+        }
+
+        for (Collectible collectible : collectiblesList) {
+            if (collectible.getCollectibleID() == collectibleID) {
+                return true;
+            }
+        }
+
+        db.close();
+        return false;
+    }
+
     /**
      * Gets the coins of the user from the local database.
      * @param userID - the ID of the user
@@ -420,7 +452,29 @@ public class LocalDBManager extends SQLiteOpenHelper {
         return -1;
     }
 
+    /**
+     * Soft deletes a user from the local database.
+     * @param userID - the ID of the user to be deleted
+     * @param collectibleID - the ID of the new profile picture
+     */
+    public void updateUserPicture(String userID, int collectibleID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_PICTURE},
+                USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
 
+        if (cursor != null && cursor.moveToFirst()) {
+            int coinsColumnIndex = cursor.getColumnIndex(USER_COLUMN_COINS);
+            if (coinsColumnIndex >= 0) {
+                int currentCoins = cursor.getInt(coinsColumnIndex);
+                ContentValues values = new ContentValues();
+                values.put(USER_COLUMN_PICTURE, collectibleID);
+                values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
+                db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {userID});
+            }
+            cursor.close();
+        }
+        db.close();
+    }
 
 
     /**
