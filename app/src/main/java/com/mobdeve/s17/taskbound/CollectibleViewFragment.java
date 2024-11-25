@@ -3,6 +3,7 @@ package com.mobdeve.s17.taskbound;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,16 +94,15 @@ public class CollectibleViewFragment extends DialogFragment {
      */
     public void btnClickedSubmit(View view) {
         // Get the task information
-//        String name = String.valueOf(etTaskName.getText());
-//        String content = String.valueOf(etTaskDesc.getText());
-//        String deadline = String.valueOf(etDeadline.getText());
-//        try {
-//            localDB.updateTaskInfo(task.getId(), name, content, deadline);
-//            dismiss();
-//            ((HomeActivity) getActivity()).onResume();
-//        } catch (Exception e) {
-//            Log.e("LoginReal", e + "");
-//        }
+        int collectibleID = this.collectible.getCollectibleID();
+        String userID = this.currentUser.getUserID();
+        try {
+            localDB.updateUserPicture(userID, collectibleID);
+            dismiss();
+            ((CollectiblesActivity) getActivity()).onResume();
+        } catch (Exception e) {
+            Log.e("SetProfilePicture", e + "");
+        }
     }
 
     /**
