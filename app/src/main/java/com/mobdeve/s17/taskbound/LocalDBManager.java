@@ -34,6 +34,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public static final String USER_COLUMN_SORT_TYPE = "sort_type";
     public static final String USER_COLUMN_LAST_UPDATED = "last_updated";
     public static final String USER_COLUMN_DELETED = "deleted";
+    public static final String USER_COLUMN_PICTURE = "profile_picture";
 
     // Task table
     public static final String TASK_TABLE_NAME = "tasks";
@@ -47,6 +48,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public static final String TASK_COLUMN_MONSTER = "monster";
     public static final String TASK_COLUMN_LAST_UPDATED = "last_updated";
     public static final String TASK_COLUMN_DELETED = "deleted";
+    public static final String TASK_COLUMN_PRIORITY = "priority";
 
     // Create table query for user table
     private static final String CREATE_USER_TABLE =
@@ -148,6 +150,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(USER_COLUMN_DELETED, user.isDeleted() ? 1 : 0);
         long result = db.insert(USER_TABLE_NAME, null, values);
         db.close();
+
 
         if (result == -1) {
             return;
