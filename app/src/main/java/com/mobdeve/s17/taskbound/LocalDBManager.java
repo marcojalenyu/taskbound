@@ -196,7 +196,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         Cursor cursor;
         cursor = db.query(USER_TABLE_NAME, new String[] {USER_COLUMN_ID, USER_COLUMN_EMAIL, USER_COLUMN_USERNAME, USER_COLUMN_PASSWORD, USER_COLUMN_COINS, USER_COLUMN_COLLECTIBLES, USER_COLUMN_SORT_TYPE, USER_COLUMN_LAST_UPDATED, USER_COLUMN_DELETED, USER_COLUMN_PICTURE},
                 USER_COLUMN_ID + "=?", new String[] {userID}, null, null, null, null);
-        logAllUserIds();
+        // logAllUserIds();
 
         if (cursor != null && cursor.moveToFirst()) {
             String hashedPassword = cursor.getString(3);
@@ -223,7 +223,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
             int coins = cursor.getInt(4);
             String sortType = cursor.getString(6);
             long lastUpdated = cursor.getLong(7);
-            int picture = cursor.getInt(8);
+            int picture = cursor.getInt(9);
 
             // Convert the JSON string to an ArrayList<MyCollectiblesData>
             String collectiblesJson = cursor.getString(5);
