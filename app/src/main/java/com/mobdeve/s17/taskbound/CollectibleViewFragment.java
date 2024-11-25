@@ -98,6 +98,7 @@ public class CollectibleViewFragment extends DialogFragment {
         String userID = this.currentUser.getUserID();
         try {
             localDB.updateUserPicture(userID, collectibleID);
+            currentUser.setPicture(collectibleID);
             dismiss();
             ((CollectiblesActivity) getActivity()).onResume();
         } catch (Exception e) {
