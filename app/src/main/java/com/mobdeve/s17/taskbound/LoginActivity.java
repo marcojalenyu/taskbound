@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -54,10 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         initializeDataAndSession();
         initializeUI();
 
-        if (sessionExpired()) {
+        if (sessionExpired() || !autoLogin()) {
             clearSessionCache();
-        } else {
-            autoLogin();
         }
 
         UIUtil.startCloudAnimations(findViewById(R.id.mainLogin));
@@ -106,12 +105,16 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Automatically logs in the user if user session is still valid.
      */
-    private void autoLogin() {
+    private boolean autoLogin() {
         // Fetch user data from SharedPreferences and set to currSession
         String userID = sessionCache.getString("userID", "");
         String password = sessionCache.getString("password", "");
         User user = localDB.getUserWithIdAndPass(userID, password);
+        if (user == null) {
+            return false;
+        }
         fetchUserData(user.getUserID());
+        return true;
     }
 
     /**
@@ -290,6 +293,38 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Syncing failed.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    private void populateSQLite() {
+        cloudUserDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("FirebaseUser", "User");
+
+                if (dataSnapshot.exists()) {
+                    // Iterate through all entries (children) in the "Users" node
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        User cloudUser = userSnapshot.getValue(User.class);
+
+                        if (cloudUser != null) {
+                            Log.d("FirebaseUser", "User ID: " + cloudUser.getUserID());
+                            Log.d("FirebaseUser", "Username: " + cloudUser.getUserName());
+                            // You can process each user object here
+                        }
+                    }
+                } else {
+                    Log.d("FirebaseUser", "No users found in the database.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("FirebaseUser", "Failed to fetch users: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
 
     /**
      * Sync task data between local and cloud databases.
