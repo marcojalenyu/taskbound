@@ -12,6 +12,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +34,9 @@ import java.util.UUID;
 public class TaskAddFragment extends DialogFragment {
 
     // UI components
-    private EditText taskName, taskContent, taskDeadline;
+    private EditText taskName, taskContent, taskDeadline, taskCat;
+    RadioGroup rgPriority;
+    RadioButton rbLow, rbMedium, rbHigh;
     // Task generation components
     private TaskManager taskManager;
     // Data components
@@ -72,6 +76,12 @@ public class TaskAddFragment extends DialogFragment {
         this.taskName = view.findViewById(R.id.etTaskName);
         this.taskContent = view.findViewById(R.id.etTaskDesc);
         this.taskDeadline = view.findViewById(R.id.etDeadline);
+        this.taskCat = view.findViewById(R.id.etTaskCat);
+        this.rgPriority = view.findViewById(R.id.rgPriority);
+        this.rbLow = view.findViewById(R.id.rbLow);
+        this.rbMedium = view.findViewById(R.id.rbMedium);
+        this.rbHigh = view.findViewById(R.id.rbHigh);
+
         Button btnAddTask = view.findViewById(R.id.btnAddTask);
         Button btnCancelAddTask = view.findViewById(R.id.btnCancelTask);
         taskDeadline.setOnClickListener(this::etClickedDeadline);
@@ -130,6 +140,12 @@ public class TaskAddFragment extends DialogFragment {
         String name = taskName.getText().toString().trim();
         String content = taskContent.getText().toString().trim();
         String deadline = taskDeadline.getText().toString();
+        String category = taskCat.getText().toString().trim();
+
+        if (category.equals("Task Category")) {
+            category = "";
+        }
+
         if (fieldsNotComplete()) {
             Toast.makeText(getContext(), "Your task lacks a name/deadline.", Toast.LENGTH_SHORT).show();
         }
@@ -142,7 +158,7 @@ public class TaskAddFragment extends DialogFragment {
                                     content, deadline, taskMonster.getHealth(),
                                     taskMonster.getCoins(), taskMonster.getMonster(),
                                     Priority.valueOf(taskMonster.getPriority()),
-                                    taskMonster.getCategory());
+                                    category);
                 localDB.insertTask(task);
                 cloudTaskDB.child(taskID).setValue(task);
                 dismiss();
@@ -157,7 +173,8 @@ public class TaskAddFragment extends DialogFragment {
      * Check if any of the fields are empty
      */
     private boolean fieldsNotComplete() {
-        return taskName.getText().toString().isEmpty() || taskDeadline.getText().toString().isEmpty();
+        return taskName.getText().toString().isEmpty()
+                || taskDeadline.getText().toString().isEmpty();
     }
 
     /**
