@@ -63,11 +63,27 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
      */
     public void initializeUI(ViewHolder holder, Task myTaskDataList) {
         holder.tvTaskName.setText(myTaskDataList.getName());
+
+        if (myTaskDataList.getCategory().isEmpty()) {
+            holder.tvCategory.setVisibility(View.GONE);
+        } else {
+            holder.tvCategory.setText(myTaskDataList.getCategory());
+        }
+
         if (myTaskDataList.getContent().isEmpty()) {
             holder.tvTaskDesc.setVisibility(View.GONE);
         } else {
             holder.tvTaskDesc.setText(myTaskDataList.getContent());
         }
+
+        if (myTaskDataList.getPriority().equals(Priority.LOW.toString())) {
+            holder.tvPriority.setVisibility(View.GONE);
+        } else if (myTaskDataList.getPriority().equals(Priority.MEDIUM.toString())) {
+            holder.tvPriority.setText("!");
+        } else {
+            holder.tvPriority.setText("!!!");
+        }
+
         holder.tvTaskDeadline.setText(myTaskDataList.getDeadlineAsString());
         holder.tvHealth.setText(String.valueOf(myTaskDataList.getHealth()));
         holder.tvCoins.setText(String.valueOf(myTaskDataList.getCoins()));
@@ -189,7 +205,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         LinearLayout llTaskDetails;
         ImageView imgTaskEnemy;
-        TextView tvTaskName, tvTaskDesc, tvTaskDeadline, tvHealth, tvCoins;
+        TextView tvTaskName, tvCategory, tvTaskDesc, tvPriority, tvTaskDeadline, tvHealth, tvCoins;
         Button btnAttack;
         FloatingActionButton btnDelete;
 
@@ -198,7 +214,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             llTaskDetails = itemView.findViewById(R.id.llTaskDetails);
             imgTaskEnemy = itemView.findViewById(R.id.imgTvIcon);
             tvTaskName = itemView.findViewById(R.id.tvTaskName);
+            tvCategory = itemView.findViewById(R.id.tvCategory);
             tvTaskDesc = itemView.findViewById(R.id.tvTaskDesc);
+            tvPriority = itemView.findViewById(R.id.tvPriority);
             tvTaskDeadline = itemView.findViewById(R.id.tvDeadline);
             tvHealth = itemView.findViewById(R.id.tvHealth);
             tvCoins = itemView.findViewById(R.id.tvCoins);
