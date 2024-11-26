@@ -37,7 +37,6 @@ public class TaskAddFragment extends DialogFragment {
     // UI components
     private EditText taskName, taskContent, taskDeadline, taskCat;
     RadioGroup rgPriority;
-    RadioButton rbLow, rbMedium, rbHigh;
     // Task generation components
     private TaskManager taskManager;
     // Data components
@@ -80,9 +79,6 @@ public class TaskAddFragment extends DialogFragment {
         this.taskDeadline = view.findViewById(R.id.etDeadline);
         this.taskCat = view.findViewById(R.id.etTaskCat);
         this.rgPriority = view.findViewById(R.id.rgPriority);
-        this.rbLow = view.findViewById(R.id.rbLow);
-        this.rbMedium = view.findViewById(R.id.rbMedium);
-        this.rbHigh = view.findViewById(R.id.rbHigh);
 
         rgPriority.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbHigh) {
