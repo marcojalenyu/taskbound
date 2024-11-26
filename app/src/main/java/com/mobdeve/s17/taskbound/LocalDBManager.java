@@ -7,12 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * The LocalDBManager class handles the local database of the application.
@@ -50,6 +54,10 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public static final String TASK_COLUMN_DELETED = "deleted";
     public static final String TASK_COLUMN_PRIORITY = "priority";
     public static final String TASK_COLUMN_CATEGORY = "category";
+
+    // Collectibles manager
+    private CollectiblesManager collectiblesManager;
+    ArrayList<Collectible> userCollectibles;
 
     // Create table query for user table
     private static final String CREATE_USER_TABLE =
@@ -91,6 +99,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
      */
     public LocalDBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.collectiblesManager = new CollectiblesManager();
     }
 
     /**
@@ -238,12 +247,34 @@ public class LocalDBManager extends SQLiteOpenHelper {
             Type type = new TypeToken<ArrayList<Collectible>>() {}.getType();
             ArrayList<Collectible> collectiblesList = gson.fromJson(collectiblesJson, type);
 
-            User user = new User(userID, userEmail, userName, hashedPassword, coins, collectiblesList, sortType, lastUpdated, picture);
+            this.userCollectibles = mapCollectibles(collectiblesList);
+
+            User user = new User(userID, userEmail, userName, hashedPassword, coins, this.userCollectibles, sortType, lastUpdated, picture);
 
             cursor.close();
             return user;
         }
         return null;
+    }
+
+    public ArrayList<Collectible> mapCollectibles (ArrayList<Collectible> collectiblesList) {
+        Map<Integer, Boolean> collectibleMap = new HashMap<>();
+        for (Collectible collectible : collectiblesList) {
+            collectibleMap.put(collectible.getCollectibleID(), collectible.isObtained());
+            // Log.d("Lily", collectible.getCollectibleID() + "(" + collectible.getCollectibleName() + "): " + collectible.getCollectibleImage());
+        }
+
+        this.userCollectibles = this.collectiblesManager.getCollectibles();
+        for (Collectible collectible : this.userCollectibles) {
+            Boolean isObtained = collectibleMap.get(collectible.getCollectibleID());
+            if (isObtained != null) {
+                collectible.setObtained(isObtained);
+            } else {
+                collectible.setObtained(false);
+            }
+        }
+
+        return userCollectibles;
     }
 
     /**
@@ -259,6 +290,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(USER_COLUMN_COINS, user.getCoins());
         Gson gson = new Gson();
         String collectiblesJson = gson.toJson(user.getCollectiblesList());
+
         values.put(USER_COLUMN_COLLECTIBLES, collectiblesJson);
         values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
         values.put(USER_COLUMN_PICTURE, user.getPicture());
@@ -401,6 +433,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         if (collectiblesList == null) {
             return imageID;
         }
+        collectiblesList = mapCollectibles(collectiblesList);
 
         for (int i = 0; i < collectiblesList.size(); i++) {
             if (collectiblesList.get(i).getCollectibleID() == collectibleID) {
@@ -479,6 +512,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
                 ArrayList<Collectible> collectiblesList = gson.fromJson(collectiblesJson, type);
                 cursor.close();
                 db.close();
+                collectiblesList = mapCollectibles(collectiblesList);
                 return collectiblesList;
             }
         }

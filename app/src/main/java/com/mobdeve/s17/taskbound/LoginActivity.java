@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -239,6 +241,11 @@ public class LoginActivity extends AppCompatActivity {
                 User user = snapshot.getValue(User.class);
                 // Only sync user data if user is found in cloud database
                 if (user != null) {
+                    ArrayList<Collectible> collectibles = localDB.mapCollectibles(user.getCollectiblesList());
+                    user = new User(user.getUserID(), user.getEmail(), user.getUserName(),
+                                    user.getPassword(), user.getCoins(), collectibles,
+                                    user.getSortOrder().toString(), user.getLastUpdated(),
+                                    user.getPicture());
                     syncUserData(user);
                     currSession.addUser(user);
                     currSession.setCurrentUser(user);

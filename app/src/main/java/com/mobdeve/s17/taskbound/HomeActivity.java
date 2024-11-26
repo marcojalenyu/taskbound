@@ -104,6 +104,10 @@ public class HomeActivity extends AppCompatActivity {
 
         ImageView btnProfile = findViewById(R.id.imgProfile);
         int imageID = localDB.getUserPicture(this.currentUser.getUserID());
+        Log.d("Lily", "" + imageID);
+        for (Collectible collectible : this.currentUser.getCollectiblesList()) {
+            Log.d("Lily", "Cloud: " + collectible.getCollectibleID() + "(" + collectible.getCollectibleName() + ") " + collectible.getCollectibleImage());
+        }
         btnProfile.setImageResource(imageID);
 
         ImageButton btnLogout = findViewById(R.id.btnLogout);
