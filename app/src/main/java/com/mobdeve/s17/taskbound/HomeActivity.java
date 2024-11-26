@@ -103,8 +103,6 @@ public class HomeActivity extends AppCompatActivity {
 
         CollectiblesManager collectiblesManager = UserSession.getInstance().getCollectiblesManager();
         int collectibleID = localDB.getUserPicture(this.currentUser.getUserID());
-        System.out.println(collectibleID);
-        System.out.println(collectiblesManager.getCollectibleName(collectibleID));
         int imageID = getResources().getIdentifier("collectible_" + collectiblesManager.getCollectibleName(collectibleID), "drawable", getPackageName());
         this.btnProf.setImageResource(imageID);
 
