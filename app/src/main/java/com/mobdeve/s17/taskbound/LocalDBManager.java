@@ -654,20 +654,26 @@ public class LocalDBManager extends SQLiteOpenHelper {
      * @param coins - the coins to be added to the user
      */
     public void defeatTask(String taskId, int coins) {
-        // Soft delete the task
-        deleteTask(taskId);
         // Get the user's current coins
         String userID = UserSession.getInstance().getCurrentUser().getUserID();
         int currentCoins = getUserCoins(userID);
-        // Set values of coins and last_updated
+
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(USER_COLUMN_COINS, currentCoins + coins);
-        values.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
-        // UPDATE users SET coins = coins + ? WHERE id = ?
-        db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + " = ?", new String[] {String.valueOf(userID)});
+
+        // Update the user's coins and last_updated timestamp
+        ContentValues userValues = new ContentValues();
+        userValues.put(USER_COLUMN_COINS, currentCoins + coins);
+        userValues.put(USER_COLUMN_LAST_UPDATED, System.currentTimeMillis());
+        db.update(USER_TABLE_NAME, userValues, USER_COLUMN_ID + " = ?", new String[] {userID});
+
+        // Update the task's health to 0
+        ContentValues taskValues = new ContentValues();
+        taskValues.put(TASK_COLUMN_HEALTH, 0);
+        db.update(TASK_TABLE_NAME, taskValues, TASK_COLUMN_ID + " = ?", new String[] {taskId});
+
         db.close();
     }
+
 
     /**
      * Soft deletes a task from the local database.
