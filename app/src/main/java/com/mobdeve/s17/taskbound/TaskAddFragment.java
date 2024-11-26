@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.UUID;
@@ -192,8 +193,19 @@ public class TaskAddFragment extends DialogFragment {
      */
     private Task generateRandomTask() {
         Random random = new Random();
-        int randomIndex = random.nextInt(taskManager.getTasks().size());
-        return taskManager.getTasks().get(randomIndex);
+        ArrayList<Integer> availableIndices = new ArrayList<>();
+        ArrayList<Task> taskList = taskManager.getTasks();
+
+        for (int i = 0; i < taskList.size(); i++) {
+            if (!taskList.get(i).getPriority().equals(this.priority.toString())) {
+                continue;
+            }
+            availableIndices.add(i);
+        }
+
+        int randomIndex = random.nextInt(availableIndices.size());
+
+        return taskManager.getTasks().get(availableIndices.get(randomIndex));
     }
 
     /**
