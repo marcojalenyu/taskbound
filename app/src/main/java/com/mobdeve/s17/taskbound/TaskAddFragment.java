@@ -43,6 +43,7 @@ public class TaskAddFragment extends DialogFragment {
     private User currentUser;
     private DatabaseReference cloudTaskDB;
     private LocalDBManager localDB;
+    Enum<Priority> priority;
 
     /**
      * Default constructor for AddTaskFragment
@@ -81,6 +82,16 @@ public class TaskAddFragment extends DialogFragment {
         this.rbLow = view.findViewById(R.id.rbLow);
         this.rbMedium = view.findViewById(R.id.rbMedium);
         this.rbHigh = view.findViewById(R.id.rbHigh);
+
+        rgPriority.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbHigh) {
+                this.priority = Priority.HIGH;
+            } else if (checkedId == R.id.rbMedium) {
+                this.priority = Priority.MEDIUM;
+            } else {
+                this.priority = Priority.LOW;
+            }
+        });
 
         Button btnAddTask = view.findViewById(R.id.btnAddTask);
         Button btnCancelAddTask = view.findViewById(R.id.btnCancelTask);
@@ -157,8 +168,7 @@ public class TaskAddFragment extends DialogFragment {
                 Task task = new Task(taskID, currentUser.getUserID(), name,
                                     content, deadline, taskMonster.getHealth(),
                                     taskMonster.getCoins(), taskMonster.getMonster(),
-                                    Priority.valueOf(taskMonster.getPriority()),
-                                    category);
+                                    priority, category);
                 localDB.insertTask(task);
                 cloudTaskDB.child(taskID).setValue(task);
                 dismiss();
