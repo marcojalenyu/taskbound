@@ -80,6 +80,11 @@ public class TaskAddFragment extends DialogFragment {
         this.taskCat = view.findViewById(R.id.etTaskCat);
         this.rgPriority = view.findViewById(R.id.rgPriority);
 
+        Button btnAddTask = view.findViewById(R.id.btnAddTask);
+        Button btnCancelAddTask = view.findViewById(R.id.btnCancelTask);
+        taskDeadline.setOnClickListener(this::etClickedDeadline);
+        btnAddTask.setOnClickListener(this::btnClickedAddTask);
+        btnCancelAddTask.setOnClickListener(this::btnClickedCancel);
         rgPriority.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbHigh) {
                 this.priority = Priority.HIGH;
@@ -89,12 +94,6 @@ public class TaskAddFragment extends DialogFragment {
                 this.priority = Priority.LOW;
             }
         });
-
-        Button btnAddTask = view.findViewById(R.id.btnAddTask);
-        Button btnCancelAddTask = view.findViewById(R.id.btnCancelTask);
-        taskDeadline.setOnClickListener(this::etClickedDeadline);
-        btnAddTask.setOnClickListener(this::btnClickedAddTask);
-        btnCancelAddTask.setOnClickListener(this::btnClickedCancel);
     }
 
     /**
