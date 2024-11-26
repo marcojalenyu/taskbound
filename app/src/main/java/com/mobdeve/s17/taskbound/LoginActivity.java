@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DeadlineCheckReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        long interval = 5000;
+        long interval = AlarmManager.INTERVAL_DAY;
         long startTime = System.currentTimeMillis() + interval;
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, startTime, interval, pendingIntent);
     }
