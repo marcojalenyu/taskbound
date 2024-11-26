@@ -281,6 +281,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
+     * This method is called when the activity stops.
+     * Syncs the user and task data with the cloud database.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        syncCloudUser();
+        syncCloudTasks();
+    }
+
+    /**
      * Fetch the user's data from the local database.
      */
     private void fetchLocalData() {
