@@ -95,6 +95,20 @@ public class TaskFragment extends DialogFragment {
         this.etTaskCat.setText(this.task.getCategory());
         this.tvHealth.setText(String.valueOf(this.task.getHealth()));
         this.tvCoins.setText(String.valueOf(this.task.getCoins()));
+        this.priority = Priority.valueOf(this.task.getPriority());
+        switch (this.priority.toString()) {
+            case "HIGH":
+                rgPriority.check(R.id.rbHigh);
+                break;
+            case "MEDIUM":
+                rgPriority.check(R.id.rbMedium);
+                break;
+            case "LOW":
+            default:
+                rgPriority.check(R.id.rbLow);
+                break;
+        }
+
         etDeadline.setOnClickListener(this::etClickedDeadline);
         btnSubmit.setOnClickListener(this::btnClickedSubmit);
         rgPriority.setOnCheckedChangeListener((group, checkedId) -> {
