@@ -75,6 +75,7 @@ public class CollectiblesManager {
                 // Super rare collectibles
                 new Collectible(12, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry),
                 new Collectible(13, "Banana", Rarity.SSR, R.drawable.collectible_banana),
+                new Collectible(15, "Angel", Rarity.SSR, R.drawable.collectible_angel),
                 // Lily collectibles
                 new Collectible(10, "Lilydayo", Rarity.LILY, R.drawable.collectible_lilydayo),
                 new Collectible(11, "Hat Lily", Rarity.LILY, R.drawable.collectible_lilyhat),
