@@ -279,7 +279,7 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
         // Update the adapter with the filtered tasks
-        TaskAdapter taskAdapter = new TaskAdapter(filteredTasks, this);
+        TaskAdapter taskAdapter = new TaskAdapter(filteredTasks, this.isFiltered, this);
         this.tasksView.setAdapter(taskAdapter);
     }
 
