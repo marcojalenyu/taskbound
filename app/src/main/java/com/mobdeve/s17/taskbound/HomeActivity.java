@@ -101,9 +101,12 @@ public class HomeActivity extends AppCompatActivity {
         this.tasksView = findViewById(R.id.tasksView);
         this.btnProf = findViewById(R.id.imgProfile);
 
-        int index = localDB.getUserPicture(this.currentUser.getUserID());
-        Collectible collectible = this.currentUser.getCollectiblesList().get(index);
-        this.btnProf.setImageResource(collectible.getCollectibleImage());
+        CollectiblesManager collectiblesManager = UserSession.getInstance().getCollectiblesManager();
+        int collectibleID = localDB.getUserPicture(this.currentUser.getUserID());
+        System.out.println(collectibleID);
+        System.out.println(collectiblesManager.getCollectibleName(collectibleID));
+        int imageID = getResources().getIdentifier("collectible_" + collectiblesManager.getCollectibleName(collectibleID), "drawable", getPackageName());
+        this.btnProf.setImageResource(imageID);
 
         ImageButton btnLogout = findViewById(R.id.btnLogout);
         FloatingActionButton btnCollectibles = findViewById(R.id.btnCollectibles);

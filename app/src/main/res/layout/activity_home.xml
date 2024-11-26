@@ -37,7 +37,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
-                    app:srcCompat="@drawable/ic_default_pfp"
+                    app:srcCompat="@drawable/collectible_0"
                     android:clickable="true"
                     android:focusable="true" />
 

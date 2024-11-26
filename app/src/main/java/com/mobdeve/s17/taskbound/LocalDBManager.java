@@ -404,7 +404,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets the coins of the user from the local database.
+     * Gets the collectible id of the user set as the profile pic from the local database.
      * @param userID - the ID of the user
      * @return the id of the collectible set as the profile picture
      */
@@ -421,13 +421,11 @@ public class LocalDBManager extends SQLiteOpenHelper {
             if (pictureColumnIndex < 0) {
                 return -1;
             }
-            int picture = cursor.getInt(pictureColumnIndex);
+            int picture = cursor.getInt(pictureColumnIndex) - 1;
             cursor.close();
             db.close();
-            int collectibleImg = checkValidCollectible(userID, picture);
-            if (collectibleImg != -1) {
-                return collectibleImg;
-            }
+
+            return picture;
         }
 
         if (cursor != null) {

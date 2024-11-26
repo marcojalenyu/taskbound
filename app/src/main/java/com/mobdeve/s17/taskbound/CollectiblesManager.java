@@ -99,6 +99,13 @@ public class CollectiblesManager {
         return collectibles;
     }
 
+    public String getCollectibleName(int index) {
+        if (index < 0 || index >= this.collectibles.size()) {
+            return "0";
+        }
+        return this.collectibles.get(index).getCollectibleName().toLowerCase();
+    }
+
     public int getCumWeight() {
         return this.cumWeight;
     }
