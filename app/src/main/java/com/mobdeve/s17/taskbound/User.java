@@ -18,7 +18,7 @@ public class User {
     private int coins;
     private int picture;
     private ArrayList<Collectible> collectiblesList;
-    private SortType sortType;
+    private SortOrder sortOrder;
     private long lastUpdated;
     private boolean deleted;
 
@@ -46,11 +46,11 @@ public class User {
         this.email = email;
         this.userName = userName;
         this.password = password;
-        // Default values (150 coins, empty collectiblesList, default sortType, current time)
+        // Default values (150 coins, empty collectiblesList, default sortOrder, current time)
         this.coins = 150;
         CollectiblesManager collectiblesManager = new CollectiblesManager();
         this.collectiblesList = collectiblesManager.getCollectibles();
-        this.sortType = SortType.DEFAULT;
+        this.sortOrder = SortOrder.DEFAULT;
         this.lastUpdated = System.currentTimeMillis();
         this.deleted = false;
         this.picture = -1;
@@ -83,7 +83,7 @@ public class User {
         this.password = password;
         this.coins = coins;
         this.collectiblesList = collectiblesList;
-        this.sortType = SortType.valueOf(sortType);
+        this.sortOrder = SortOrder.valueOf(sortType);
         this.lastUpdated = lastUpdated;
         this.deleted = false;
         this.picture = picture;
@@ -117,8 +117,8 @@ public class User {
         return this.collectiblesList;
     }
 
-    public SortType getSortType() {
-        return this.sortType;
+    public SortOrder getSortType() {
+        return this.sortOrder;
     }
 
     public long getLastUpdated() {
@@ -135,8 +135,8 @@ public class User {
         this.coins = coins;
     }
 
-    public void setSortType(SortType sortType) {
-        this.sortType = sortType;
+    public void setSortType(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     public void setPicture(int pic) { this.picture = pic; }

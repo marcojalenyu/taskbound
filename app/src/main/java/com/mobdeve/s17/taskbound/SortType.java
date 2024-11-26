@@ -5,7 +5,8 @@ package com.mobdeve.s17.taskbound;
  */
 public enum SortType {
     // Default sorting is by date and time created
-    DEFAULT,
-    DUE_DATE_ASCENDING,
-    DUE_DATE_DESCENDING,
+    DUE_DATE,
+    PRIORITY,
+    ALPHABETICAL,
+    CATEGORY
 }

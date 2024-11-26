@@ -51,7 +51,7 @@ public class HomeActivity extends AppCompatActivity {
     private User currentUser;
     private DatabaseReference cloudUserDB, cloudTaskDB;
     private LocalDBManager localDB;
-    private SortType sortType;
+    private SortOrder sortOrder;
     private boolean isFiltered;
 
     /**
@@ -85,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
         this.localDB = new LocalDBManager(this);
         this.cloudUserDB = FirebaseDatabase.getInstance().getReference("users");
         this.cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks").child(currentUser.getUserID());
-        this.sortType = currentUser.getSortType();
+        this.sortOrder = currentUser.getSortType();
     }
 
     /**
@@ -210,23 +210,23 @@ public class HomeActivity extends AppCompatActivity {
     public void btnClickedSort(View v) {
         String txtSort = "=";
         String currQuery = this.svSearchBar.getQuery().toString();
-        switch (sortType) {
+        switch (sortOrder) {
             case DUE_DATE_ASCENDING:
-                this.sortType = SortType.DUE_DATE_DESCENDING;
+                this.sortOrder = SortOrder.DUE_DATE_DESCENDING;
                 txtSort = "v";
                 break;
             case DUE_DATE_DESCENDING:
-                this.sortType = SortType.DEFAULT;
+                this.sortOrder = SortOrder.DEFAULT;
                 txtSort = "=";
                 break;
             case DEFAULT:
-                this.sortType = SortType.DUE_DATE_ASCENDING;
+                this.sortOrder = SortOrder.DUE_DATE_ASCENDING;
                 txtSort = "^";
                 break;
         }
         btnSort.setText(txtSort);
         filterTasks(currQuery);
-        this.currentUser.setSortType(this.sortType);
+        this.currentUser.setSortType(this.sortOrder);
         this.localDB.updateUserSortType(this.currentUser);
     }
 
@@ -270,7 +270,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         // Sort the tasks based on the sort type
-        switch (this.sortType) {
+        switch (this.sortOrder) {
             case DUE_DATE_ASCENDING:
                 filteredTasks.sort(Comparator.comparing(Task::getDeadline));
                 break;
