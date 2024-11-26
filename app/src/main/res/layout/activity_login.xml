@@ -23,7 +23,7 @@
         android:layout_gravity="center_vertical"
         android:paddingBottom="300dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/bg_clouds" />
+        app:srcCompat="@drawable/animated_clouds" />
 
     <ImageView
         android:id="@+id/imgTitleBgLayer2B"
@@ -32,7 +32,7 @@
         android:layout_gravity="center_vertical"
         android:paddingBottom="300dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/bg_clouds" />
+        app:srcCompat="@drawable/animated_clouds" />
 
     <TextView
         android:id="@+id/tvCopyright"

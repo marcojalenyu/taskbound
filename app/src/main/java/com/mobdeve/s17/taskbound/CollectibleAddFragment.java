@@ -117,6 +117,18 @@ public class CollectibleAddFragment extends DialogFragment {
     }
 
     /**
+     * This method is called when the dialog is resumed.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (this.mediaPlayer != null) {
+            this.mediaPlayer.seekTo(playbackPosition);
+            this.mediaPlayer.start();
+        }
+    }
+
+    /**
      * This method is called when the dialog is dismissed.
      * It stops the background music.
      */
@@ -124,6 +136,18 @@ public class CollectibleAddFragment extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         stopMusic();
+    }
+
+    /**
+     * This method is called when the dialog is paused.
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (this.mediaPlayer != null) {
+            playbackPosition = this.mediaPlayer.getCurrentPosition();
+            this.mediaPlayer.pause();
+        }
     }
 
     /**
