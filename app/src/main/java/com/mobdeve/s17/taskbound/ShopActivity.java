@@ -2,6 +2,7 @@ package com.mobdeve.s17.taskbound;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -32,6 +34,7 @@ public class ShopActivity extends AppCompatActivity {
     private int cumWeight;
     private int[] rarityWeights;
     private boolean isTenRoll;
+    private int pityIndex;
     // Database Components
     private User user;
     private LocalDBManager localDB;
@@ -88,6 +91,7 @@ public class ShopActivity extends AppCompatActivity {
     private void setupCollectibleIndices() {
         this.collectibleIndices = new int[this.cumWeight];
         int index = 0;
+        this.pityIndex = 0;
         int num;
         // Assign indices based on rarity of collectibles
         for (int i = 0; i < this.collectiblesList.size(); i++) {
@@ -109,6 +113,11 @@ public class ShopActivity extends AppCompatActivity {
             }
             for (int j = 0; j < num; j++) {
                 this.collectibleIndices[index] = i;
+
+                if (this.collectiblesList.get(i).getCollectiblesRarity() == Rarity.R ||
+                        this.collectiblesList.get(i).getCollectiblesRarity() == Rarity.SR) {
+                    pityIndex++;
+                }
                 index++;
             }
         }
@@ -134,7 +143,7 @@ public class ShopActivity extends AppCompatActivity {
 
         if (this.isTenRoll) {
             coins /= 10;
-            rollAmount *= 10;
+            rollAmount = rollAmount * 10 - 1;
             this.isTenRoll = false;
         }
 
@@ -151,8 +160,12 @@ public class ShopActivity extends AppCompatActivity {
         }
 
         playMusic();
-        for (int i = 0; i < rollAmount; i++) {
-            rollCollectible(user);
+        for (int i = rollAmount; i > 0; i--) {
+            if (i == 9) {
+                rollCollectible(user, this.pityIndex);
+                continue;
+            }
+            rollCollectible(user, 0);
         }
         updateCoins();
     }
@@ -181,9 +194,9 @@ public class ShopActivity extends AppCompatActivity {
     /**
      * Roll a collectible from the shop.
      */
-    public void rollCollectible(User user) {
+    public void rollCollectible(User user, int pity) {
         Random random = new Random();
-        int randomNumber = random.nextInt(this.cumWeight);
+        int randomNumber = random.nextInt(this.cumWeight - pity) + pity;
         Collectible collectible = this.collectiblesList.get(this.collectibleIndices[randomNumber]);
         // Add collectible to user's collection
         if (collectible != null) {
