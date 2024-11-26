@@ -615,7 +615,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
      * @param taskContent - the new content of the task
      * @param taskDeadline - the new deadline of the task
      */
-    public void updateTaskInfo(String taskId, String taskName, String taskContent, String taskDeadline) {
+    public void updateTaskInfo(String taskId, String taskName, String taskContent, String taskDeadline, String taskPriority, String taskCategory) {
         SQLiteDatabase db = this.getWritableDatabase();
         String userID = UserSession.getInstance().getCurrentUser().getUserID();
         // Set values of name, content, deadline, and last_updated
@@ -623,6 +623,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(TASK_COLUMN_NAME, taskName);
         values.put(TASK_COLUMN_CONTENT, taskContent);
         values.put(TASK_COLUMN_DEADLINE, taskDeadline);
+        values.put(TASK_COLUMN_PRIORITY, taskPriority);
+        values.put(TASK_COLUMN_CATEGORY, taskCategory);
         values.put(TASK_COLUMN_LAST_UPDATED, System.currentTimeMillis());
         // UPDATE tasks SET name = ?, content = ?, deadline = ? WHERE id = ? && userid = ?
         db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {taskId, userID});

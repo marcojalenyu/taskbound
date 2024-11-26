@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -33,12 +34,14 @@ public class TaskFragment extends DialogFragment {
 
     // UI components
     private Button btnSubmit;
-    private EditText etTaskName, etTaskDesc, etDeadline;
+    private EditText etTaskName, etTaskDesc, etDeadline, etTaskCat;
+    RadioGroup rgPriority;
     private ImageView imgTaskIcon;
     private TextView tvHealth, tvCoins;
     // Data components
     private final Task task;
     private LocalDBManager localDB;
+    Enum<Priority> priority;
 
     /**
      * Constructor for the TaskFragment class.
@@ -73,6 +76,8 @@ public class TaskFragment extends DialogFragment {
         this.etTaskName = view.findViewById(R.id.etTaskName);
         this.etTaskDesc = view.findViewById(R.id.etTaskDesc);
         this.etDeadline = view.findViewById(R.id.etDeadline);
+        this.etTaskCat = view.findViewById(R.id.etTaskCat);
+        this.rgPriority = view.findViewById(R.id.rgPriority);
         this.imgTaskIcon = view.findViewById(R.id.imgTaskIcon);
         this.tvHealth = view.findViewById(R.id.tvHealth);
         this.tvCoins = view.findViewById(R.id.tvCoins);
@@ -87,10 +92,20 @@ public class TaskFragment extends DialogFragment {
         this.etTaskName.setText(this.task.getName());
         this.etTaskDesc.setText(this.task.getContent());
         this.etDeadline.setText(getFormattedDate());
+        this.etTaskCat.setText(this.task.getCategory());
         this.tvHealth.setText(String.valueOf(this.task.getHealth()));
         this.tvCoins.setText(String.valueOf(this.task.getCoins()));
         etDeadline.setOnClickListener(this::etClickedDeadline);
         btnSubmit.setOnClickListener(this::btnClickedSubmit);
+        rgPriority.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbHigh) {
+                this.priority = Priority.HIGH;
+            } else if (checkedId == R.id.rbMedium) {
+                this.priority = Priority.MEDIUM;
+            } else {
+                this.priority = Priority.LOW;
+            }
+        });
     }
 
     /**
@@ -153,8 +168,9 @@ public class TaskFragment extends DialogFragment {
         String name = String.valueOf(etTaskName.getText());
         String content = String.valueOf(etTaskDesc.getText());
         String deadline = String.valueOf(etDeadline.getText());
+        String category = String.valueOf(etTaskCat.getText());
         try {
-            localDB.updateTaskInfo(task.getId(), name, content, deadline);
+            localDB.updateTaskInfo(task.getId(), name, content, deadline, this.priority.toString(), category);
             dismiss();
             ((HomeActivity) getActivity()).onResume();
         } catch (Exception e) {
