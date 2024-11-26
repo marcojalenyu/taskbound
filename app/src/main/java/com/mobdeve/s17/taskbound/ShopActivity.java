@@ -25,6 +25,7 @@ public class ShopActivity extends AppCompatActivity {
     private int[] collectibleIndices;
     private int cumWeight;
     private int[] rarityWeights;
+    private boolean isTenRoll;
     // Database Components
     private User user;
     private LocalDBManager localDB;
@@ -54,8 +55,10 @@ public class ShopActivity extends AppCompatActivity {
     private void initializeUI() {
         this.moneyCount = findViewById(R.id.money_count);
         Button btnRoll = findViewById(R.id.btnRoll);
+        Button btnTenRoll = findViewById(R.id.btnTenRoll);
         ImageButton btnBack = findViewById(R.id.btnBack);
         btnRoll.setOnClickListener(this::btnRollClicked);
+        btnTenRoll.setOnClickListener(this::btnTenRolLClicked);
         btnBack.setOnClickListener(this::btnBackClicked);
     }
 
@@ -69,6 +72,7 @@ public class ShopActivity extends AppCompatActivity {
         this.collectiblesList = this.user.getCollectiblesList();
         this.cumWeight = currSession.getCollectiblesManager().getCumWeight();
         this.rarityWeights = currSession.getCollectiblesManager().getNumOfEachRarity();
+        this.isTenRoll = false;
     }
 
     /**
@@ -118,20 +122,36 @@ public class ShopActivity extends AppCompatActivity {
      */
     public void btnRollClicked(View v) {
         User user = localDB.getUserWithIdAndPass(this.user.getUserID(), this.user.getPassword());
+        int coins = user.getCoins();
+        int rollAmount = 1;
+
+        if (this.isTenRoll) {
+            coins /= 10;
+            rollAmount *= 10;
+            this.isTenRoll = false;
+        }
+
         // Check if user has enough coins
-        if (!hasEnoughCoins(user.getCoins())) {
+        if (!hasEnoughCoins(coins)) {
             Toast.makeText(v.getContext(), "Not enough coins.", Toast.LENGTH_SHORT).show();
+            return;
         }
-        else {
-            // Check if there are collectibles available
-            if (this.collectiblesList.isEmpty()) {
-                Toast.makeText(v.getContext(), "No collectibles available.", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                rollCollectible(user);
-                updateCoins();
-            }
+
+        // Check if there are collectibles available
+        if (this.collectiblesList.isEmpty()) {
+            Toast.makeText(v.getContext(), "No collectibles available.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        for (int i = 0; i < rollAmount; i++) {
+            rollCollectible(user);
+        }
+        updateCoins();
+    }
+
+    public void btnTenRolLClicked(View v) {
+        this.isTenRoll = true;
+        btnRollClicked(v);
     }
 
     /**
