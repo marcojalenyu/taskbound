@@ -107,7 +107,7 @@ public class Task {
         this.monster = monster;
         this.lastUpdated = lastUpdated;
         this.deleted = deleted;
-        this.priority = priority.toString();
+        this.priority = priority == null ? Priority.MEDIUM.toString() : priority.toString();
         this.category = category;
     }
 
