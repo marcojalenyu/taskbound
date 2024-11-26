@@ -138,7 +138,11 @@ public class TaskAddFragment extends DialogFragment {
                 // Create a new task with the given name, content, and deadline
                 Task taskMonster = generateRandomTask();
                 String taskID = UUID.randomUUID().toString();
-                Task task = new Task(taskID, currentUser.getUserID(), name, content, deadline, taskMonster.getHealth(), taskMonster.getCoins(), taskMonster.getMonster());
+                Task task = new Task(taskID, currentUser.getUserID(), name,
+                                    content, deadline, taskMonster.getHealth(),
+                                    taskMonster.getCoins(), taskMonster.getMonster(),
+                                    Priority.valueOf(taskMonster.getPriority()),
+                                    taskMonster.getCategory());
                 localDB.insertTask(task);
                 cloudTaskDB.child(taskID).setValue(task);
                 dismiss();
