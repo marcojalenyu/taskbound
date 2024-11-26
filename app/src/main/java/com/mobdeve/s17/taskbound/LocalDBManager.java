@@ -21,7 +21,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
 
     // Database information
     public static final String DATABASE_NAME = "taskbound-local.db";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     // User table
     public static final String USER_TABLE_NAME = "users";
@@ -49,6 +49,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public static final String TASK_COLUMN_LAST_UPDATED = "last_updated";
     public static final String TASK_COLUMN_DELETED = "deleted";
     public static final String TASK_COLUMN_PRIORITY = "priority";
+    public static final String TASK_COLUMN_CATEGORY = "category";
 
     // Create table query for user table
     private static final String CREATE_USER_TABLE =
@@ -77,6 +78,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
                     + TASK_COLUMN_MONSTER + " TEXT,"
                     + TASK_COLUMN_LAST_UPDATED + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
                     + TASK_COLUMN_DELETED + " INTEGER DEFAULT 0,"
+                    + TASK_COLUMN_PRIORITY + " TEXT DEFAULT 'LOW',"
+                    + TASK_COLUMN_CATEGORY + " TEXT DEFAULT '',"
                     + "FOREIGN KEY(" + TASK_COLUMN_USER_ID + ") REFERENCES " + USER_TABLE_NAME + "(" + USER_COLUMN_ID + "))";
 
     // Constructors and lifecycle methods
@@ -498,21 +501,15 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(TASK_COLUMN_MONSTER, task.getMonster());
         values.put(TASK_COLUMN_LAST_UPDATED, task.getLastUpdated());
         values.put(TASK_COLUMN_DELETED, task.isDeleted() ? 1 : 0);
+        values.put(TASK_COLUMN_PRIORITY, task.getPriority().toString());
+        values.put(TASK_COLUMN_CATEGORY, task.getCategory());
         // INSERT INTO tasks (id, userid, name, content, deadline, health, coins, monster, last_updated, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         db.insert(TASK_TABLE_NAME, null, values);
         db.close();
     }
 
-    /**
-     * Gets all tasks of the user from the local database.
-     * @param userId - the ID of the user
-     * @return a list of tasks of the user (including deleted tasks)
-     */
-    public List<Task> getAllTasks(String userId) {
+    private List<Task> getTasksFromCursor(Cursor cursor) {
         List<Task> taskList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = '" + userId + "'";
-        Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
                 try {
@@ -526,10 +523,12 @@ public class LocalDBManager extends SQLiteOpenHelper {
                     int monsterIndex = cursor.getColumnIndex(TASK_COLUMN_MONSTER);
                     int lastUpdatedIndex = cursor.getColumnIndex(TASK_COLUMN_LAST_UPDATED);
                     int deletedIndex = cursor.getColumnIndex(TASK_COLUMN_DELETED);
+                    int priorityIndex = cursor.getColumnIndex(TASK_COLUMN_PRIORITY);
+                    int categoryIndex = cursor.getColumnIndex(TASK_COLUMN_CATEGORY);
 
                     if (idIndex >= 0 && userIdIndex >= 0 && nameIndex >= 0 && contentIndex >= 0 &&
                             deadlineIndex >= 0 && healthIndex >= 0 && coinsIndex >= 0 && monsterIndex >= 0 &&
-                            lastUpdatedIndex >= 0 && deletedIndex >= 0) {
+                            lastUpdatedIndex >= 0 && deletedIndex >= 0 && priorityIndex >= 0 && categoryIndex >= 0) {
                         Task task = new Task(
                                 cursor.getString(idIndex),
                                 cursor.getString(userIdIndex),
@@ -540,7 +539,9 @@ public class LocalDBManager extends SQLiteOpenHelper {
                                 cursor.getInt(coinsIndex),
                                 cursor.getString(monsterIndex),
                                 cursor.getLong(lastUpdatedIndex),
-                                cursor.getInt(deletedIndex) == 1
+                                cursor.getInt(deletedIndex) == 1,
+                                Priority.valueOf(cursor.getString(priorityIndex)),
+                                cursor.getString(categoryIndex)
                         );
                         taskList.add(task);
                     } else {
@@ -551,6 +552,19 @@ public class LocalDBManager extends SQLiteOpenHelper {
                 }
             } while (cursor.moveToNext());
         }
+        return taskList;
+    }
+
+    /**
+     * Gets all tasks of the user from the local database.
+     * @param userId - the ID of the user
+     * @return a list of tasks of the user (including deleted tasks)
+     */
+    public List<Task> getAllTasks(String userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = '" + userId + "'";
+        Cursor cursor = db.rawQuery(query, null);
+        List<Task> taskList = getTasksFromCursor(cursor);
         cursor.close();
         db.close();
         return taskList;
@@ -562,48 +576,10 @@ public class LocalDBManager extends SQLiteOpenHelper {
      * @return a list of tasks of the user which are not deleted
      */
     public List<Task> getAllExistingTasks(String userid) {
-        List<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TASK_TABLE_NAME + " WHERE " + TASK_COLUMN_USER_ID + " = '" + userid + "' AND " + TASK_COLUMN_DELETED + " = 0";
         Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            do {
-                try {
-                    int idIndex = cursor.getColumnIndex(TASK_COLUMN_ID);
-                    int userIdIndex = cursor.getColumnIndex(TASK_COLUMN_USER_ID);
-                    int nameIndex = cursor.getColumnIndex(TASK_COLUMN_NAME);
-                    int contentIndex = cursor.getColumnIndex(TASK_COLUMN_CONTENT);
-                    int deadlineIndex = cursor.getColumnIndex(TASK_COLUMN_DEADLINE);
-                    int healthIndex = cursor.getColumnIndex(TASK_COLUMN_HEALTH);
-                    int coinsIndex = cursor.getColumnIndex(TASK_COLUMN_COINS);
-                    int monsterIndex = cursor.getColumnIndex(TASK_COLUMN_MONSTER);
-                    int lastUpdatedIndex = cursor.getColumnIndex(TASK_COLUMN_LAST_UPDATED);
-                    int deletedIndex = cursor.getColumnIndex(TASK_COLUMN_DELETED);
-
-                    if (idIndex >= 0 && userIdIndex >= 0 && nameIndex >= 0 && contentIndex >= 0 &&
-                            deadlineIndex >= 0 && healthIndex >= 0 && coinsIndex >= 0 && monsterIndex >= 0 &&
-                            lastUpdatedIndex >= 0 && deletedIndex >= 0) {
-                        Task task = new Task(
-                                cursor.getString(idIndex),
-                                cursor.getString(userIdIndex),
-                                cursor.getString(nameIndex),
-                                cursor.getString(contentIndex),
-                                cursor.getString(deadlineIndex),
-                                cursor.getInt(healthIndex),
-                                cursor.getInt(coinsIndex),
-                                cursor.getString(monsterIndex),
-                                cursor.getLong(lastUpdatedIndex),
-                                cursor.getInt(deletedIndex) == 1
-                        );
-                        taskList.add(task);
-                    } else {
-                        throw new IllegalArgumentException("Invalid column index");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } while (cursor.moveToNext());
-        }
+        List<Task> taskList = getTasksFromCursor(cursor);
         cursor.close();
         db.close();
         return taskList;
@@ -625,6 +601,8 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(TASK_COLUMN_COINS, task.getCoins());
         values.put(TASK_COLUMN_MONSTER, task.getMonster());
         values.put(TASK_COLUMN_LAST_UPDATED, task.getLastUpdated());
+        values.put(TASK_COLUMN_PRIORITY, task.getPriority().toString());
+        values.put(TASK_COLUMN_CATEGORY, task.getCategory());
         // UPDATE tasks SET name = ?, content = ?, deadline = ?, health = ?, coins = ?, monster = ? WHERE id = ? && userid = ?
         db.update(TASK_TABLE_NAME, values, TASK_COLUMN_ID + " = ?" + " AND " + TASK_COLUMN_USER_ID + " = ?", new String[] {task.getId(), userID});
         db.close();

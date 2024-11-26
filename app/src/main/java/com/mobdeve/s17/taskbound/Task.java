@@ -25,6 +25,8 @@ public class Task {
     private String monster;
     private long lastUpdated;
     private boolean deleted;
+    private String priority;
+    private String category;
     // Date format for the deadline
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -54,7 +56,9 @@ public class Task {
                 String deadline,
                 int health,
                 int coins,
-                String monster) throws ParseException {
+                String monster,
+                Enum<Priority> priority,
+                String category) throws ParseException {
         this.id = id;
         this.userID = userID;
         this.name = name;
@@ -65,6 +69,8 @@ public class Task {
         this.monster = monster;
         this.lastUpdated = System.currentTimeMillis();
         this.deleted = false;
+        this.priority = priority.toString();
+        this.category = category;
     }
 
     /**
@@ -88,7 +94,9 @@ public class Task {
                 int coins,
                 String monster,
                 long lastUpdated,
-                boolean deleted) throws ParseException {
+                boolean deleted,
+                Enum<Priority> priority,
+                String category) throws ParseException {
         this.id = id;
         this.userID = userID;
         this.name = name;
@@ -99,6 +107,8 @@ public class Task {
         this.monster = monster;
         this.lastUpdated = lastUpdated;
         this.deleted = deleted;
+        this.priority = priority.toString();
+        this.category = category;
     }
 
     // Methods
@@ -151,6 +161,10 @@ public class Task {
     public long getLastUpdated() {
         return lastUpdated;
     }
+
+    public String getPriority() { return priority; }
+
+    public String getCategory() { return category; }
 
     public boolean isDeleted() {
         return deleted;
