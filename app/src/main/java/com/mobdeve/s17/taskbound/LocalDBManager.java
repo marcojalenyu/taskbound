@@ -501,7 +501,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         values.put(TASK_COLUMN_MONSTER, task.getMonster());
         values.put(TASK_COLUMN_LAST_UPDATED, task.getLastUpdated());
         values.put(TASK_COLUMN_DELETED, task.isDeleted() ? 1 : 0);
-        values.put(TASK_COLUMN_PRIORITY, task.getPriority().toString());
+        values.put(TASK_COLUMN_PRIORITY, task.getPriority());
         values.put(TASK_COLUMN_CATEGORY, task.getCategory());
         // INSERT INTO tasks (id, userid, name, content, deadline, health, coins, monster, last_updated, deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         db.insert(TASK_TABLE_NAME, null, values);
