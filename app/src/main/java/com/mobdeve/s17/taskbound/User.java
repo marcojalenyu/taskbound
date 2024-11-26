@@ -117,7 +117,7 @@ public class User {
         return this.collectiblesList;
     }
 
-    public SortOrder getSortType() {
+    public SortOrder getSortOrder() {
         return this.sortOrder;
     }
 

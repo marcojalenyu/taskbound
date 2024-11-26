@@ -52,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     private DatabaseReference cloudUserDB, cloudTaskDB;
     private LocalDBManager localDB;
     private SortOrder sortOrder;
+    private SortType sortType;
     private boolean isFiltered;
 
     /**
@@ -85,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
         this.localDB = new LocalDBManager(this);
         this.cloudUserDB = FirebaseDatabase.getInstance().getReference("users");
         this.cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks").child(currentUser.getUserID());
-        this.sortOrder = currentUser.getSortType();
+        this.sortOrder = currentUser.getSortOrder();
     }
 
     /**

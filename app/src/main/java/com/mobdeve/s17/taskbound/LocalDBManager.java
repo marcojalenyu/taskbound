@@ -150,7 +150,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
         String collectiblesJson = gson.toJson(user.getCollectiblesList());
         values.put(USER_COLUMN_COLLECTIBLES, collectiblesJson);
         values.put(USER_COLUMN_LAST_UPDATED, user.getLastUpdated());
-        values.put(USER_COLUMN_SORT_TYPE, user.getSortType().toString());
+        values.put(USER_COLUMN_SORT_TYPE, user.getSortOrder().toString());
         values.put(USER_COLUMN_DELETED, user.isDeleted() ? 1 : 0);
         values.put(USER_COLUMN_PICTURE, user.getPicture());
         long result = db.insert(USER_TABLE_NAME, null, values);
@@ -281,7 +281,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public void updateUserSortType(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(USER_COLUMN_SORT_TYPE, user.getSortType().toString());
+        values.put(USER_COLUMN_SORT_TYPE, user.getSortOrder().toString());
         db.update(USER_TABLE_NAME, values, USER_COLUMN_ID + "=?", new String[] {user.getUserID()});
         db.close();
     }
