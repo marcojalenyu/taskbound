@@ -115,7 +115,8 @@
                         android:fontFamily="@font/retropix"
                         android:hint="Category (Optional)"
                         android:inputType="text"
-                        android:maxLength="20"
+                        android:maxLength="15"
+                        android:maxLines="1"
                         android:paddingTop="2dp"
                         android:singleLine="true" />
 
