@@ -25,7 +25,7 @@ Some files are excluded from the repository. You must create and configure these
 
 - ### 2.1 libs.version.toml
 
-  - Create the file at the following path: gradle/libs.versions.toml
+  - Create the file at the App/Gradle Scripts folder.
     
 ```toml
 [versions]
