@@ -71,7 +71,6 @@ google-gms-google-services = { id = "com.google.gms.google-services", version.re
   - Create this file under the App/Gradle Scripts Folder if missing, with the following content:
 
 ```kotlin
-Copy Code
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
