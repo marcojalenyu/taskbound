@@ -145,7 +145,7 @@
                 android:paddingTop="0dp"
                 android:paddingRight="0dp"
                 android:paddingBottom="0dp"
-                android:text="X"
+                android:text="x"
                 android:textAlignment="textEnd"
                 android:textColor="@color/black"
                 android:textSize="34sp" />

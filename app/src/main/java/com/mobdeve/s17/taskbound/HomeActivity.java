@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 public class HomeActivity extends AppCompatActivity {
 
     // UI Components
-    private Button btnSort;
+    private Button btnSort, btnFilterComplete;
     private RecyclerView tasksView;
     private TextView tvUsername, tvCoinAmount;
     private SearchView svSearchBar;
@@ -52,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     private DatabaseReference cloudUserDB, cloudTaskDB;
     private LocalDBManager localDB;
     private SortType sortType;
+    private boolean isFiltered;
 
     /**
      * This method is called when the activity is first created.
@@ -95,6 +96,7 @@ public class HomeActivity extends AppCompatActivity {
         this.tvCoinAmount = findViewById(R.id.tvCoinAmount);
         this.svSearchBar = findViewById(R.id.searchView);
         this.btnSort = findViewById(R.id.btnSort);
+        this.btnFilterComplete = findViewById(R.id.btnFilter);
         this.tasksView = findViewById(R.id.tasksView);
 
         ImageView btnProfile = findViewById(R.id.imgProfile);
@@ -111,6 +113,7 @@ public class HomeActivity extends AppCompatActivity {
         btnShop.setOnClickListener(this::btnClickedShop);
         btnAdd.setOnClickListener(this::btnClickedAddTask);
         btnSort.setOnClickListener(this::btnClickedSort);
+        btnFilterComplete.setOnClickListener(this::btnClickedFilterComplete);
         btnProfile.setOnClickListener(this::btnClickedProfile);
     }
 
@@ -227,6 +230,19 @@ public class HomeActivity extends AppCompatActivity {
         this.localDB.updateUserSortType(this.currentUser);
     }
 
+    public void btnClickedFilterComplete(View v) {
+        String txtFilter = "x";
+        String currQuery = this.svSearchBar.getQuery().toString();
+        if (isFiltered) {
+            txtFilter = "x";
+        } else {
+            txtFilter = "✓";
+        }
+        this.isFiltered = !this.isFiltered;
+        btnFilterComplete.setText(txtFilter);
+        filterTasks(currQuery);
+    }
+
     public void btnClickedProfile(View v) {
         ProfileEditFragment profileEditFragment = new ProfileEditFragment();
         profileEditFragment.show(getSupportFragmentManager(), "ProfileEditFragment");
@@ -237,11 +253,22 @@ public class HomeActivity extends AppCompatActivity {
      * @param query - the query to filter the tasks
      */
     private void filterTasks(String query) {
+        List<Task> filteredTasks;
         // Filter the tasks based on the query by name
-        List<Task> filteredTasks = localDB.getAllExistingTasks(this.currentUser.getUserID())
-                .stream()
-                .filter(task -> task.getName().toLowerCase().contains(query.toLowerCase()))
-                .collect(Collectors.toList());
+        if (isFiltered) {
+            filteredTasks = localDB.getAllExistingTasks(this.currentUser.getUserID())
+                    .stream()
+                    .filter(task -> task.getName().toLowerCase().contains(query.toLowerCase())
+                            && task.isComplete())
+                    .collect(Collectors.toList());
+        } else {
+            filteredTasks = localDB.getAllExistingTasks(this.currentUser.getUserID())
+                    .stream()
+                    .filter(task -> task.getName().toLowerCase().contains(query.toLowerCase())
+                            && !task.isComplete())
+                    .collect(Collectors.toList());
+        }
+
         // Sort the tasks based on the sort type
         switch (this.sortType) {
             case DUE_DATE_ASCENDING:
@@ -252,7 +279,7 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
         // Update the adapter with the filtered tasks
-        TaskAdapter taskAdapter = new TaskAdapter(filteredTasks, this);
+        TaskAdapter taskAdapter = new TaskAdapter(filteredTasks, this.isFiltered, this);
         this.tasksView.setAdapter(taskAdapter);
     }
 
@@ -302,9 +329,7 @@ public class HomeActivity extends AppCompatActivity {
             this.tvUsername.setText(localUser.getUserName());
             this.currentUser = localUser;
             // Fetch the latest tasks and update the adapter
-            List<Task> tasks = localDB.getAllExistingTasks(localUser.getUserID());
-            TaskAdapter taskAdapter = new TaskAdapter(tasks, this);
-            this.tasksView.setAdapter(taskAdapter);
+            filterTasks("");
         } else {
             redirectToLogin();
         }

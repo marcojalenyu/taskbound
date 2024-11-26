@@ -25,11 +25,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     private LocalDBManager localDB;
     private final List<Task> myTaskData;
+    private final boolean isFiltered;
     Context context;
 
-    public TaskAdapter(List<Task> myTaskData, HomeActivity activity) {
+    public TaskAdapter(List<Task> myTaskData, boolean isFiltered, HomeActivity activity) {
         this.myTaskData = myTaskData;
         this.context = activity;
+        this.isFiltered = isFiltered;
     }
 
     @NonNull
@@ -82,6 +84,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             holder.tvPriority.setText("!");
         } else {
             holder.tvPriority.setText("!!!");
+        }
+
+        if (isFiltered) {
+            holder.btnAttack.setVisibility(View.GONE);
         }
 
         holder.tvTaskDeadline.setText(myTaskDataList.getDeadlineAsString());
