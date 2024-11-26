@@ -3,7 +3,6 @@ package com.mobdeve.s17.taskbound;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +44,6 @@ public class HomeActivity extends AppCompatActivity {
 
     // UI Components
     private Button btnSort;
-    private ShapeableImageView btnProf;
     private RecyclerView tasksView;
     private TextView tvUsername, tvCoinAmount;
     private SearchView svSearchBar;
@@ -99,11 +96,10 @@ public class HomeActivity extends AppCompatActivity {
         this.svSearchBar = findViewById(R.id.searchView);
         this.btnSort = findViewById(R.id.btnSort);
         this.tasksView = findViewById(R.id.tasksView);
-        this.btnProf = findViewById(R.id.imgProfile);
 
-        CollectiblesManager collectiblesManager = UserSession.getInstance().getCollectiblesManager();
+        ImageView btnProfile = findViewById(R.id.imgProfile);
         int imageID = localDB.getUserPicture(this.currentUser.getUserID());
-        this.btnProf.setImageResource(imageID);
+        btnProfile.setImageResource(imageID);
 
         ImageButton btnLogout = findViewById(R.id.btnLogout);
         FloatingActionButton btnCollectibles = findViewById(R.id.btnCollectibles);
@@ -115,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
         btnShop.setOnClickListener(this::btnClickedShop);
         btnAdd.setOnClickListener(this::btnClickedAddTask);
         btnSort.setOnClickListener(this::btnClickedSort);
-        btnProf.setOnClickListener(this::btnClickedProfile);
+        btnProfile.setOnClickListener(this::btnClickedProfile);
     }
 
     /**
