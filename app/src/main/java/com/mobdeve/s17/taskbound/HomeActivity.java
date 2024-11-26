@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +48,12 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView tasksView;
     private TextView tvUsername, tvCoinAmount;
     private SearchView svSearchBar;
+    private Spinner spinSortType;
     // Data Components
     private User currentUser;
     private DatabaseReference cloudUserDB, cloudTaskDB;
     private LocalDBManager localDB;
+    private SortOrder sortOrder;
     private SortType sortType;
     private boolean isFiltered;
 
@@ -81,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
         this.localDB = new LocalDBManager(this);
         this.cloudUserDB = FirebaseDatabase.getInstance().getReference("users");
         this.cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks").child(currentUser.getUserID());
-        this.sortType = currentUser.getSortType();
+        this.sortOrder = currentUser.getSortOrder();
     }
 
     /**
@@ -94,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
         this.btnSort = findViewById(R.id.btnSort);
         this.btnFilterComplete = findViewById(R.id.btnFilter);
         this.tasksView = findViewById(R.id.tasksView);
+        this.spinSortType = findViewById(R.id.spinSort);
 
         ImageView btnProfile = findViewById(R.id.imgProfile);
         int imageID = localDB.getUserPicture(this.currentUser.getUserID());
@@ -111,6 +118,25 @@ public class HomeActivity extends AppCompatActivity {
         btnSort.setOnClickListener(this::btnClickedSort);
         btnFilterComplete.setOnClickListener(this::btnClickedFilterComplete);
         btnProfile.setOnClickListener(this::btnClickedProfile);
+        setupSortType();
+    }
+
+    private void setupSortType() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_type, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinSortType.setAdapter(adapter);
+
+        spinSortType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinSelectedItem(parent, view, position, id);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                sortType = SortType.ALPHABETICAL;
+            }
+        });
     }
 
     /**
@@ -188,29 +214,50 @@ public class HomeActivity extends AppCompatActivity {
         taskAddFragment.show(getSupportFragmentManager(), "TaskAddFragment");
     }
 
+    private void spinSelectedItem(AdapterView<?> parent, View view, int position, long id) {
+        String selectedSortType = parent.getItemAtPosition(position).toString();
+
+        switch (selectedSortType) {
+            case "Priority":
+                this.sortType = SortType.PRIORITY;
+                break;
+            case "Alphabetical":
+                this.sortType = SortType.ALPHABETICAL;
+                break;
+            case "Category":
+                this.sortType = SortType.CATEGORY;
+                break;
+            case "Due Date":
+            default:
+                this.sortType = SortType.DUE_DATE;
+                break;
+        }
+        filterTasks(this.svSearchBar.getQuery().toString());
+    }
+
     /**
      * This method is called when the sort button is clicked.
      */
     public void btnClickedSort(View v) {
         String txtSort = "=";
         String currQuery = this.svSearchBar.getQuery().toString();
-        switch (sortType) {
+        switch (sortOrder) {
             case DUE_DATE_ASCENDING:
-                this.sortType = SortType.DUE_DATE_DESCENDING;
+                this.sortOrder = SortOrder.DUE_DATE_DESCENDING;
                 txtSort = "v";
                 break;
             case DUE_DATE_DESCENDING:
-                this.sortType = SortType.DEFAULT;
+                this.sortOrder = SortOrder.DEFAULT;
                 txtSort = "=";
                 break;
             case DEFAULT:
-                this.sortType = SortType.DUE_DATE_ASCENDING;
+                this.sortOrder = SortOrder.DUE_DATE_ASCENDING;
                 txtSort = "^";
                 break;
         }
         btnSort.setText(txtSort);
         filterTasks(currQuery);
-        this.currentUser.setSortType(this.sortType);
+        this.currentUser.setSortType(this.sortOrder);
         this.localDB.updateUserSortType(this.currentUser);
     }
 
@@ -252,14 +299,39 @@ public class HomeActivity extends AppCompatActivity {
                             && !task.isComplete())
                     .collect(Collectors.toList());
         }
+        List<Task> defaultTaskList = new ArrayList<>(filteredTasks);
 
         // Sort the tasks based on the sort type
-        switch (this.sortType) {
+        switch (this.sortOrder) {
             case DUE_DATE_ASCENDING:
-                filteredTasks.sort(Comparator.comparing(Task::getDeadline));
+                filteredTasks.sort(Comparator.comparing(task -> {
+                    if (SortType.DUE_DATE.equals(this.sortType)) {
+                        return task.getDeadlineAsString();
+                    } else if (SortType.PRIORITY.equals(this.sortType)) {
+                        return task.getPriority();
+                    } else if (SortType.CATEGORY.equals(this.sortType)) {
+                        return task.getCategory();
+                    } else {
+                        return task.getName();
+                    }
+                }));
                 break;
             case DUE_DATE_DESCENDING:
-                filteredTasks.sort(Comparator.comparing(Task::getDeadline).reversed());
+                filteredTasks.sort(Comparator.comparing(task -> {
+                    Task t = (Task) task;
+                    if (SortType.DUE_DATE.equals(this.sortType)) {
+                        return t.getDeadlineAsString();
+                    } else if (SortType.PRIORITY.equals(this.sortType)) {
+                        return t.getPriority();
+                    } else if (SortType.CATEGORY.equals(this.sortType)) {
+                        return t.getCategory();
+                    } else {
+                        return t.getName();
+                    }
+                }).reversed());
+                break;
+            case DEFAULT:
+                filteredTasks = defaultTaskList;
                 break;
         }
         // Update the adapter with the filtered tasks
