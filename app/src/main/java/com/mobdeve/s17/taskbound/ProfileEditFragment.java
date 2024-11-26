@@ -71,9 +71,7 @@ public class ProfileEditFragment extends DialogFragment {
         this.cloudTaskDB = FirebaseDatabase.getInstance().getReference("tasks").child(currentUser.getUserID());
         this.localDB = new LocalDBManager(getContext());
 
-        int index = localDB.getUserPicture(this.currentUser.getUserID());
-        Collectible collectible = this.currentUser.getCollectiblesList().get(index);
-        this.ivUserPicture.setImageResource(collectible.getCollectibleImage());
+        this.ivUserPicture.setImageResource(localDB.getUserPicture(this.currentUser.getUserID()));
     }
 
     private void setEtUserName() {

@@ -375,12 +375,13 @@ public class LocalDBManager extends SQLiteOpenHelper {
                 new String[] {userID},
                 null, null, null, null);
 
+        int imageID = R.drawable.collectible_0;
         ArrayList<Collectible> collectiblesList = null;
 
         if (cursor != null && cursor.moveToFirst()) {
             int collectiblesColumnIndex = cursor.getColumnIndex(USER_COLUMN_COLLECTIBLES);
             if (collectiblesColumnIndex == -1) {
-                return -1;
+                return imageID;
             }
             String collectiblesJson = cursor.getString(collectiblesColumnIndex);
             Gson gson = new Gson();
@@ -391,16 +392,16 @@ public class LocalDBManager extends SQLiteOpenHelper {
         }
 
         if (collectiblesList == null) {
-            return -1;
+            return imageID;
         }
 
         for (int i = 0; i < collectiblesList.size(); i++) {
             if (collectiblesList.get(i).getCollectibleID() == collectibleID) {
-                return i;
+                return collectiblesList.get(i).getCollectibleImage();
             }
         }
 
-        return -1;
+        return imageID;
     }
 
     /**
@@ -416,23 +417,23 @@ public class LocalDBManager extends SQLiteOpenHelper {
                 new String[] {userID},
                 null, null, null, null);
 
+        int imageID = R.drawable.collectible_0;
+
         if (cursor != null && cursor.moveToFirst()) {
             int pictureColumnIndex = cursor.getColumnIndex(USER_COLUMN_PICTURE);
             if (pictureColumnIndex < 0) {
-                return -1;
+                return imageID;
             }
-            int picture = cursor.getInt(pictureColumnIndex) - 1;
-            cursor.close();
-            db.close();
-
-            return picture;
+            int picture = cursor.getInt(pictureColumnIndex);
+            imageID = checkValidCollectible(userID, picture);
         }
 
         if (cursor != null) {
             cursor.close();
         }
         db.close();
-        return -1;
+
+        return imageID;
     }
 
     /**
@@ -441,7 +442,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
      * @param collectibleID - the ID of the new profile picture
      */
     public void updateUserPicture(String userID, int collectibleID) {
-        if (checkValidCollectible(userID, collectibleID) == -1) {
+        if (checkValidCollectible(userID, collectibleID) == R.drawable.collectible_0) {
             return;
         }
         SQLiteDatabase db = this.getWritableDatabase();
