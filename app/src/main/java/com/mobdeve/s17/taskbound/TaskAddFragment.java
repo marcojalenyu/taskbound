@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -163,7 +162,7 @@ public class TaskAddFragment extends DialogFragment {
         else {
             try {
                 // Create a new task with the given name, content, and deadline
-                Task taskMonster = generateRandomTask();
+                Task taskMonster = assignMonster();
                 String taskID = UUID.randomUUID().toString();
                 Task task = new Task(taskID, currentUser.getUserID(), name,
                                     content, deadline, taskMonster.getHealth(),
@@ -190,7 +189,7 @@ public class TaskAddFragment extends DialogFragment {
     /**
      * Randomize the task monster
      */
-    private Task generateRandomTask() {
+    private Task assignMonster() {
         Random random = new Random();
         ArrayList<Integer> availableIndices = new ArrayList<>();
         ArrayList<Task> taskList = taskManager.getTasks();
