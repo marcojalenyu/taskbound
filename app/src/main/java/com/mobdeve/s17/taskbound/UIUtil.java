@@ -1,6 +1,11 @@
 package com.mobdeve.s17.taskbound;
 
 import android.animation.ValueAnimator;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -62,5 +67,27 @@ public class UIUtil {
                 animator.start();
             }
         });
+    }
+
+    /**
+     * Start sprite animation.
+     */
+    public static AnimationDrawable getAnimatedSprite(Context context, int imageID, int frameCount, int frameDuration) {
+        // Load sprite sheet
+        Bitmap spriteSheet = BitmapFactory.decodeResource(context.getResources(), imageID);
+        int frameWidth = spriteSheet.getWidth() / frameCount;
+        int frameHeight = spriteSheet.getHeight();
+
+        // Create animation (each frame is a sprite)
+        AnimationDrawable animation = new AnimationDrawable();
+        for (int i = 0; i < frameCount; i++) {
+            Bitmap frame = Bitmap.createBitmap(spriteSheet, i * frameWidth, 0, frameWidth, frameHeight);
+            animation.addFrame(new BitmapDrawable(context.getResources(), frame), frameDuration);
+        }
+
+        // Keeps animation looping
+        animation.setOneShot(false);
+
+        return animation;
     }
 }

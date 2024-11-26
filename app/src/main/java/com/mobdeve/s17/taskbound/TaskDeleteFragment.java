@@ -2,6 +2,7 @@ package com.mobdeve.s17.taskbound;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -81,6 +82,7 @@ public class TaskDeleteFragment extends DialogFragment {
             LocalDBManager localDB = new LocalDBManager(getContext());
             localDB.deleteTask(task.getId());
             dismiss();
+            MediaPlayer.create(getContext(), R.raw.sfx_delete).start();
             ((HomeActivity) getActivity()).onResume();
         } catch (Exception e) {
             // e.printStackTrace();

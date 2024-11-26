@@ -2,10 +2,8 @@ package com.mobdeve.s17.taskbound;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.os.Handler;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -90,21 +87,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     /**
      * This method runs the animation
      */
+    @SuppressLint("DiscouragedApi")
     public void setEnemySpriteAnimation(ViewHolder holder, String monsterName) {
-
-        @SuppressLint("DiscouragedApi") int imageID = context.getResources().getIdentifier("enemy_" + monsterName, "drawable", context.getPackageName());
-
-        Bitmap spriteSheet = BitmapFactory.decodeResource(context.getResources(), imageID);
-        int frameWidth = spriteSheet.getWidth() / 2;
-        int frameHeight = spriteSheet.getHeight();
-        Bitmap frame1 = Bitmap.createBitmap(spriteSheet, 0, 0, frameWidth, frameHeight);
-        Bitmap frame2 = Bitmap.createBitmap(spriteSheet, frameWidth, 0, frameWidth, frameHeight);
-
-        AnimationDrawable animation = new AnimationDrawable();
-        animation.addFrame(new BitmapDrawable(context.getResources(), frame1), 400);
-        animation.addFrame(new BitmapDrawable(context.getResources(), frame2), 400);
-        animation.setOneShot(false);
-
+        int imageID = context.getResources().getIdentifier("enemy_" + monsterName, "drawable", context.getPackageName());
+        AnimationDrawable animation = UIUtil.getAnimatedSprite(context, imageID, 2, 400);
         holder.imgTaskEnemy.setBackground(animation);
         holder.imgTaskEnemy.post(animation::start);
     }
@@ -117,6 +103,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             private boolean isPressed = false;
             private int progress = 0;
             private final Handler handler = new Handler();
+            private final MediaPlayer attackSound = MediaPlayer.create(context, R.raw.sfx_attack);
 
             @SuppressLint("ClickableViewAccessibility")
             @Override
@@ -141,19 +128,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
              */
             private void handleActionDown(ViewHolder holder) {
                 isPressed = true;
-                holder.btnAttack.setVisibility(View.GONE);
-                holder.pbAttack.setVisibility(View.VISIBLE);
                 handler.post(new Runnable() {
+                    @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
                     public void run() {
                         if (isPressed) {
-                            progress += 10;
-                            holder.pbAttack.setProgress(progress);
+                            progress += 5;
+                            holder.btnAttack.setForeground(context.getResources().getDrawable(R.drawable.ic_task_finish_1));
                             if (progress >= 100) {
                                 handler.post(createDataUpdater(myTaskDataList, holder, position));
+                                holder.btnAttack.setForeground(context.getResources().getDrawable(R.drawable.ic_task_finish_2));
+                                attackSound.start();
                                 progress = 0;
                             }
-                            handler.postDelayed(this, 20);
+                            handler.postDelayed(this, 30);
                         }
                     }
                 });
@@ -164,12 +152,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
              * It stops the attack animation
              * @param holder - the ViewHolder of the task
              */
+            @SuppressLint("UseCompatLoadingForDrawables")
             private void handleActionUp(ViewHolder holder) {
                 isPressed = false;
                 handler.removeCallbacksAndMessages(null);
-                holder.btnAttack.setVisibility(View.VISIBLE);
-                holder.pbAttack.setVisibility(View.GONE);
-                holder.pbAttack.setProgress(0);
+                holder.btnAttack.setForeground(context.getResources().getDrawable(R.drawable.ic_task_finish_1));
             }
         };
     }
@@ -189,6 +176,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 ((HomeActivity) context).updateCoins(myTaskDataList.getCoins());
                 myTaskData.remove(position);
                 notifyDataSetChanged();
+                MediaPlayer.create(context, R.raw.sfx_complete).start();
             }
             holder.tvHealth.setText(String.valueOf(myTaskDataList.getHealth()));
         };
@@ -204,7 +192,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         TextView tvTaskName, tvTaskDesc, tvTaskDeadline, tvHealth, tvCoins;
         Button btnAttack;
         FloatingActionButton btnDelete;
-        ProgressBar pbAttack;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -217,7 +204,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             tvCoins = itemView.findViewById(R.id.tvCoins);
             btnAttack = itemView.findViewById(R.id.btnAttack);
             btnDelete = itemView.findViewById(R.id.btnDelete);
-            pbAttack = itemView.findViewById(R.id.pbarAttack);
         }
 
         public Task getTask() {

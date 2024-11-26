@@ -141,17 +141,7 @@
                         android:backgroundTint="@android:color/transparent"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
-                        android:foreground="@drawable/ic_task_finish" />
-
-                    <ProgressBar
-                        android:id="@+id/pbarAttack"
-                        style="?android:attr/progressBarStyle"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="end"
-                        android:max="100"
-                        android:progress="0"
-                        android:visibility="gone" />
+                        android:foreground="@drawable/ic_task_finish_1" />
 
                     <LinearLayout
                         android:id="@+id/llTaskEdit"
