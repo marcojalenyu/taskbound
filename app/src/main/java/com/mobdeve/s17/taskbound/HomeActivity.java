@@ -10,9 +10,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -73,7 +70,6 @@ public class HomeActivity extends AppCompatActivity {
         setupSearchBar();
         authenticateUser();
         syncCloudTasks();
-        scheduleDeadlineCheck();
         tasksView.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -151,18 +147,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Schedules the deadline check to run every second
-     */
-    private void scheduleDeadlineCheck() {
-        Intent intent = new Intent(this, DeadlineCheckReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        long interval = 1000; // 1 second
-        long startTime = System.currentTimeMillis() + interval;
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, startTime, interval, pendingIntent);
-    }
-
-    /**
      * This method is called when the logout button is clicked.
      */
     public void btnClickedLogout(View v) {
@@ -236,7 +220,7 @@ public class HomeActivity extends AppCompatActivity {
         if (isFiltered) {
             txtFilter = "x";
         } else {
-            txtFilter = "✓";
+            txtFilter = "o";
         }
         this.isFiltered = !this.isFiltered;
         btnFilterComplete.setText(txtFilter);

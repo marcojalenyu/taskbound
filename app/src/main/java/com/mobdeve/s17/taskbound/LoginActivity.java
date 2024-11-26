@@ -1,6 +1,9 @@
 package com.mobdeve.s17.taskbound;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -56,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         UIUtil.hideSystemBars(getWindow().getDecorView());
         initializeDataAndSession();
         initializeUI();
+        scheduleDeadlineCheck();
 
         if (sessionExpired() || !autoLogin()) {
             clearSessionCache();
@@ -71,6 +75,18 @@ public class LoginActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         tvErrorLogin.setVisibility(View.GONE);
+    }
+
+    /**
+     * This method checks for deadlines of tasks and sends notifications.
+     */
+    private void scheduleDeadlineCheck() {
+        Intent intent = new Intent(this, DeadlineCheckReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        long interval = AlarmManager.INTERVAL_DAY;
+        long startTime = System.currentTimeMillis() + interval;
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, startTime, interval, pendingIntent);
     }
 
     /**
