@@ -150,6 +150,15 @@
                 android:textColor="@color/black"
                 android:textSize="34sp" />
 
+            <Spinner
+                android:id="@+id/spinSort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="wrap_content"
+                android:gravity="center"
+                android:paddingTop="2dp"
+                android:entries="@array/sort_type"/>
+
             <Button
                 android:id="@+id/btnSort"
                 android:layout_width="55dp"
