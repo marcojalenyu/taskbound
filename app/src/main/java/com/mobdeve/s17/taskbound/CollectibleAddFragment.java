@@ -110,14 +110,6 @@ public class CollectibleAddFragment extends DialogFragment {
     }
 
     /**
-     * This method is called when the dialog is resumed.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    /**
      * This method is called when the dialog is dismissed.
      * It stops the background music.
      */
