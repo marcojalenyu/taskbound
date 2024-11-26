@@ -132,6 +132,25 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
+                android:id="@+id/btnFilter"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-6dp"
+                android:layout_marginRight="-12dp"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="@font/retropix"
+                android:minWidth="0dp"
+                android:paddingHorizontal="17dp"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:text="X"
+                android:textAlignment="textEnd"
+                android:textColor="@color/black"
+                android:textSize="34sp" />
+
+            <Button
                 android:id="@+id/btnSort"
                 android:layout_width="55dp"
                 android:layout_height="match_parent"

@@ -169,4 +169,6 @@ public class Task {
     public boolean isDeleted() {
         return deleted;
     }
+
+    public boolean isComplete() { return health <= 0; }
 }
