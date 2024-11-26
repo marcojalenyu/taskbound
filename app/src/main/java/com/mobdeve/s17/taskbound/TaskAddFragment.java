@@ -10,10 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,8 +36,8 @@ import java.util.UUID;
 public class TaskAddFragment extends DialogFragment {
 
     // UI components
-    private EditText taskName, taskContent, taskDeadline, taskCat;
-    RadioGroup rgPriority;
+    private EditText taskName, taskContent, taskDeadline, taskCategory;
+    private Spinner taskPriority;
     // Task generation components
     private TaskManager taskManager;
     // Data components
@@ -77,23 +78,25 @@ public class TaskAddFragment extends DialogFragment {
         this.taskName = view.findViewById(R.id.etTaskName);
         this.taskContent = view.findViewById(R.id.etTaskDesc);
         this.taskDeadline = view.findViewById(R.id.etDeadline);
-        this.taskCat = view.findViewById(R.id.etTaskCat);
-        this.rgPriority = view.findViewById(R.id.rgPriority);
+        this.taskCategory = view.findViewById(R.id.etTaskCategory);
+        this.taskPriority = view.findViewById(R.id.spinPriority);
 
         Button btnAddTask = view.findViewById(R.id.btnAddTask);
         Button btnCancelAddTask = view.findViewById(R.id.btnCancelTask);
         taskDeadline.setOnClickListener(this::etClickedDeadline);
         btnAddTask.setOnClickListener(this::btnClickedAddTask);
         btnCancelAddTask.setOnClickListener(this::btnClickedCancel);
-        rgPriority.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.rbHigh) {
-                this.priority = Priority.HIGH;
-            } else if (checkedId == R.id.rbMedium) {
-                this.priority = Priority.MEDIUM;
-            } else {
-                this.priority = Priority.LOW;
-            }
-        });
+        setupPrioritySpinner();
+    }
+
+    /**
+     * This method sets up the priority spinner.
+     */
+    private void setupPrioritySpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.task_priorities, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        taskPriority.setAdapter(adapter);
     }
 
     /**
@@ -147,9 +150,10 @@ public class TaskAddFragment extends DialogFragment {
         String name = taskName.getText().toString().trim();
         String content = taskContent.getText().toString().trim();
         String deadline = taskDeadline.getText().toString();
-        String category = taskCat.getText().toString().trim();
+        String category = taskCategory.getText().toString().trim();
+        priority = Priority.valueOf(taskPriority.getSelectedItem().toString().toUpperCase());
 
-        if (category.equals("Task Category")) {
+        if (category.isEmpty()) {
             category = "";
         }
 
