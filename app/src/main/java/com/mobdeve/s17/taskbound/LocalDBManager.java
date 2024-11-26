@@ -100,6 +100,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
     public LocalDBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.collectiblesManager = new CollectiblesManager();
+        this.userCollectibles = collectiblesManager.getCollectibles();
     }
 
     /**
@@ -274,7 +275,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
             }
         }
 
-        return userCollectibles;
+        return this.userCollectibles;
     }
 
     /**
