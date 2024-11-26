@@ -366,6 +366,7 @@ public class LocalDBManager extends SQLiteOpenHelper {
                 ArrayList<Collectible> collectiblesList = gson.fromJson(collectiblesJson, type);
 
                 if (collectiblesList != null) {
+                    collectiblesList = mapCollectibles(collectiblesList);
                     for (Collectible collectible : collectiblesList) {
                         if (collectible.getCollectibleID() == collectibleID) {
                             collectible.setObtained(true);
