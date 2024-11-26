@@ -1,6 +1,7 @@
 package com.mobdeve.s17.taskbound;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -119,5 +120,14 @@ public class CollectibleViewFragment extends DialogFragment {
             window.setAttributes(params);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
+    }
+
+    /**
+     * This method is called when the dialog is dismissed.
+     */
+    @Override
+    public void onDismiss(@Nullable DialogInterface dialog) {
+        super.onDismiss(dialog);
+        ((CollectiblesActivity) getActivity()).onResume();
     }
 }
