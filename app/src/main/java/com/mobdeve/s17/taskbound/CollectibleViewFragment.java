@@ -1,5 +1,6 @@
 package com.mobdeve.s17.taskbound;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,8 +22,8 @@ import androidx.fragment.app.DialogFragment;
 public class CollectibleViewFragment extends DialogFragment {
     // UI components
     private Button submitButton;
-    private ImageView collectibleImageView;
-    private TextView collectibleNameTextView, collectibleMessage;;
+    private ImageView imgCollectible;
+    private TextView tvCollectibleRarity, tvCollectible;
     private VideoView videoView;
     // Data components
     private final Collectible collectible;
@@ -59,33 +60,29 @@ public class CollectibleViewFragment extends DialogFragment {
      */
     private void initializeUI(View view) {
         this.videoView = view.findViewById(R.id.dialog_video_view);
-        this.collectibleMessage = view.findViewById(R.id.dialog_message);
-        this.collectibleImageView = view.findViewById(R.id.dialog_collectible_image);
-        this.collectibleNameTextView = view.findViewById(R.id.dialog_collectible_name);
+        this.tvCollectible = view.findViewById(R.id.dialog_message);
+        this.imgCollectible = view.findViewById(R.id.dialog_collectible_image);
+        this.tvCollectibleRarity = view.findViewById(R.id.dialog_collectible_name);
         this.submitButton = view.findViewById(R.id.dialog_close_button);
 
         this.videoView.setVisibility(View.GONE);
-        this.collectibleMessage.setVisibility(View.VISIBLE);
-        this.collectibleImageView.setVisibility(View.VISIBLE);
-        this.collectibleNameTextView.setVisibility(View.VISIBLE);
+        this.tvCollectible.setVisibility(View.VISIBLE);
+        this.imgCollectible.setVisibility(View.VISIBLE);
+        this.tvCollectibleRarity.setVisibility(View.VISIBLE);
         this.submitButton.setVisibility(View.VISIBLE);
     }
 
     /**
      * This method initializes the data components of the dialog box.
      */
+    @SuppressLint("SetTextI18n")
     private void initializeData() {
         this.currentUser = UserSession.getInstance().getCurrentUser();
         this.localDB = new LocalDBManager(this.getContext());
-        this.collectibleNameTextView.setText(this.collectible.getCollectibleName());
-        this.collectibleImageView.setImageResource(this.collectible.getCollectibleImage());
-
-        String text = " ";
-        this.collectibleMessage.setText(text);
-
-        text = "Set pfp";
-        this.submitButton.setText(text);
-
+        this.tvCollectible.setText(this.collectible.getCollectibleName());
+        this.imgCollectible.setImageResource(this.collectible.getCollectibleImage());
+        this.tvCollectibleRarity.setText("Rarity: " + this.collectible.getCollectiblesRarity().toString());
+        this.submitButton.setText("Set Profile");
         this.submitButton.setOnClickListener(this::btnClickedSubmit);
     }
 
