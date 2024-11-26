@@ -1,5 +1,6 @@
 package com.mobdeve.s17.taskbound;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -20,6 +23,9 @@ public class ShopActivity extends AppCompatActivity {
 
     // UI Components
     TextView moneyCount;
+    private MediaPlayer mediaPlayer;
+    private static int playbackPosition = 0;
+    private int cumDialog;
     // Data Components
     private ArrayList<Collectible> collectiblesList;
     private int[] collectibleIndices;
@@ -60,6 +66,7 @@ public class ShopActivity extends AppCompatActivity {
         btnRoll.setOnClickListener(this::btnRollClicked);
         btnTenRoll.setOnClickListener(this::btnTenRolLClicked);
         btnBack.setOnClickListener(this::btnBackClicked);
+        this.cumDialog = 0;
     }
 
     /**
@@ -143,10 +150,20 @@ public class ShopActivity extends AppCompatActivity {
             return;
         }
 
+        playMusic();
         for (int i = 0; i < rollAmount; i++) {
             rollCollectible(user);
         }
         updateCoins();
+    }
+
+    public void onDialogDismissed() {
+        if (cumDialog > 0) {
+            cumDialog--;
+        }
+        if (cumDialog == 0) {
+            stopMusic();
+        }
     }
 
     public void btnTenRolLClicked(View v) {
@@ -173,11 +190,37 @@ public class ShopActivity extends AppCompatActivity {
             int collectibleID = collectible.getCollectibleID();
             localDB.addCollectibleToUser(user.getUserID(), collectibleID);
             localDB.deductUserCoins(user.getUserID(), 100);
+
             // Show dialog for the collectible
             CollectibleAddFragment dialog = new CollectibleAddFragment(collectible);
             dialog.show(getSupportFragmentManager(), "CollectibleDialog");
+            cumDialog++;
         } else {
             Toast.makeText(this, "Error rolling for collectible.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Plays the background music.
+     */
+    private void playMusic() {
+        if (this.mediaPlayer == null) {
+            this.mediaPlayer = MediaPlayer.create(this, R.raw.usagi_flap);
+            this.mediaPlayer.setLooping(true);
+            this.mediaPlayer.seekTo(playbackPosition + 2);
+            this.mediaPlayer.start();
+        }
+    }
+
+    /**
+     * Stops the background music.
+     */
+    private void stopMusic() {
+        if (this.mediaPlayer != null) {
+            playbackPosition = 0;
+            this.mediaPlayer.stop();
+            this.mediaPlayer.release();
+            this.mediaPlayer = null;
         }
     }
 

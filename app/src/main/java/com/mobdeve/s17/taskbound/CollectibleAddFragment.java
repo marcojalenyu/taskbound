@@ -32,9 +32,6 @@ public class CollectibleAddFragment extends DialogFragment {
     ImageView collectibleRollingView, collectibleImageView;
     TextView collectibleNameTextView;
     Button closeButton;
-    // Media player for background music
-    private MediaPlayer mediaPlayer;
-    private static int playbackPosition = 0;
 
     /**
      * Constructor for the CollectibleAddFragment class.
@@ -110,7 +107,6 @@ public class CollectibleAddFragment extends DialogFragment {
             window.setAttributes(params);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-        playMusic();
     }
 
     /**
@@ -119,10 +115,6 @@ public class CollectibleAddFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (this.mediaPlayer != null) {
-            this.mediaPlayer.seekTo(playbackPosition);
-            this.mediaPlayer.start();
-        }
     }
 
     /**
@@ -132,7 +124,9 @@ public class CollectibleAddFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        stopMusic();
+        if (getActivity() instanceof ShopActivity) {
+            ((ShopActivity) getActivity()).onDialogDismissed();
+        }
     }
 
     /**
@@ -141,33 +135,5 @@ public class CollectibleAddFragment extends DialogFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (this.mediaPlayer != null) {
-            playbackPosition = this.mediaPlayer.getCurrentPosition();
-            this.mediaPlayer.pause();
-        }
-    }
-
-    /**
-     * Plays the background music.
-     */
-    private void playMusic() {
-        if (this.mediaPlayer == null) {
-            this.mediaPlayer = MediaPlayer.create(getContext(), R.raw.usagi_flap);
-            this.mediaPlayer.setLooping(true);
-            this.mediaPlayer.seekTo(playbackPosition + 2);
-            this.mediaPlayer.start();
-        }
-    }
-
-    /**
-     * Stops the background music.
-     */
-    private void stopMusic() {
-        if (this.mediaPlayer != null) {
-            playbackPosition = 0;
-            this.mediaPlayer.stop();
-            this.mediaPlayer.release();
-            this.mediaPlayer = null;
-        }
     }
 }
