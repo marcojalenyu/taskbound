@@ -2,9 +2,9 @@ package com.mobdeve.s17.taskbound;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,12 +29,11 @@ public class CollectibleAddFragment extends DialogFragment {
     private final Collectible collectible;
     // UI components
     TextView collectibleMessage;
-    ImageView collectibleImageView;
+    ImageView collectibleRollingView, collectibleImageView;
     TextView collectibleNameTextView;
     Button closeButton;
-    // Media and video player for the background music and video
+    // Media player for background music
     private MediaPlayer mediaPlayer;
-    private VideoView videoView;
     private static int playbackPosition = 0;
 
     /**
@@ -58,7 +56,7 @@ public class CollectibleAddFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_collectible, container, false);
         setCancelable(false);
         initializeUI(view);
-        setupVideoView();
+        setupRollAnimation();
         return view;
     }
 
@@ -70,31 +68,30 @@ public class CollectibleAddFragment extends DialogFragment {
         this.collectibleImageView = view.findViewById(R.id.dialog_collectible_image);
         this.collectibleNameTextView = view.findViewById(R.id.dialog_collectible_name);
         this.closeButton = view.findViewById(R.id.dialog_close_button);
-        this.videoView = view.findViewById(R.id.dialog_video_view);
+        this.collectibleRollingView = view.findViewById(R.id.dialog_animated_roll);
         collectibleImageView.setImageResource(collectible.getCollectibleImage());
         collectibleNameTextView.setText(collectible.getCollectibleName());
     }
 
     /**
-     * Sets up the video view for the dialog fragment.
-     * Includes the video of the collectible animation.
-     * The video is played when the dialog is first created.
-     * The video is hidden when the video is completed.
-     * The collectible image, name, and close button are shown when the video is completed.
+     * Sets up the animation for rolling the collectible.
      */
-    private void setupVideoView() {
-        Uri videoUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.vid_roll_animation);
-        videoView.setVideoURI(videoUri);
-        videoView.setOnPreparedListener(mp -> videoView.start());
-        videoView.setOnCompletionListener(mp -> {
-            videoView.setVisibility(View.GONE);
+    private void setupRollAnimation() {
+        AnimationDrawable animation = UIUtil.getAnimatedSprite(getContext(), R.drawable.animated_roll, 4, 200);
+        // Wait for 5 seconds before ending the animation
+        collectibleRollingView.setBackground(animation);
+        collectibleRollingView.post(animation::start);
+        collectibleRollingView.postDelayed(() -> {
+            collectibleRollingView.post(animation::stop);
+            collectibleRollingView.setVisibility(View.GONE);
             collectibleMessage.setVisibility(View.VISIBLE);
             collectibleImageView.setVisibility(View.VISIBLE);
             collectibleNameTextView.setVisibility(View.VISIBLE);
             closeButton.setVisibility(View.VISIBLE);
             collectibleImageView.setImageResource(collectible.getCollectibleImage());
             closeButton.setOnClickListener(v -> dismiss());
-        });
+        }, 5000);
+
     }
 
     /**

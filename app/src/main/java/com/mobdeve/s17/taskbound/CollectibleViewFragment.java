@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -23,9 +22,8 @@ import androidx.fragment.app.DialogFragment;
 public class CollectibleViewFragment extends DialogFragment {
     // UI components
     private Button submitButton;
-    private ImageView imgCollectible;
+    private ImageView imgAnimatedRoll, imgCollectible;
     private TextView tvCollectibleRarity, tvCollectible;
-    private VideoView videoView;
     // Data components
     private final Collectible collectible;
     private User currentUser;
@@ -60,13 +58,13 @@ public class CollectibleViewFragment extends DialogFragment {
      * This method initializes the UI components of the dialog box.
      */
     private void initializeUI(View view) {
-        this.videoView = view.findViewById(R.id.dialog_video_view);
+        this.imgAnimatedRoll = view.findViewById(R.id.dialog_animated_roll);
         this.tvCollectible = view.findViewById(R.id.dialog_message);
         this.imgCollectible = view.findViewById(R.id.dialog_collectible_image);
         this.tvCollectibleRarity = view.findViewById(R.id.dialog_collectible_name);
         this.submitButton = view.findViewById(R.id.dialog_close_button);
 
-        this.videoView.setVisibility(View.GONE);
+        this.imgAnimatedRoll.setVisibility(View.GONE);
         this.tvCollectible.setVisibility(View.VISIBLE);
         this.imgCollectible.setVisibility(View.VISIBLE);
         this.tvCollectibleRarity.setVisibility(View.VISIBLE);
