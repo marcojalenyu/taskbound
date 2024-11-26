@@ -324,7 +324,19 @@ public class HomeActivity extends AppCompatActivity {
                     if (SortType.DUE_DATE.equals(this.sortType)) {
                         return task.getDeadlineAsString();
                     } else if (SortType.PRIORITY.equals(this.sortType)) {
-                        return task.getPriority();
+                        String Priority = task.getPriority();
+                        switch(Priority) {
+                            case "HIGH":
+                                Priority = "3" + Priority;
+                                break;
+                            case "MEDIUM":
+                                Priority = "2" + Priority;
+                                break;
+                            case "LOW":
+                                Priority = "1" + Priority;
+                                break;
+                        }
+                        return Priority;
                     } else if (SortType.CATEGORY.equals(this.sortType)) {
                         return task.getCategory();
                     } else {
@@ -338,7 +350,19 @@ public class HomeActivity extends AppCompatActivity {
                     if (SortType.DUE_DATE.equals(this.sortType)) {
                         return t.getDeadlineAsString();
                     } else if (SortType.PRIORITY.equals(this.sortType)) {
-                        return t.getPriority();
+                        String Priority = t.getPriority();
+                        switch(Priority) {
+                            case "HIGH":
+                                Priority = "3" + Priority;
+                                break;
+                            case "MEDIUM":
+                                Priority = "2" + Priority;
+                                break;
+                            case "LOW":
+                                Priority = "1" + Priority;
+                                break;
+                        }
+                        return Priority;
                     } else if (SortType.CATEGORY.equals(this.sortType)) {
                         return t.getCategory();
                     } else {
