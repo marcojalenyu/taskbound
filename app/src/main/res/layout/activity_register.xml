@@ -68,6 +68,22 @@
             android:textSize="38sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/tvErrorRegister"
+            android:layout_width="420dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingEnd="45dp"
+            android:text="Invalid form"
+            android:textAlignment="textStart"
+            android:textColor="@color/red"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/newUsernameLayout"
             android:layout_width="420dp"

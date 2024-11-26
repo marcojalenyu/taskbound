@@ -1,12 +1,13 @@
 package com.mobdeve.s17.taskbound;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 public class LoginActivity extends AppCompatActivity {
 
     // UI components
+    private TextView tvErrorLogin;
     private TextInputEditText editTextEmail, editTextPassword;
     // Session components
     private SharedPreferences sessionCache;
@@ -63,6 +65,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
+     * This method is called when the activity is resumed.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvErrorLogin.setVisibility(View.GONE);
+    }
+
+    /**
      * This method initializes the DB and session data.
      */
     private void initializeDataAndSession() {
@@ -77,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
      * This method initializes the UI components of the activity.
      */
     private void initializeUI() {
+        this.tvErrorLogin = findViewById(R.id.tvErrorLogin);
         this.editTextEmail = findViewById(R.id.email);
         this.editTextPassword = findViewById(R.id.password);
         Button btnLogin = findViewById(R.id.btnLogin);
@@ -141,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * This method is called when the login button is clicked.
      * It will authenticate the user and redirect to the HomeActivity if successful.
-     * If the user is not found, it will display a toast message.
+     * If the user is not found, it will display an error message.
      * @param v - the view
      */
     public void btnClickedLogin(View v){
@@ -160,15 +172,18 @@ public class LoginActivity extends AppCompatActivity {
      * @param passwordInput - the password input
      * @return true if the input is valid, false otherwise
      */
+    @SuppressLint("SetTextI18n")
     private boolean inputIsValid(String emailInput, String passwordInput) {
 
         if (TextUtils.isEmpty(emailInput)) {
-            Toast.makeText(LoginActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
+            tvErrorLogin.setText("Invalid username or password");
+            tvErrorLogin.setVisibility(View.VISIBLE);
             return false;
         }
 
         if (TextUtils.isEmpty(passwordInput)) {
-            Toast.makeText(LoginActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
+            tvErrorLogin.setText("Invalid username or password");
+            tvErrorLogin.setVisibility(View.VISIBLE);
             return false;
         }
 
@@ -178,18 +193,21 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Authenticates the user through Firebase.
      */
+    @SuppressLint("SetTextI18n")
     private void authenticateUser(String email, String password) {
         userAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success
+                        tvErrorLogin.setVisibility(View.GONE);
                         FirebaseUser user = userAuth.getCurrentUser();
                         if (user != null) {
                             fetchUserData(user.getUid());
                         }
                     } else {
                         // Sign in failed
-                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        tvErrorLogin.setText("Invalid email or password");
+                        tvErrorLogin.setVisibility(View.VISIBLE);
                     }
                 });
     }
@@ -200,6 +218,7 @@ public class LoginActivity extends AppCompatActivity {
     private void fetchUserData(String userID) {
         // Fetch user data from Firebase
         cloudUserDB.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -212,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                     saveAndRedirect();
                 } else {
                     localDB.hardDeleteUser(userID);
-                    Toast.makeText(LoginActivity.this, "User data not found.", Toast.LENGTH_SHORT).show();
+                    tvErrorLogin.setText("User not found");
                 }
             }
 
@@ -288,43 +307,11 @@ public class LoginActivity extends AppCompatActivity {
                     cloudUserDB.child(cloudUser.getUserID()).removeValue();
                 }
             }
-            Toast.makeText(LoginActivity.this, "Syncing successful.", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(LoginActivity.this, "Syncing successful.", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(LoginActivity.this, "Syncing failed.", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-    private void populateSQLite() {
-        cloudUserDB.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("FirebaseUser", "User");
-
-                if (dataSnapshot.exists()) {
-                    // Iterate through all entries (children) in the "Users" node
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        User cloudUser = userSnapshot.getValue(User.class);
-
-                        if (cloudUser != null) {
-                            Log.d("FirebaseUser", "User ID: " + cloudUser.getUserID());
-                            Log.d("FirebaseUser", "Username: " + cloudUser.getUserName());
-                            // You can process each user object here
-                        }
-                    }
-                } else {
-                    Log.d("FirebaseUser", "No users found in the database.");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("FirebaseUser", "Failed to fetch users: " + databaseError.getMessage());
-            }
-        });
-    }
-
-
 
     /**
      * Sync task data between local and cloud databases.

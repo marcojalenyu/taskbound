@@ -1,11 +1,13 @@
 package com.mobdeve.s17.taskbound;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -29,6 +31,7 @@ import org.mindrot.jbcrypt.BCrypt;
 public class RegisterActivity extends AppCompatActivity {
 
     // UI components
+    TextView tvErrorRegister;
     TextInputEditText newEmail, newUsername, newPassword;
     // Session components
     private UserSession currSession;
@@ -69,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
         this.newEmail = findViewById(R.id.newEmail);
         this.newUsername = findViewById(R.id.newUsername);
         this.newPassword = findViewById(R.id.newPassword);
+        this.tvErrorRegister = findViewById(R.id.tvErrorRegister);
         Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
         ImageButton btnBackToLogin = findViewById(R.id.btnBackToLogin);
         btnCreateAccount.setOnClickListener(this::btnClickedCreateAccount);
@@ -103,25 +107,36 @@ public class RegisterActivity extends AppCompatActivity {
      *  @param emailInput - the email input
      *  @param passwordInput - the password input
      */
+    @SuppressLint("SetTextI18n")
     private boolean inputIsValid(String usernameInput, String emailInput, String passwordInput) {
 
         if (TextUtils.isEmpty(usernameInput)) {
-            Toast.makeText(RegisterActivity.this, "Enter username", Toast.LENGTH_SHORT).show();
+            tvErrorRegister.setText("Username is empty");
+            tvErrorRegister.setVisibility(View.VISIBLE);
             return false;
         }
 
         if (TextUtils.isEmpty(emailInput)) {
-            Toast.makeText(RegisterActivity.this, "Enter email", Toast.LENGTH_SHORT).show();
+            tvErrorRegister.setText("Email is empty");
+            tvErrorRegister.setVisibility(View.VISIBLE);
             return false;
         }
 
         if (TextUtils.isEmpty(passwordInput)) {
-            Toast.makeText(RegisterActivity.this, "Enter password", Toast.LENGTH_SHORT).show();
+            tvErrorRegister.setText("Password is empty");
+            tvErrorRegister.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        if (!emailInput.contains("@") || !emailInput.contains(".")) {
+            tvErrorRegister.setText("Invalid email");
+            tvErrorRegister.setVisibility(View.VISIBLE);
             return false;
         }
 
         if (passwordInput.length() < 6) {
-            Toast.makeText(RegisterActivity.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+            tvErrorRegister.setText("Password is too short");
+            tvErrorRegister.setVisibility(View.VISIBLE);
             return false;
         }
 
@@ -131,6 +146,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * Registers the user using Firebase Authentication.
      */
+    @SuppressLint("SetTextI18n")
     private void registerUser(String username, String email, String password) {
         userAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -140,11 +156,12 @@ public class RegisterActivity extends AppCompatActivity {
                         if (registeredUser != null) {
                             registerUserData(registeredUser.getUid(), username, email, password);
                             Toast.makeText(RegisterActivity.this, "Registered " + username, Toast.LENGTH_SHORT).show();
+                            tvErrorRegister.setVisibility(View.GONE);
                             returnToLogin();
                         }
                     } else {
                         // If registration failed
-                        Toast.makeText(RegisterActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                        tvErrorRegister.setText("Registration failed");
                     }
                 });
     }
@@ -194,5 +211,14 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(RegisterActivity.this, "Error fetching users", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * This method is called when the activity is resumed.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tvErrorRegister.setVisibility(View.GONE);
     }
 }
