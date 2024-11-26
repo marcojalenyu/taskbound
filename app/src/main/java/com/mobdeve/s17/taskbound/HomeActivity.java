@@ -301,7 +301,6 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void filterTasks(String query) {
         List<Task> filteredTasks;
-        Log.d("SortLily", this.sortType + ", " + this.sortOrder);
         // Filter the tasks based on the query by name
         if (isFiltered) {
             filteredTasks = localDB.getAllExistingTasks(this.currentUser.getUserID())
