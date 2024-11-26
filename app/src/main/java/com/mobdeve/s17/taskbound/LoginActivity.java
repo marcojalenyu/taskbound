@@ -65,11 +65,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * This method is called when the activity is resumed.
+     * This method is called when the activity is paused.
      */
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPause() {
+        super.onPause();
         tvErrorLogin.setVisibility(View.GONE);
     }
 
@@ -199,7 +199,6 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success
-                        tvErrorLogin.setVisibility(View.GONE);
                         FirebaseUser user = userAuth.getCurrentUser();
                         if (user != null) {
                             fetchUserData(user.getUid());
@@ -228,6 +227,7 @@ public class LoginActivity extends AppCompatActivity {
                     currSession.addUser(user);
                     currSession.setCurrentUser(user);
                     fetchTaskData(user.getUserID());
+                    tvErrorLogin.setVisibility(View.GONE);
                     saveAndRedirect();
                 } else {
                     localDB.hardDeleteUser(userID);
