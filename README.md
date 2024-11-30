@@ -1,5 +1,12 @@
-# TaskBound
-#### TaskBound is an Android project that requires specific local files and configurations for a proper setup. This guide outlines the necessary steps to set up the project after cloning it from the GitHub repository.
+# TaskBound: A gamified way to stay reminded!
+#### 
+<p>
+  <img src="assets/readme_title.png" alt="Title Screen" width="200">
+  <img src="assets/readme_home.png" alt="Home Screen" width="200">
+  <img src="assets/readme_roll.png" alt="Shop Screen" width="200">
+  <img src="assets/readme_collectibles.png" alt="Collectibles Screen" width="200">
+</p>
+TaskBound is an Android project that requires specific local files and configurations for a proper setup. This guide outlines the necessary steps to set up the project after cloning it from the GitHub repository.
 
 ## Prerequisites
 1. Android Studio: Download the latest version from Android Studio.
