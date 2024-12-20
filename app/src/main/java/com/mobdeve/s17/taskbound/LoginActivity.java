@@ -7,8 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,19 +56,25 @@ public class LoginActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
         UIUtil.hideSystemBars(getWindow().getDecorView());
-        initializeDataAndSession();
-        initializeUI();
-        scheduleDeadlineCheck();
+        setContentView(R.layout.activity_splash);
 
-        if (sessionExpired() || !autoLogin()) {
-            clearSessionCache();
-        }
+        EdgeToEdge.enable(this);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            setContentView(R.layout.activity_login);
+            initializeDataAndSession();
+            initializeUI();
+            scheduleDeadlineCheck();
 
-        UIUtil.startCloudAnimations(findViewById(R.id.mainLogin));
+            if (sessionExpired() || !autoLogin()) {
+                clearSessionCache();
+            }
+
+            UIUtil.startCloudAnimations(findViewById(R.id.mainLogin));
+        }, 3000);
+
     }
 
     /**

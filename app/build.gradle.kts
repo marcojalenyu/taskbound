@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.core.splashscreen)
     //implementation(libs.compose.theme.adapter)
     implementation(libs.gson)
     implementation(libs.jbcrypt)

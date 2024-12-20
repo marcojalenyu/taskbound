@@ -26,6 +26,12 @@ public class UIUtil {
      * @param view - the view to hide the system bars from
      */
     public static void hideSystemBars(View view) {
+        view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         WindowInsetsControllerCompat windowInsetsController = ViewCompat.getWindowInsetsController(view);
         if (windowInsetsController != null) {
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());

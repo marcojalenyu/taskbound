@@ -8,4 +8,5 @@
     <color name="gray">#787679</color>
     <color name="sr">#0C304B</color>
     <color name="ssr">#140A2E</color>
+    <color name="transparent">#00000000</color>
 </resources>

@@ -6,5 +6,12 @@
         <item name="fontFamily">@font/retropix</item>
     </style>
 
+    <style name="splashScreenTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/transparent</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_blank</item>
+        <item name="windowSplashScreenAnimationDuration">0</item>
+        <item name="postSplashScreenTheme">@style/Theme.TaskBound</item>
+    </style>
+
     <style name="Theme.TaskBound" parent="Base.Theme.TaskBound" />
 </resources>
