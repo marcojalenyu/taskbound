@@ -1,7 +1,5 @@
 package com.mobdeve.s17.taskbound;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -57,29 +55,35 @@ public class CollectiblesManager {
 
     /**
      * Initializes the collectibles in the game.
+     * Note: For the ID, the first digit represents the rarity of the collectible.
+     *      1 - Rare, 2 - Super Rare, 3 - Super Super Rare, 4 - Lily
      * @return the list of collectibles
      */
     private ArrayList<Collectible> initializeCollectibles() {
         return new ArrayList<>(Arrays.asList(
                 // Common collectibles
-                new Collectible(1, "Chicken", Rarity.R, R.drawable.collectible_chicken),
-                new Collectible(2, "Capybara", Rarity.R, R.drawable.collectible_capybara),
-                new Collectible(3, "Cat", Rarity.R, R.drawable.collectible_cat),
-                new Collectible(4, "Coin", Rarity.R, R.drawable.collectible_coin),
-                new Collectible(5, "Clover", Rarity.R, R.drawable.collectible_clover),
+                new Collectible(1000, "Chicken", Rarity.R, R.drawable.collectible_chicken),
+                new Collectible(1001, "Capybara", Rarity.R, R.drawable.collectible_capybara),
+                new Collectible(1002, "Cat", Rarity.R, R.drawable.collectible_cat),
+                new Collectible(1003, "Clover", Rarity.R, R.drawable.collectible_clover),
+                new Collectible(1004, "Flower", Rarity.R, R.drawable.collectible_flower),
                 // Rare collectibles
-                new Collectible(6, "Katana", Rarity.SR, R.drawable.collectible_katana),
-                new Collectible(7, "Diamond", Rarity.SR, R.drawable.collectible_diamond),
-                new Collectible(8, "Key", Rarity.SR, R.drawable.collectible_key),
-                new Collectible(9, "Flower", Rarity.SR, R.drawable.collectible_flower),
+                new Collectible(2000, "Ring", Rarity.SR, R.drawable.collectible_ring),
+                new Collectible(2001, "Coin", Rarity.SR, R.drawable.collectible_coin),
+                new Collectible(2002, "Key", Rarity.SR, R.drawable.collectible_key),
+                new Collectible(2003, "Diamond", Rarity.SR, R.drawable.collectible_diamond),
+                new Collectible(2004, "Necklace", Rarity.SR, R.drawable.collectible_necklace),
+                new Collectible(2005, "Charm", Rarity.SR, R.drawable.collectible_charm),
+
                 // Super rare collectibles
-                new Collectible(12, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry),
-                new Collectible(13, "Banana", Rarity.SSR, R.drawable.collectible_banana),
-                new Collectible(15, "Angel", Rarity.SSR, R.drawable.collectible_angel),
+                new Collectible(3000, "Angel", Rarity.SSR, R.drawable.collectible_angel),
+                new Collectible(3001, "Crying Maple", Rarity.SSR, R.drawable.collectible_maplecry),
+                new Collectible(3002, "Alien", Rarity.SSR, R.drawable.collectible_alien),
+
                 // Lily collectibles
-                new Collectible(10, "Lilydayo", Rarity.LILY, R.drawable.collectible_lilydayo),
-                new Collectible(11, "Hat Lily", Rarity.LILY, R.drawable.collectible_lilyhat),
-                new Collectible(14, "Baby Lily", Rarity.LILY, R.drawable.collectible_babylily)
+                new Collectible(4000, "Lily", Rarity.LILY, R.drawable.collectible_lily),
+                new Collectible(4001, "Baby Lily", Rarity.LILY, R.drawable.collectible_babylily),
+                new Collectible(4002, "Hat Lily", Rarity.LILY, R.drawable.collectible_lilyhat)
         ));
     }
 
