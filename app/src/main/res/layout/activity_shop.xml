@@ -117,8 +117,8 @@
             <ImageView
                 android:id="@+id/ic_coin"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="end"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="6dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
@@ -135,8 +135,7 @@
                 android:text="1000"
                 android:textAlignment="viewEnd"
                 android:textColor="#FFFFFF"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textSize="30sp" />
         </LinearLayout>
 
     </LinearLayout>
