@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.TaskBound"
         android:supportsRtl="true"
+        android:configChanges="orientation|screenSize|keyboardHidden"
         tools:targetApi="31">
 
         <service android:name=".DeadlineCheckService"
@@ -29,18 +30,23 @@
 
         <activity
             android:name=".CollectiblesActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
         <activity
             android:name=".ShopActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:theme="@style/splashScreenTheme">
             <intent-filter>
