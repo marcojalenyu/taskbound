@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainRegister"
@@ -12,9 +12,7 @@
         android:id="@+id/llHomeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardProfile"
@@ -109,28 +107,47 @@
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilSearchBar"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardCategoryOutline"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
                 android:layout_weight="1"
-                app:hintEnabled="false"
-                app:startIconTint="@null">
+                app:cardBackgroundColor="#000000"
+                app:cardCornerRadius="12dp"
+                app:contentPadding="2dp">
 
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchView"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardCategory"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_search_background"
-                    android:clickable="true"
-                    android:drawableStart="@drawable/ic_search"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:fontFamily="@font/retropix"
-                    android:iconifiedByDefault="true"
-                    android:paddingStart="-8dp"
-                    android:queryHint="Search tasks..." />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="match_parent"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilSearchBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        app:startIconTint="@null">
+
+                        <androidx.appcompat.widget.SearchView
+                            android:id="@+id/searchView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/template_rounded"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:fontFamily="@font/retropix"
+                            android:iconifiedByDefault="true"
+                            android:paddingStart="-12dp"
+                            android:paddingTop="3dp"
+                            android:queryHint="Search tasks..." />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </androidx.cardview.widget.CardView>
+
+            </androidx.cardview.widget.CardView>
 
             <Button
                 android:id="@+id/btnFilter"
@@ -215,27 +232,17 @@
         android:layout_marginBottom="24dp"
         android:overScrollMode="ifContentScrolls"
         android:scrollbarThumbHorizontal="@android:color/transparent"
-        android:scrollbarThumbVertical="@android:color/transparent"
-        app:layout_constraintBottom_toTopOf="@+id/llBottomHub"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llHomeLayout"
-        app:layout_constraintVertical_bias="0" />
+        android:scrollbarThumbVertical="@android:color/transparent" />
 
     <LinearLayout
         android:id="@+id/llBottomHub"
         android:layout_width="300dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
+        android:layout_height="75dp"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="24dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="56dp"
-        android:background="@drawable/template_rounded_edit_text"
+        android:background="@drawable/template_dock"
         android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnCollectibles"
@@ -270,4 +277,4 @@
             app:rippleColor="@android:color/transparent" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

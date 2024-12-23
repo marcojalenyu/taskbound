@@ -96,7 +96,7 @@
                 android:id="@+id/newUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edit_text"
+                android:background="@drawable/template_rounded"
                 android:hint="Enter Username"
                 android:inputType="text"
                 android:maxLines="1" />
@@ -114,7 +114,7 @@
                 android:id="@+id/newEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edit_text"
+                android:background="@drawable/template_rounded"
                 android:hint="Enter Email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1" />
@@ -133,7 +133,7 @@
                 android:id="@+id/newPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edit_text"
+                android:background="@drawable/template_rounded"
                 android:hint="Enter Password"
                 android:inputType="textPassword"
                 android:maxLines="1" />

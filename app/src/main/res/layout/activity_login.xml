@@ -86,7 +86,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edit_text"
+                android:background="@drawable/template_rounded"
                 android:hint="Enter Email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1" />
@@ -106,7 +106,7 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_edit_text"
+                android:background="@drawable/template_rounded"
                 android:hint="Enter Password"
                 android:inputType="textPassword"
                 android:maxLines="1"
