@@ -2,6 +2,7 @@ package com.mobdeve.s17.taskbound;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,10 +77,14 @@ public class CollectibleAdapter extends RecyclerView.Adapter<CollectibleAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Collectible collectibleList = collectibles[position];
         // Set text color depending on rarity
-        if (collectibles[position].getCollectiblesRarity() == Rarity.SR) {
-            holder.collectibleName.setTextColor(context.getResources().getColor(R.color.sr));
+        if (collectibles[position].getCollectiblesRarity() == Rarity.R) {
+            holder.collectibleImg.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.r)));
+        } else if (collectibles[position].getCollectiblesRarity() == Rarity.SR) {
+            holder.collectibleImg.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.sr)));
         } else if (collectibles[position].getCollectiblesRarity() == Rarity.SSR) {
-            holder.collectibleName.setTextColor(context.getResources().getColor(R.color.ssr));
+            holder.collectibleImg.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ssr)));
+        } else if (collectibles[position].getCollectiblesRarity() == Rarity.LILY) {
+            holder.collectibleImg.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.lily)));
         }
         // If collectible is not obtained, make it a shade of gray
         if (!collectibles[position].isObtained()) {

@@ -25,8 +25,8 @@
                 android:id="@+id/collectibleImg"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:background="@drawable/rounded_box"
-                android:backgroundTint="#D8E9D8"
+                android:background="@drawable/ic_box"
+                android:backgroundTint="#E3D5FF"
                 android:backgroundTintMode="multiply"
                 android:padding="16dp"
                 android:src="@drawable/ic_coin" />
