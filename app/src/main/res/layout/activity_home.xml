@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/llHomeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="68dp"
+            android:layout_marginTop="56dp"
             android:layout_marginEnd="24dp"
             app:cardBackgroundColor="@android:color/transparent"
             app:cardElevation="0dp">
@@ -141,6 +141,7 @@
                             android:focusableInTouchMode="true"
                             android:fontFamily="@font/retropix"
                             android:iconifiedByDefault="true"
+                            android:imeOptions="flagNoFullscreen"
                             android:paddingStart="-12dp"
                             android:paddingTop="3dp"
                             android:queryHint="Search tasks..." />
@@ -193,10 +194,9 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardCategoryOutline"
             android:layout_width="160dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center|start"
             android:layout_marginStart="24dp"
-            android:layout_marginBottom="18dp"
             app:cardBackgroundColor="#000000"
             app:cardCornerRadius="12dp"
             app:contentPadding="2dp">
@@ -221,60 +221,61 @@
 
         </androidx.cardview.widget.CardView>
 
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tasksView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:overScrollMode="ifContentScrolls"
-        android:scrollbarThumbHorizontal="@android:color/transparent"
-        android:scrollbarThumbVertical="@android:color/transparent" />
-
-    <LinearLayout
-        android:id="@+id/llBottomHub"
-        android:layout_width="300dp"
-        android:layout_height="75dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_margin="24dp"
-        android:background="@drawable/template_dock"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnCollectibles"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:clickable="true"
-            android:foreground="@drawable/ic_collectibles"
-            app:backgroundTint="@android:color/transparent"
-            app:elevation="0dp"
-            app:rippleColor="@android:color/transparent" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tasksView"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center|center_horizontal"
-            android:layout_marginStart="28dp"
-            android:layout_marginEnd="28dp"
-            android:foreground="@drawable/ic_add_task"
-            app:backgroundTint="@android:color/transparent"
-            app:elevation="0dp"
-            app:rippleColor="@android:color/transparent" />
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbarThumbHorizontal="@android:color/transparent"
+            android:scrollbarThumbVertical="@android:color/transparent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnShop"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:clickable="true"
-            android:foreground="@drawable/ic_shop"
-            app:backgroundTint="@android:color/transparent"
-            app:elevation="0dp"
-            app:rippleColor="@android:color/transparent" />
+        <LinearLayout
+            android:id="@+id/llBottomHub"
+            android:layout_width="300dp"
+            android:layout_height="75dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_margin="14dp"
+            android:background="@drawable/template_dock"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnCollectibles"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:foreground="@drawable/ic_collectibles"
+                app:backgroundTint="@android:color/transparent"
+                app:elevation="0dp"
+                app:rippleColor="@android:color/transparent" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginStart="28dp"
+                android:layout_marginEnd="28dp"
+                android:foreground="@drawable/ic_add_task"
+                app:backgroundTint="@android:color/transparent"
+                app:elevation="0dp"
+                app:rippleColor="@android:color/transparent" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnShop"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:foreground="@drawable/ic_shop"
+                app:backgroundTint="@android:color/transparent"
+                app:elevation="0dp"
+                app:rippleColor="@android:color/transparent" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </FrameLayout>
